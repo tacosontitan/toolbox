@@ -1,5 +1,8 @@
 import * as vscode from 'vscode';
 
+/**
+ * Defines members for handling non-functional requirements of the extension.
+ */
 export interface IAssistant {
 	/**
 	 * Writes a message to the output channel.
@@ -8,6 +11,9 @@ export interface IAssistant {
 	writeLine(message: string): void;
 }
 
+/**
+ * Implements the {@link IAssistant} interface to provide runtime support of non-functional requirements for the extension.
+ */
 export class RuntimeAssistant implements IAssistant {
 	private outputChannel: vscode.OutputChannel;
 
