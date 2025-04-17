@@ -18,7 +18,7 @@ export class RuntimeAssistant implements IAssistant {
 	private outputChannel: vscode.OutputChannel;
 
 	constructor() {
-		this.outputChannel = vscode.window.createOutputChannel("Hazel's Surf Shack");
+		this.outputChannel = vscode.window.createOutputChannel("Hazel's Toolbox");
 	}
 
 	/**
