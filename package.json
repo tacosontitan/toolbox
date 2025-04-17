@@ -12,6 +12,17 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Hazel's Toolbox",
+      "type": "object",
+      "properties": {
+        "pineappleCove.toolbox.azure.devops.personalAccessToken": {
+          "type": "string",
+          "default": "",
+          "description": "The personal access token used to integrate with Azure DevOps."
+        }
+      }
+    },
     "commands": [
       {
         "command": "hazl.surf-shack.azure.devops.createDefaultTasks",
