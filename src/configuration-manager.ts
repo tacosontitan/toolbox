@@ -4,8 +4,8 @@ import * as vscode from 'vscode';
  * Simplifies interactions with the VS Code configuration system.
  */
 export class ConfigurationManager {
-	private static readonly configurationPrefix = "hazl.surf-shack";
-	
+	private static readonly configurationPrefix = "pineappleCove.toolbox";
+
 	/**
 	 * Gets a configuration value for the specified key.
 	 * @param key The configuration key to get.
