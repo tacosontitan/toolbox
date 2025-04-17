@@ -10,15 +10,15 @@ export abstract class Command {
 	 * The unique identifier for the command.
 	 */
 	public id: string;
-	
+
 	/**
 	 * Creates a new command instance with the specified identifier.
 	 * @param id The unique identifier for the command.
 	 */
 	constructor(id: string) {
-		this.id = `hazl.surf-shack.${id}`;
+		this.id = `pineappleCove.toolbox.${id}`;
 	}
-	
+
 	/**
 	 * Executes the command.
 	 * @param args The arguments to pass to the command.

@@ -25,8 +25,8 @@
     },
     "commands": [
       {
-        "command": "hazl.surf-shack.azure.devops.createDefaultTasks",
-        "title": "Surf Shack: Create Default Azure DevOps Tasks"
+        "command": "pineappleCove.toolbox.azure.devops.createDefaultTasks",
+        "title": "Hazel's Toolbox: Create Default Azure DevOps Tasks"
       }
     ]
   },
