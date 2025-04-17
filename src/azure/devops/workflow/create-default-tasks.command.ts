@@ -43,27 +43,28 @@ export class CreateDefaultTasksCommand
 		new PreDefinedTask('Notify Stakeholders of Deployment', 0.05),
 		new PreDefinedTask('Validate in Production', 0.5)
 	];
-	
+
 	/**
 	 * Creates a new {@link CreateDefaultTasksCommand} instance.
 	 */
 	constructor() {
 		super('createDefaultTasks');
 	}
-	
+
 	/** @inheritdoc */
 	public execute(assistant: IAssistant, ...args: any[]): Promise<void> {
 		const personalAccessToken = this.getPersonalAccessToken();
-		// if (!personalAccessToken) {
-		// 	return Promise.resolve();
-		// }
-		
+		if (!personalAccessToken) {
+			vscode.window.showErrorMessage('This command requires a personal access token (PAT) to be configured.');
+			return Promise.resolve();
+		}
+
 		vscode.window.showWarningMessage('This feature is not yet implemented. Default tasks will not be created.');
-		vscode.window.showInformationMessage('Your configured PAT is ' + personalAccessToken);
+		vscode.window.showInformationMessage('Your configured PAT is: ' + personalAccessToken);
 		for (const task of CreateDefaultTasksCommand.defaultTasks) {
 			assistant.writeLine(`Creating task '${task.name}' with '${task.remainingWork}' hours of remaining work.`);
 		}
-		
+
 		return Promise.resolve();
 	}
 }
