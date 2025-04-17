@@ -52,13 +52,21 @@ export class CreateDefaultTasksCommand
 	}
 
 	/** @inheritdoc */
-	public execute(assistant: IAssistant, ...args: any[]): Promise<void> {
+	public async execute(assistant: IAssistant, ...args: any[]): Promise<void> {
 		const personalAccessToken = this.getPersonalAccessToken();
 		if (!personalAccessToken) {
 			vscode.window.showErrorMessage('This command requires a personal access token (PAT) to be configured.');
 			return Promise.resolve();
 		}
 
+		const workItemNumberResponse = await vscode.window.showInputBox({ prompt: 'Enter the work item number for which you want to create default tasks.' });
+		const workItemNumber = parseInt(workItemNumberResponse ?? '-1');
+		if (isNaN(workItemNumber) || workItemNumber <= 0) {
+			vscode.window.showErrorMessage('Work item number is required to create default tasks.');
+			return Promise.resolve();
+		}
+
+		vscode.window.showInformationMessage(`Creating default tasks for work item # ${workItemNumber}...`);
 		vscode.window.showWarningMessage('This feature is not yet implemented. Default tasks will not be created.');
 		vscode.window.showInformationMessage('Your configured PAT is: ' + personalAccessToken);
 		for (const task of CreateDefaultTasksCommand.defaultTasks) {
