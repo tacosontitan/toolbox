@@ -6,12 +6,12 @@ import { PreDefinedTask } from "../pre-defined-task";
  */
 export const DefaultTasks: PreDefinedTask[] = [
     PreDefinedTasks.ReviewPreDefinedTasks,
-    PreDefinedTasks.ReviewPBI,
+    PreDefinedTasks.ReviewWorkItem,
     PreDefinedTasks.ReproduceLocally,
     PreDefinedTasks.ReviewExistingImplementations,
     PreDefinedTasks.MeetWithProductOwners,
     PreDefinedTasks.MeetWithStakeholders,
-    PreDefinedTasks.MeetWithQA,
+    PreDefinedTasks.MeetWithQualityAssurance,
     PreDefinedTasks.QAWriteTestCases,
     PreDefinedTasks.QAReviewTestCases,
     PreDefinedTasks.DevReviewTestCases,
@@ -20,7 +20,7 @@ export const DefaultTasks: PreDefinedTask[] = [
     PreDefinedTasks.CreateDraftPR,
     PreDefinedTasks.SelfReviewPR,
     PreDefinedTasks.PublishPR,
-    PreDefinedTasks.CreateQABuild,
+    PreDefinedTasks.CreateQualityAssuranceBuild,
     PreDefinedTasks.QADeploymentToTestEnvironment,
     PreDefinedTasks.QATestCaseExecution,
     PreDefinedTasks.SupportQATesting,

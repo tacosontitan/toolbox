@@ -1,5 +1,8 @@
 import { PreDefinedTask } from "../../pre-defined-task";
 
+/**
+ * Represents a pre-defined task for running validations for the pull request in Azure DevOps.
+ */
 export const RunPRValidations: PreDefinedTask = {
     id: undefined,
     appliesTo: [],

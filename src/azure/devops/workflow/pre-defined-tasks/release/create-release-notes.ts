@@ -1,5 +1,8 @@
 import { PreDefinedTask } from "../../pre-defined-task";
 
+/**
+ * Represents a pre-defined task to create release notes in Azure DevOps.
+ */
 export const CreateReleaseNotes: PreDefinedTask = {
     id: undefined,
     appliesTo: [],

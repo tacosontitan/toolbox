@@ -1,5 +1,8 @@
 import { PreDefinedTask } from "../../pre-defined-task";
 
+/**
+ * Represents a pre-defined task for smoke testing in Azure DevOps.
+ */
 export const QASmokeTesting: PreDefinedTask = {
     id: undefined,
     appliesTo: [],

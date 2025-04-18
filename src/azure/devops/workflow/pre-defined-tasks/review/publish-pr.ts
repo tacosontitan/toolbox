@@ -1,5 +1,8 @@
 import { PreDefinedTask } from "../../pre-defined-task";
 
+/**
+ * Represents a pre-defined task for publishing a pull request in Azure DevOps.
+ */
 export const PublishPR: PreDefinedTask = {
     id: undefined,
     appliesTo: [],
