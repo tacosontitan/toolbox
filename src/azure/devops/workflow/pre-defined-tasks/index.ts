@@ -1,3 +1,4 @@
+export * from './default-tasks';
 export * from './planning/review-pre-defined-tasks';
 export * from './planning/review-pbi';
 export * from './planning/reproduce-locally';
