@@ -7,6 +7,7 @@ import { IAssistant } from '../../../assistant';
 import { WebApi } from 'azure-devops-node-api/WebApi';
 import { JsonPatchDocument, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
+import { PreDefinedTaskJsonPatchDocumentMapper } from './pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
 
 /**
  * Represents a {@link DevOpsCommand} that creates pre-defined tasks representing the typical workflow of a work item in Azure DevOps.
@@ -65,47 +66,10 @@ export class CreateDefaultTasksCommand
 		}
 
 		vscode.window.showInformationMessage(`Creating default tasks for work item #${workItemNumber} in project '${projectName}'...`);
+		const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(organizationUri, workItemNumber, areaPath, iterationPath);
 		for (const task of PreDefinedTasks.DefaultTasks) {
-			const patchDocument: JsonPatchDocument = [
-				{
-					op: Operation.Add,
-					path: '/fields/System.Title',
-					value: task.name,
-				},
-				{
-					op: Operation.Add,
-					path: '/fields/Microsoft.VSTS.Scheduling.RemainingWork',
-					value: task.remainingWork,
-				},
-				{
-					op: Operation.Add,
-					path: '/fields/System.Description',
-					value: task.description,
-				},
-				{
-					op: Operation.Add,
-					path: '/fields/System.AreaPath',
-					value: areaPath,
-				},
-				{
-					op: Operation.Add,
-					path: '/fields/System.IterationPath',
-					value: iterationPath,
-				},
-				{
-					op: Operation.Add,
-					path: '/relations/-',
-					value: {
-						rel: 'System.LinkTypes.Hierarchy-Reverse',
-						url: `${organizationUri}/_apis/wit/workItems/${workItemNumber}`,
-						attributes: {
-							comment: 'Task created by Hazel\'s Toolbox',
-						},
-					},
-				},
-			];
-
 			try {
+				const patchDocument = taskMapper.map(task);
 				const createdTask = await workItemTrackingClient.createWorkItem(
 					[],
 					patchDocument,
