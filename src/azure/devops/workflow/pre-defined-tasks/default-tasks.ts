@@ -1,5 +1,5 @@
 import * as PreDefinedTasks from '../pre-defined-tasks';
-import { PreDefinedTask } from "../pre-defined-task";
+import { PreDefinedTask } from "./pre-defined-task";
 
 /**
  * Defines the default tasks used to execute a work item in an Agile workflow.
