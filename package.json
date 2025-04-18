@@ -16,6 +16,21 @@
       "title": "Hazel's Toolbox",
       "type": "object",
       "properties": {
+        "pineappleCove.toolbox.azure.devops.useClassicUri": {
+          "type": "boolean",
+          "default": false,
+          "description": "Does your organization use the classic URI format for Azure DevOps?"
+        },
+        "pineappleCove.toolbox.azure.devops.organization": {
+          "type": "string",
+          "default": "",
+          "description": "What's the name of your Azure DevOps organization?"
+        },
+        "pineappleCove.toolbox.azure.devops.project": {
+          "type": "string",
+          "default": "",
+          "description": "What's the project you're working with in Azure DevOps?"
+        },
         "pineappleCove.toolbox.azure.devops.personalAccessToken": {
           "type": "string",
           "default": "",
