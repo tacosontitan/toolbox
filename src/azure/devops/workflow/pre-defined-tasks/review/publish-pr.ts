@@ -1,4 +1,4 @@
-import { PreDefinedTask } from "../../pre-defined-task";
+import { PreDefinedTask } from "../pre-defined-task";
 
 /**
  * Represents a pre-defined task for publishing a pull request in Azure DevOps.

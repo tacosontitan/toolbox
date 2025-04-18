@@ -1,4 +1,4 @@
-import { PreDefinedTask } from "../../pre-defined-task";
+import { PreDefinedTask } from "../pre-defined-task";
 
 /**
  * Represents a pre-defined task to deploy the build to the test environment for QA validation in Azure DevOps.

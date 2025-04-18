@@ -1,4 +1,4 @@
-import { PreDefinedTask } from "../../pre-defined-task";
+import { PreDefinedTask } from "../pre-defined-task";
 
 /**
  * Represents a pre-defined task for quality assurance to review release notes in Azure DevOps.

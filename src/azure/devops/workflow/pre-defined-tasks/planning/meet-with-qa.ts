@@ -1,4 +1,4 @@
-import { PreDefinedTask } from "../../pre-defined-task";
+import { PreDefinedTask } from "../pre-defined-task";
 
 /**
  * Represents a pre-defined task for meeting with QA to discuss test cases and ensure alignment on quality expectations.
