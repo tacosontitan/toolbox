@@ -86,6 +86,18 @@ export class CreateDefaultTasksCommand
 			return;
 		}
 
+		// Retrieve the parent work item details
+		let areaPath: string | undefined;
+		let iterationPath: string | undefined;
+		try {
+			const parentWorkItem = await workItemTrackingClient.getWorkItem(workItemNumber);
+			areaPath = parentWorkItem.fields?.['System.AreaPath'] as string;
+			iterationPath = parentWorkItem.fields?.['System.IterationPath'] as string;
+		} catch (error) {
+			vscode.window.showErrorMessage(`Failed to retrieve parent work item #${workItemNumber}: ${(error as Error).message}`);
+			return;
+		}
+
 		vscode.window.showInformationMessage(`Creating default tasks for work item #${workItemNumber} in project '${projectName}'...`);
 		for (const task of CreateDefaultTasksCommand.defaultTasks) {
 			const patchDocument: JsonPatchDocument = [
@@ -103,6 +115,16 @@ export class CreateDefaultTasksCommand
 					op: Operation.Add,
 					path: '/fields/System.Description',
 					value: task.description,
+				},
+				{
+					op: Operation.Add,
+					path: '/fields/System.AreaPath',
+					value: areaPath,
+				},
+				{
+					op: Operation.Add,
+					path: '/fields/System.IterationPath',
+					value: iterationPath,
 				},
 				{
 					op: Operation.Add,
