@@ -6,22 +6,22 @@ export class Task {
 	 * The unique identifier of the task.
 	 */
 	public id: number | undefined;
-	
+
 	/**
 	 * The name of the task.
 	 */
 	public name: string;
-	
+
 	/**
 	 * The description of the task.
 	 */
 	public description: string;
-	
+
 	/**
 	 * The number of hours the task is estimated to take.
 	 */
 	public remainingWork: number;
-	
+
 	/**
 	 * Creates a new task instance with the specified details.
 	 * @param name The name of the task.
