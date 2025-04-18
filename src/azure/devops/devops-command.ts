@@ -15,7 +15,7 @@ export abstract class DevOpsCommand
 	protected constructor(id: string) {
 		super(`devops.${id}`);
 	}
-	
+
 	/**
 	 * Retrieves the Azure DevOps personal access token (PAT) from the configuration.
 	 * @returns The personal access token if configured; otherwise, null.
@@ -27,7 +27,40 @@ export abstract class DevOpsCommand
 			vscode.window.showErrorMessage("Personal access token for Azure DevOps is not configured. Commands that require it will not work.");
 			return null;
 		}
-		
+
 		return personalAccessToken;
+	}
+
+	/**
+	 * Retrieves the Azure DevOps project name from the configuration.
+	 * @returns The Azure DevOps project name if configured; otherwise, null.
+	 */
+	protected getProjectName(): string | null {
+		const projectName = ConfigurationManager.get<string | null>("azure.devops.project");
+		if (!projectName) {
+			vscode.window.showErrorMessage("Azure DevOps project is not configured. Commands that require it will not work.");
+			return null;
+		}
+
+		return projectName;
+	}
+
+	/**
+	 * Retrieves the Azure DevOps organization URL from the configuration.
+	 * @returns The Azure DevOps organization URL if configured; otherwise, null.
+	 */
+	protected getOrganizationUri(): string | null {
+		const organization = ConfigurationManager.get<string | null>("azure.devops.organization");
+		if (!organization) {
+			vscode.window.showErrorMessage("Azure DevOps organization is not configured. Commands that require it will not work.");
+			return null;
+		}
+
+		const useClassicUri = ConfigurationManager.get<boolean>("azure.devops.useClassicUri");
+		if (useClassicUri) {
+			return `https://${organization}.visualstudio.com`;
+		}
+
+		return `https://dev.azure.com/${organization}`;
 	}
 }
