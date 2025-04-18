@@ -1,9 +1,16 @@
 import { PreDefinedTask } from "../../pre-defined-task";
 
+/**
+ * Represents a pre-defined task for setting up the development environment.
+ */
 export const SetupEnvironment: PreDefinedTask = {
     id: undefined,
     appliesTo: [],
     remainingWork: 0.15,
     name: 'Setup Environment',
-    description: 'Set up the development or testing environment required for the work item.'
+    description: `Setup the development environment to execute the work item.
+- Download repository.
+- Run any tests against main.
+- Create topic branch.
+- Install dependencies.`
 };

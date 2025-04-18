@@ -1,5 +1,8 @@
 import { PreDefinedTask } from "../../pre-defined-task";
 
+/**
+ * Represents a pre-defined task for self-reviewing a pull request in Azure DevOps.
+ */
 export const SelfReviewPR: PreDefinedTask = {
     id: undefined,
     appliesTo: [],

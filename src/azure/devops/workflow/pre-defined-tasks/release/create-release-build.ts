@@ -1,5 +1,8 @@
 import { PreDefinedTask } from "../../pre-defined-task";
 
+/**
+ * Represents a pre-defined task for creating a release build in Azure DevOps.
+ */
 export const CreateReleaseBuild: PreDefinedTask = {
     id: undefined,
     appliesTo: [],

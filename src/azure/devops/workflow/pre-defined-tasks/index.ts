@@ -1,6 +1,6 @@
 export * from './default-tasks';
 export * from './planning/review-pre-defined-tasks';
-export * from './planning/review-pbi';
+export * from './planning/review-work-item';
 export * from './planning/reproduce-locally';
 export * from './planning/review-existing-implementations';
 export * from './planning/meet-with-product-owners';
@@ -23,7 +23,7 @@ export * from './review/run-pr-validations';
 export * from './review/complete-pr';
 export * from './release/create-release-build';
 export * from './release/create-release-notes';
-export * from './quality-assurance/qa-review-release-notes';
+export * from './release/qa-review-release-notes';
 export * from './quality-assurance/qa-smoke-testing';
 export * from './quality-assurance/support-smoke-testing';
 export * from './release/deploy-to-production';
