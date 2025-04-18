@@ -2,8 +2,6 @@ import * as vscode from 'vscode';
 import * as devops from "azure-devops-node-api";
 import * as PreDefinedTasks from './pre-defined-tasks';
 
-import { PreDefinedTask } from './pre-defined-task';
-import { WorkItemType } from '../work-item-type';
 import { DevOpsCommand } from '../devops-command';
 import { IAssistant } from '../../../assistant';
 import { WebApi } from 'azure-devops-node-api/WebApi';
@@ -15,39 +13,6 @@ import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
  */
 export class CreateDefaultTasksCommand
 	extends DevOpsCommand {
-
-	private static defaultTasks: PreDefinedTask[] = [
-		PreDefinedTasks.ReviewPreDefinedTasks,
-		PreDefinedTasks.ReviewPBI,
-		PreDefinedTasks.ReproduceLocally,
-		PreDefinedTasks.ReviewExistingImplementations,
-		PreDefinedTasks.MeetWithProductOwners,
-		PreDefinedTasks.MeetWithStakeholders,
-		PreDefinedTasks.MeetWithQA,
-		PreDefinedTasks.QAWriteTestCases,
-		PreDefinedTasks.QAReviewTestCases,
-		PreDefinedTasks.DevReviewTestCases,
-		PreDefinedTasks.CreateImplementationTasks,
-		PreDefinedTasks.SetupEnvironment,
-		PreDefinedTasks.CreateDraftPR,
-		PreDefinedTasks.SelfReviewPR,
-		PreDefinedTasks.PublishPR,
-		PreDefinedTasks.CreateQABuild,
-		PreDefinedTasks.QADeploymentToTestEnvironment,
-		PreDefinedTasks.QATestCaseExecution,
-		PreDefinedTasks.SupportQATesting,
-		PreDefinedTasks.ResolvePRFeedback,
-		PreDefinedTasks.RunPRValidations,
-		PreDefinedTasks.CompletePR,
-		PreDefinedTasks.CreateReleaseBuild,
-		PreDefinedTasks.CreateReleaseNotes,
-		PreDefinedTasks.QAReviewReleaseNotes,
-		PreDefinedTasks.QASmokeTesting,
-		PreDefinedTasks.SupportSmokeTesting,
-		PreDefinedTasks.DeployToProduction,
-		PreDefinedTasks.NotifyStakeholdersOfDeployment,
-		PreDefinedTasks.ValidateInProduction
-	];
 
 	/**
 	 * Creates a new {@link CreateDefaultTasksCommand} instance.
@@ -100,7 +65,7 @@ export class CreateDefaultTasksCommand
 		}
 
 		vscode.window.showInformationMessage(`Creating default tasks for work item #${workItemNumber} in project '${projectName}'...`);
-		for (const task of CreateDefaultTasksCommand.defaultTasks) {
+		for (const task of PreDefinedTasks.DefaultTasks) {
 			const patchDocument: JsonPatchDocument = [
 				{
 					op: Operation.Add,
