@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { ConfigurationManager } from "../../configuration-manager";
 import { AzureCommand } from "../azure-command";
+import { IAssistant } from '../../assistant';
 
 /**
  * Represents an {@link AzureCommand} focused on supporting Azure DevOps operations.
@@ -21,13 +22,24 @@ export abstract class DevOpsCommand
 	 * @returns The personal access token if configured; otherwise, null.
 	 * @remarks If the PAT is not configured, an error message is displayed to the user, and null is returned.
 	 */
-	protected getPersonalAccessToken(): string | null {
-		const personalAccessToken = ConfigurationManager.get<string | null>("azure.devops.personalAccessToken");
+	protected async getPersonalAccessToken(assistant: IAssistant): Promise<string | null> {
+		const personalAccessTokenSecretId = "pineappleCove.toolbox.azure.devops.personalAccessToken";
+		let personalAccessToken = await assistant.extensionContext.secrets.get(personalAccessTokenSecretId);
+		if (personalAccessToken) {
+			return personalAccessToken;
+		}
+
+		personalAccessToken = personalAccessToken = await vscode.window.showInputBox({
+			prompt: "🙏 Please provide your personal access token for Azure Devops.",
+			password: true
+		});
+
 		if (!personalAccessToken) {
-			vscode.window.showErrorMessage("Personal access token for Azure DevOps is not configured. Commands that require it will not work.");
+			vscode.window.showErrorMessage("A personal access token is required.");
 			return null;
 		}
 
+		await assistant.extensionContext.secrets.store(personalAccessTokenSecretId, personalAccessToken);
 		return personalAccessToken;
 	}
 
