@@ -8,5 +8,6 @@ export const CreateReleaseBuild: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.01,
     name: 'Create Release Build',
+    activity: 'Deployment',
     description: 'Create a release build for deployment to production.'
 };

@@ -8,5 +8,6 @@ export const DeployToProduction: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.03,
     name: 'Deploy to Production',
+    activity: 'Deployment',
     description: 'Deploy the release build to the production environment.'
 };

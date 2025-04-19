@@ -8,5 +8,6 @@ export const SelfReviewPR: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.5,
     name: 'Self-Review PR',
+    activity: 'Development',
     description: 'Perform a self-review of the pull request to ensure code quality and completeness.'
 };

@@ -8,5 +8,6 @@ export const QAWriteTestCases: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 2,
     name: 'QA Write Test Cases',
+    activity: 'Design',
     description: 'Write test cases that are comprehensive and aligned with business objectives.'
 };

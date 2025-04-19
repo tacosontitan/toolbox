@@ -11,8 +11,10 @@ export class PreDefinedTaskJsonPatchDocumentMapper
     private static readonly AreaPathFieldPath: string = '/fields/System.AreaPath';
     private static readonly IterationPathFieldPath: string = '/fields/System.IterationPath';
     private static readonly RelationsFieldPath: string = '/relations/-';
+    private static readonly AssignedToFieldPath: string = '/fields/System.AssignedTo';
 
     constructor(
+        private readonly userDisplayName: string,
         private readonly organizationUri: string,
         private readonly workItemNumber: number,
         private readonly areaPath: string,
@@ -46,6 +48,11 @@ export class PreDefinedTaskJsonPatchDocumentMapper
                 op: Operation.Add,
                 path: PreDefinedTaskJsonPatchDocumentMapper.IterationPathFieldPath,
                 value: this.iterationPath,
+            },
+            {
+                op: Operation.Add,
+                path: PreDefinedTaskJsonPatchDocumentMapper.AssignedToFieldPath,
+                value: this.userDisplayName
             },
             {
                 op: Operation.Add,

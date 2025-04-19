@@ -8,5 +8,6 @@ export const PublishPR: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.01,
     name: 'Publish PR',
+    activity: 'Development',
     description: 'Publish the pull request for review by other team members.'
 };

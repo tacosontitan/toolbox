@@ -8,5 +8,6 @@ export const QAReviewReleaseNotes: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.5,
     name: 'QA Review Release Notes',
+    activity: 'Requirements',
     description: 'Review the release notes to ensure accuracy and completeness.'
 };

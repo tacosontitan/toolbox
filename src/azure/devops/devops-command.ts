@@ -1,6 +1,6 @@
+import * as vscode from 'vscode';
 import { ConfigurationManager } from "../../configuration-manager";
 import { AzureCommand } from "../azure-command";
-import * as vscode from 'vscode';
 
 /**
  * Represents an {@link AzureCommand} focused on supporting Azure DevOps operations.
@@ -62,5 +62,15 @@ export abstract class DevOpsCommand
 		}
 
 		return `https://dev.azure.com/${organization}`;
+	}
+
+	protected getUserDisplayName(): string | null {
+		const userDisplayName = ConfigurationManager.get<string | null>("azure.devops.userDisplayName");
+		if (!userDisplayName) {
+			vscode.window.showErrorMessage("User display name for Azure DevOps is not configured. Commands that require it will not work.");
+			return null;
+		}
+
+		return userDisplayName;
 	}
 }

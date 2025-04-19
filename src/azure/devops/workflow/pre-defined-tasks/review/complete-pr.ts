@@ -8,5 +8,6 @@ export const CompletePR: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.01,
     name: 'Complete PR',
+    activity: 'Development',
     description: 'Complete the pull request after all validations and reviews are successful.'
 };

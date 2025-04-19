@@ -1,12 +1,11 @@
-import * as vscode from 'vscode';
 import * as devops from "azure-devops-node-api";
-import * as PreDefinedTasks from './pre-defined-tasks';
+import * as vscode from 'vscode';
 
-import { DevOpsCommand } from '../devops-command';
-import { IAssistant } from '../../../assistant';
 import { WebApi } from 'azure-devops-node-api/WebApi';
-import { JsonPatchDocument, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
+import { IAssistant } from '../../../assistant';
+import { DevOpsCommand } from '../devops-command';
+import { DefaultTasks } from "./default-tasks";
 import { PreDefinedTaskJsonPatchDocumentMapper } from './pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
 
 /**
@@ -42,6 +41,12 @@ export class CreateDefaultTasksCommand
 			return;
 		}
 
+		const userDisplayName = this.getUserDisplayName();
+		if (!userDisplayName) {
+			vscode.window.showErrorMessage('This command requires a user display name to be configured.');
+			return;
+		}
+
 		const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
 		const connection = new WebApi(organizationUri, authenticationHandler);
 		const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
@@ -66,8 +71,8 @@ export class CreateDefaultTasksCommand
 		}
 
 		vscode.window.showInformationMessage(`Creating default tasks for work item #${workItemNumber} in project '${projectName}'...`);
-		const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(organizationUri, workItemNumber, areaPath, iterationPath);
-		for (const task of PreDefinedTasks.DefaultTasks) {
+		const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItemNumber, areaPath, iterationPath);
+		for (const task of DefaultTasks) {
 			try {
 				const patchDocument = taskMapper.map(task);
 				const createdTask = await workItemTrackingClient.createWorkItem(

@@ -8,6 +8,7 @@ export const SetupEnvironment: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.15,
     name: 'Setup Environment',
+    activity: 'Development',
     description: `Setup the development environment to execute the work item.
 - Download repository.
 - Run any tests against main.
