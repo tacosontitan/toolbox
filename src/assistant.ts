@@ -5,6 +5,11 @@ import * as vscode from 'vscode';
  */
 export interface IAssistant {
 	/**
+	 * The extension context provided by Visual Studio Code.
+	 */
+	get extensionContext(): vscode.ExtensionContext;
+
+	/**
 	 * Writes a message to the output channel.
 	 * @param message The message to write to the output channel.
 	 */
@@ -17,8 +22,12 @@ export interface IAssistant {
 export class RuntimeAssistant implements IAssistant {
 	private outputChannel: vscode.OutputChannel;
 
-	constructor() {
+	constructor(private readonly context: vscode.ExtensionContext) {
 		this.outputChannel = vscode.window.createOutputChannel("Hazel's Toolbox");
+	}
+
+	public get extensionContext(): vscode.ExtensionContext {
+		return this.context;
 	}
 
 	/**
