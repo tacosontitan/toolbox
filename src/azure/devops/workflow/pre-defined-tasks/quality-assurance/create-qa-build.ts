@@ -8,5 +8,6 @@ export const CreateQualityAssuranceBuild: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.01,
     name: 'Create Quality Assurance Build',
+    activity: 'Deployment',
     description: 'Create a build for QA testing to validate the implementation.'
 };

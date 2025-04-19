@@ -8,5 +8,6 @@ export const ValidateInProduction: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.5,
     name: 'Validate in Production',
+    activity: 'Testing',
     description: 'Validate the functionality of the deployed build in the production environment.'
 };

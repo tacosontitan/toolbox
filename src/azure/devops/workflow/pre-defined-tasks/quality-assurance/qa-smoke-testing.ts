@@ -8,5 +8,6 @@ export const QASmokeTesting: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.5,
     name: 'QA Smoke Testing',
+    activity: 'Testing',
     description: 'Perform smoke testing to validate the stability of the build in the test environment.'
 };

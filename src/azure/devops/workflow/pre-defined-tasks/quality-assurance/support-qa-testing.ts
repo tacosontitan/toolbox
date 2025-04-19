@@ -8,5 +8,6 @@ export const SupportQATesting: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 1,
     name: 'Support QA Testing',
+    activity: 'Testing',
     description: 'Provide support to the QA team during the testing process.'
 };
