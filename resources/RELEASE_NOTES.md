@@ -6,6 +6,4 @@ Welcome to my surf shack! This is an ongoing project to support automation of my
 
 ## 1.0.0.0
 
-This version is under construction.
-
-- Initial release.
+- Added a command for creating pre-defined tasks in Azure DevOps.
