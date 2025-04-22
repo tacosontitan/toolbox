@@ -1,7 +1,8 @@
+import * as devops from 'azure-devops-node-api';
 import * as vscode from 'vscode';
+import { IAssistant } from '../../assistant';
 import { ConfigurationManager } from "../../configuration-manager";
 import { AzureCommand } from "../azure-command";
-import { IAssistant } from '../../assistant';
 
 /**
  * Represents an {@link AzureCommand} focused on supporting Azure DevOps operations.
@@ -25,7 +26,8 @@ export abstract class DevOpsCommand
 	protected async getPersonalAccessToken(assistant: IAssistant): Promise<string | null> {
 		const personalAccessTokenSecretId = "pineappleCove.toolbox.azure.devops.personalAccessToken";
 		let personalAccessToken = await assistant.extensionContext.secrets.get(personalAccessTokenSecretId);
-		if (personalAccessToken) {
+		let tokenIsValid = await this.determineIfPersonalAccessTokenIsValid(personalAccessToken);
+		if (personalAccessToken && tokenIsValid) {
 			return personalAccessToken;
 		}
 
@@ -34,8 +36,8 @@ export abstract class DevOpsCommand
 			password: true
 		});
 
-		if (!personalAccessToken) {
-			vscode.window.showErrorMessage("A personal access token is required.");
+		tokenIsValid = await this.determineIfPersonalAccessTokenIsValid(personalAccessToken);
+		if (!personalAccessToken || !tokenIsValid) {
 			return null;
 		}
 
@@ -84,5 +86,33 @@ export abstract class DevOpsCommand
 		}
 
 		return userDisplayName;
+	}
+
+	private async determineIfPersonalAccessTokenIsValid(token: string | null | undefined): Promise<boolean> {
+		try {
+			if (!token) {
+				vscode.window.showErrorMessage("A personal access token is required.");
+				return false;
+			}
+
+			const organizationUri = this.getOrganizationUri();
+			if (!organizationUri) {
+				return false;
+			}
+
+			const authenticationHandler = devops.getPersonalAccessTokenHandler(token);
+			const connection = new devops.WebApi(organizationUri, authenticationHandler);
+			const workItemApi = await connection.getWorkItemTrackingApi();
+			await workItemApi.getWorkItems([1]);
+			return true;
+		} catch (error: any) {
+			if (error.statusCode === 401) {
+				vscode.window.showErrorMessage("The provided personal access token is invalid. Please check your token and try again.");
+				return false;
+			}
+
+			vscode.window.showErrorMessage(`An error occurred while validating the personal access token: ${error.message}`);
+			return false;
+		}
 	}
 }
