@@ -22,18 +22,20 @@ export interface IAssistant {
 export class RuntimeAssistant implements IAssistant {
 	private outputChannel: vscode.OutputChannel;
 
+	/**
+	 * Creates a new {@link RuntimeAssistant} instance.
+	 * @param context The extension context provided by Visual Studio Code.
+	 */
 	constructor(private readonly context: vscode.ExtensionContext) {
 		this.outputChannel = vscode.window.createOutputChannel("Hazel's Toolbox");
 	}
 
+	/** @inheritdoc */
 	public get extensionContext(): vscode.ExtensionContext {
 		return this.context;
 	}
 
-	/**
-	 * Writes a message to the output channel.
-	 * @param message The message to write to the output channel.
-	 */
+	/** @inheritdoc */
 	writeLine(message: string): void {
 		this.outputChannel.appendLine(message);
 	}
