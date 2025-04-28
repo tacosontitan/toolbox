@@ -7,6 +7,7 @@ export const RunPRValidations: PreDefinedTask = {
     id: undefined,
     appliesTo: [],
     remainingWork: 0.01,
+    assigneeRequired: true,
     name: 'Run PR Validations',
     activity: 'Development',
     description: 'Run automated validations for the pull request to ensure compliance with standards.'

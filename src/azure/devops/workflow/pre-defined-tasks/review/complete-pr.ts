@@ -7,6 +7,7 @@ export const CompletePR: PreDefinedTask = {
     id: undefined,
     appliesTo: [],
     remainingWork: 0.01,
+    assigneeRequired: true,
     name: 'Complete PR',
     activity: 'Development',
     description: 'Complete the pull request after all validations and reviews are successful.'

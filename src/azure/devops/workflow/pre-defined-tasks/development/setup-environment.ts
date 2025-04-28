@@ -7,6 +7,7 @@ export const SetupEnvironment: PreDefinedTask = {
     id: undefined,
     appliesTo: [],
     remainingWork: 0.15,
+    assigneeRequired: true,
     name: 'Setup Environment',
     activity: 'Development',
     description: `Setup the development environment to execute the work item.

@@ -7,6 +7,7 @@ export const CreateImplementationTasks: PreDefinedTask = {
     id: undefined,
     appliesTo: [],
     remainingWork: 0.5,
+    assigneeRequired: true,
     name: 'Create Implementation Tasks',
     activity: 'Design',
     description: 'After conducting the necessary reviews and meetings, create tasks that represent the steps needed to execute the work item\'s acceptance criteria (be sure to account for non-functional requirements).'
