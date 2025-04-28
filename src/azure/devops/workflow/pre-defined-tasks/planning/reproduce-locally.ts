@@ -8,6 +8,7 @@ export const ReproduceLocally: PreDefinedTask = {
     id: undefined,
     appliesTo: [WorkItemType.Bug],
     remainingWork: 1,
+    assigneeRequired: true,
     name: 'Reproduce Locally',
     activity: 'Testing',
     description: 'Attempt to reproduce the issue locally to better understand the problem and identify potential solutions.'

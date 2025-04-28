@@ -7,6 +7,7 @@ export const CreateQualityAssuranceBuild: PreDefinedTask = {
     id: undefined,
     appliesTo: [],
     remainingWork: 0.01,
+    assigneeRequired: true,
     name: 'Create Quality Assurance Build',
     activity: 'Deployment',
     description: 'Create a build for QA testing to validate the implementation.'

@@ -7,6 +7,7 @@ export const SupportSmokeTesting: PreDefinedTask = {
     id: undefined,
     appliesTo: [],
     remainingWork: 0.25,
+    assigneeRequired: true,
     name: 'Support Smoke Testing',
     activity: 'Testing',
     description: 'Provide support during smoke testing to address any issues that arise.'

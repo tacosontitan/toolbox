@@ -6,6 +6,12 @@ import { WorkItemType } from "../../work-item-type";
  */
 export class PreDefinedTask
 	extends Task {
+
+	/**
+	 * Indicates whether the task should be have an assignee by default.
+	 */
+	assigneeRequired: boolean = true;
+
 	/**
 	 * The {@link WorkItemType}(s) to which the {@link Task} applies.
 	 */
