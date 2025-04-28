@@ -1,4 +1,4 @@
-import { JsonPatchDocument, Operation } from "azure-devops-node-api/interfaces/common/VSSInterfaces";
+import { JsonPatchDocument, JsonPatchOperation, Operation } from "azure-devops-node-api/interfaces/common/VSSInterfaces";
 import { Mapper } from "../../../../mapper";
 import { PreDefinedTask } from "./pre-defined-task";
 
@@ -23,7 +23,7 @@ export class PreDefinedTaskJsonPatchDocumentMapper
 
     /** @inheritdoc */
     map(input: PreDefinedTask): JsonPatchDocument {
-        return [
+        let operations: JsonPatchOperation[] = [
             {
                 op: Operation.Add,
                 path: PreDefinedTaskJsonPatchDocumentMapper.TitleFieldPath,
@@ -51,11 +51,6 @@ export class PreDefinedTaskJsonPatchDocumentMapper
             },
             {
                 op: Operation.Add,
-                path: PreDefinedTaskJsonPatchDocumentMapper.AssignedToFieldPath,
-                value: this.userDisplayName
-            },
-            {
-                op: Operation.Add,
                 path: PreDefinedTaskJsonPatchDocumentMapper.RelationsFieldPath,
                 value: {
                     rel: 'System.LinkTypes.Hierarchy-Reverse',
@@ -66,6 +61,16 @@ export class PreDefinedTaskJsonPatchDocumentMapper
                 },
             }
         ];
+
+        if (input.assigneeRequired) {
+            operations.push({
+                op: Operation.Add,
+                path: PreDefinedTaskJsonPatchDocumentMapper.AssignedToFieldPath,
+                value: this.userDisplayName
+            });
+        }
+
+        return operations;
     }
 
 }
