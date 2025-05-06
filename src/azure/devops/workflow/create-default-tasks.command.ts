@@ -76,24 +76,44 @@ export class CreateDefaultTasksCommand
 			return;
 		}
 
-		assistant.writeLine(`Creating default tasks for work item #${workItemNumber} in project '${projectName}'...`);
-		const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItemNumber, areaPath, iterationPath);
-		for (const task of DefaultTasks) {
-			try {
-				const patchDocument = taskMapper.map(task);
-				const createdTask = await workItemTrackingClient.createWorkItem(
-					[],
-					patchDocument,
-					projectName,
-					'Task'
+		await vscode.window.withProgress(
+			{
+				location: vscode.ProgressLocation.Notification,
+				title: `Creating default tasks for work item #${workItemNumber}.`,
+				cancellable: false
+			},
+			async (progress) => {
+				assistant.writeLine(`Creating default tasks for work item #${workItemNumber} in project '${projectName}'.`);
+				const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItemNumber, areaPath, iterationPath);
+				let completed = 0;
+				for (const task of DefaultTasks) {
+					progress.report({ message: `Creating '${task.name}' (${++completed}/${DefaultTasks.length})` });
+					try {
+						const patchDocument = taskMapper.map(task);
+						const createdTask = await workItemTrackingClient.createWorkItem(
+							[],
+							patchDocument,
+							projectName,
+							'Task'
+						);
+
+						assistant.writeLine(`Created task '${task.name}' with ID ${createdTask.id} under work item #${workItemNumber}.`);
+					} catch (error) {
+						const errorMessage = (error as Error).message;
+						assistant.writeLine(`Failed to create task '${task.name}': ${errorMessage}`);
+					}
+				}
+
+				const action = await vscode.window.showInformationMessage(
+					`Default tasks created for work item #${workItemNumber}.`,
+					'Show Output'
 				);
 
-				assistant.writeLine(`Created task '${task.name}' with ID ${createdTask.id} under work item #${workItemNumber}.`);
-			} catch (error) {
-				const errorMessage = (error as Error).message;
-				assistant.writeLine(`Failed to create task '${task.name}': ${errorMessage}`);
+				if (action === 'Show Output' && typeof assistant.showOutputChannel === 'function') {
+					assistant.showOutputChannel();
+				}
 			}
-		}
+		);
 
 		return Promise.resolve();
 	}
