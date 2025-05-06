@@ -1,0 +1,29 @@
+name: 🔢 Auto Version Bump on PR
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  bump-version:
+    name: 🔢 Bump Version
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: 🧩 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: 🔢 Bump Version Number
+        run: npm version patch --no-git-tag-version
+
+      - name: 🔄 Commit and Push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "🔢 Bump version in `package.json`"
+          branch: ${{ github.head_ref }}
