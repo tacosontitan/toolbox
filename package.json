@@ -21,22 +21,22 @@
       "title": "Hazel's Toolbox",
       "type": "object",
       "properties": {
-        "pineappleCove.toolbox.azure.devops.useClassicUri": {
+        "tacosontitan.toolbox.azure.devops.useClassicUri": {
           "type": "boolean",
           "default": false,
           "description": "Does your organization use the classic URI format for Azure DevOps?"
         },
-        "pineappleCove.toolbox.azure.devops.organization": {
+        "tacosontitan.toolbox.azure.devops.organization": {
           "type": "string",
           "default": "",
           "description": "What's the name of your Azure DevOps organization?"
         },
-        "pineappleCove.toolbox.azure.devops.project": {
+        "tacosontitan.toolbox.azure.devops.project": {
           "type": "string",
           "default": "",
           "description": "What's the project you're working with in Azure DevOps?"
         },
-        "pineappleCove.toolbox.azure.devops.userDisplayName": {
+        "tacosontitan.toolbox.azure.devops.userDisplayName": {
           "type": "string",
           "default": "",
           "description": "What's your display name in Azure DevOps?"
@@ -45,7 +45,7 @@
     },
     "commands": [
       {
-        "command": "pineappleCove.toolbox.azure.devops.createDefaultTasks",
+        "command": "tacosontitan.toolbox.azure.devops.createDefaultTasks",
         "title": "Hazel's Toolbox: Create Default Azure DevOps Tasks"
       }
     ]

@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
  * Simplifies interactions with the VS Code configuration system.
  */
 export class ConfigurationManager {
-	private static readonly configurationPrefix = "pineappleCove.toolbox";
+	private static readonly configurationPrefix = "tacosontitan.toolbox";
 
 	/**
 	 * Gets a configuration value for the specified key.
