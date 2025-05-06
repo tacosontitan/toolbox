@@ -14,6 +14,11 @@ export interface IAssistant {
 	 * @param message The message to write to the output channel.
 	 */
 	writeLine(message: string): void;
+
+	/**
+	 * Shows the output channel to the user.
+	 */
+	showOutputChannel(): void;
 }
 
 /**
@@ -38,5 +43,10 @@ export class RuntimeAssistant implements IAssistant {
 	/** @inheritdoc */
 	writeLine(message: string): void {
 		this.outputChannel.appendLine(message);
+	}
+
+	/** @inheritdoc */
+	showOutputChannel(): void {
+		this.outputChannel.show();
 	}
 }
