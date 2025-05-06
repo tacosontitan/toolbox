@@ -1,5 +1,4 @@
 
-import * as vscode from 'vscode';
 import { IAssistant } from './assistant';
 
 /**
@@ -16,7 +15,7 @@ export abstract class Command {
 	 * @param id The unique identifier for the command.
 	 */
 	constructor(id: string) {
-		this.id = `pineappleCove.toolbox.${id}`;
+		this.id = `tacosontitan.toolbox.${id}`;
 	}
 
 	/**

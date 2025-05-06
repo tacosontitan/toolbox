@@ -24,7 +24,7 @@ export abstract class DevOpsCommand
 	 * @remarks If the PAT is not configured, an error message is displayed to the user, and null is returned.
 	 */
 	protected async getPersonalAccessToken(assistant: IAssistant): Promise<string | null> {
-		const personalAccessTokenSecretId = "pineappleCove.toolbox.azure.devops.personalAccessToken";
+		const personalAccessTokenSecretId = "tacosontitan.toolbox.azure.devops.personalAccessToken";
 		let personalAccessToken = await assistant.extensionContext.secrets.get(personalAccessTokenSecretId);
 		let tokenIsValid = await this.determineIfPersonalAccessTokenIsValid(personalAccessToken);
 		if (personalAccessToken && tokenIsValid) {
