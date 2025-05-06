@@ -79,7 +79,7 @@ export class CreateDefaultTasksCommand
 		await vscode.window.withProgress(
 			{
 				location: vscode.ProgressLocation.Notification,
-				title: `Creating default tasks for work item #${workItemNumber}.`,
+				title: `Creating default tasks for work item #${workItemNumber} in project '${projectName}'.`,
 				cancellable: false
 			},
 			async (progress) => {
