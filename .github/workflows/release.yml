@@ -23,7 +23,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
 
       - name: 📦 Install Dependencies
-        run: npm install
+        run: |
+          npm install
+          npm install -g @vscode/vsce
 
       - name: 🔢 Update Version in `package.json`
         run: |
