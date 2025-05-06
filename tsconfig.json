@@ -6,7 +6,7 @@
 			"ES2022"
 		],
 		"sourceMap": true,
-		"rootDir": "src",
+		"rootDir": "src/extension",
 		"outDir": "./dist",
 		"strict": true,   /* enable all strict type-checking options */
 		/* Additional Checks */
