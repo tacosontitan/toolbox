@@ -10,7 +10,7 @@ on:
       preRelease:
         description: 'Is this a pre-release?'
         required: true
-        default: 'false'
+        default: false
         type: boolean
 
 jobs:
