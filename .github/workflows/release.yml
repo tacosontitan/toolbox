@@ -44,6 +44,7 @@ jobs:
       - name: 🚀 Publish Extension
         env:
           MARKETPLACE_TOKEN: ${{ secrets.MARKETPLACE_TOKEN }}
+          DEBUG: vsce:*
         run: |
           vsce publish --pat $MARKETPLACE_TOKEN
 
