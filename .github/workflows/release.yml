@@ -1,0 +1,71 @@
+name: 🚀 Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to Publish'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  publish-extension:
+    name: 📦 Publish Extension
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: 🧩 Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: 📦 Install Dependencies
+        run: npm install
+
+      - name: 🔢 Update Version in `package.json`
+        run: |
+          npm version ${{ github.event.inputs.version }} --no-git-tag-version
+
+      - name: 🎁 Create Package
+        run: |
+          npx tsc
+          vsce package
+
+      - name: 🚀 Publish Extension
+        env:
+          MARKETPLACE_TOKEN: ${{ secrets.MARKETPLACE_TOKEN }}
+        run: |
+          npx vsce publish --pat $MARKETPLACE_TOKEN
+
+      - name: 📝 Commit and Push Version Update
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "🔖 Update version to ${{ github.event.inputs.version }}"
+          git push
+
+      - name: 🏷️ Create Git Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git tag -a v${{ github.event.inputs.version }} -m "Release v${{ github.event.inputs.version }}"
+          git push origin v${{ github.event.inputs.version }}
+
+      - name: 📦 Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          release_name: "Release v${{ github.event.inputs.version }}"
+          body: |
+            ## Changes
+            - Updated version to v${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false
