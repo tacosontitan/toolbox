@@ -1,0 +1,34 @@
+name: 🚀 Release Extension
+
+on:
+  workflow_call
+
+jobs:
+  publish-extension:
+    name: 📦 Publish Extension
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: 🧩 Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: 📦 Install Dependencies
+        run: |
+          npm install
+          npm install -g @vscode/vsce
+
+      - name: 🎁 Create Package
+        run: |
+          npx tsc
+          vsce package
+
+      - name: 🚀 Publish Extension
+        env:
+          MARKETPLACE_TOKEN: ${{ secrets.MARKETPLACE_TOKEN }}
+        run: |
+          vsce publish --pat $MARKETPLACE_TOKEN
