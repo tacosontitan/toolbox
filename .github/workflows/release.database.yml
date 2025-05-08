@@ -1,11 +1,11 @@
 name: 🚀 Release Database
 
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
-  publish-database:
-    name: 📦 Publish Extension
+  release-database:
+    name: 🚀 Release Database
     runs-on: windows-latest
     steps:
       - name: 📥 Checkout Repository

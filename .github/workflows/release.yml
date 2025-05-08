@@ -4,8 +4,13 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
+  release-database:
+    name: 🚀 Release Database
+    uses: ./.github/workflows/release.database.yml
+
   release-extension:
     name: 🚀 Release Extension
     uses: ./.github/workflows/release.extension.yml
