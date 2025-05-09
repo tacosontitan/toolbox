@@ -19,9 +19,12 @@ jobs:
       - name: 🏗️ Build Database Project
         run: dotnet build src/database/toolbox.sqlproj
 
-      - uses: azure/sql-action@v2
+      - name: 📦 Publish Database Project
+        uses: azure/sql-action@v2
+        env:
+          AZURE_SQL_CONNECTION_STRING: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
         with:
-          connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+          connection-string: $AZURE_SQL_CONNECTION_STRING
           path: './src/database/toolbox.sqlproj'
           action: 'publish'
           build-arguments: '-c Release'
