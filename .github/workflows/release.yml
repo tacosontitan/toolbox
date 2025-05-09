@@ -12,9 +12,11 @@ jobs:
     uses: ./.github/workflows/release.database.yml
 
   release-extension:
+    needs: release-database
     name: 🚀 Release Extension
     uses: ./.github/workflows/release.extension.yml
 
   create-github-release:
+    needs: release-extension
     name: 🏷️ Create GitHub Release
     uses: ./.github/workflows/release.github.yml
