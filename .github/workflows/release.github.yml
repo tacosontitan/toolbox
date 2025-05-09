@@ -8,6 +8,9 @@ jobs:
     name: 📦 Create GitHub Release
     runs-on: ubuntu-latest
     steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v2
+
       - name: 🔢 Extract version from package.json
         id: get_version
         run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
