@@ -11,6 +11,12 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v2
 
+      - name: 🛠️ Print Secret Value (For Debugging)
+        run: |
+          echo "Secret Value: $AZURE_SQL_CONNECTION_STRING"
+        env:
+          AZURE_SQL_CONNECTION_STRING: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+
       - name: 🧩 Setup .NET
         uses: actions/setup-dotnet@v4
         with:
