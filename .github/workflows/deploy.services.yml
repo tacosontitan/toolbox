@@ -9,6 +9,6 @@ on:
 jobs:
   release-database:
     name: 🚀 Release Database
-    uses: ./.github/workflows/release.database.yml
+    uses: ./.github/workflows/deploy.database.yml
     secrets:
       azure-sql-connection-string: ${{ secrets.azure-sql-connection-string }}

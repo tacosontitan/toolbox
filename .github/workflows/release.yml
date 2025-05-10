@@ -9,14 +9,14 @@ on:
 jobs:
   deploy-infrastructure:
     name: 🏗️ Deploy Infrastructure
-    uses: ./.github/workflows/release.infrastructure.yml
+    uses: ./.github/workflows/deploy.infrastructure.yml
     inputs:
       subscription-name: ${{ secrets.AZURE_SUBSCRIPTION_NAME }}
 
   deploy-services:
     needs: deploy-infrastructure
     name: 🚀 Deploy Services
-    uses: ./.github/workflows/release.database.yml
+    uses: ./.github/workflows/deploy.database.yml
     secrets:
       azure-sql-connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
 
