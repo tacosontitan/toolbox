@@ -10,7 +10,7 @@ jobs:
   release-database:
     name: 🚀 Release Database
     uses: ./.github/workflows/release.database.yml
-    with:
+    secrets:
       azure-sql-connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
 
   release-extension:

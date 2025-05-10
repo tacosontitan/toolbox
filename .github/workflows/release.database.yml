@@ -2,10 +2,9 @@ name: 🚀 Release Database
 
 on:
   workflow_call:
-    inputs:
+    secrets:
       azure-sql-connection-string:
         required: true
-        type: string
 
 jobs:
   release-database:
@@ -19,7 +18,7 @@ jobs:
         run: |
           echo "Secret Value: $AZURE_SQL_CONNECTION_STRING"
         env:
-          AZURE_SQL_CONNECTION_STRING: ${{ inputs.azure-sql-connection-string }}
+          AZURE_SQL_CONNECTION_STRING: ${{ secrets.azure-sql-connection-string }}
 
       - name: 🧩 Setup .NET
         uses: actions/setup-dotnet@v4
@@ -32,7 +31,7 @@ jobs:
       - name: 📦 Publish Database Project
         uses: azure/sql-action@v2
         env:
-          AZURE_SQL_CONNECTION_STRING: ${{ inputs.azure-sql-connection-string }}
+          AZURE_SQL_CONNECTION_STRING: ${{ secrets.azure-sql-connection-string }}
         with:
           connection-string: $AZURE_SQL_CONNECTION_STRING
           path: './src/database/toolbox.sqlproj'
