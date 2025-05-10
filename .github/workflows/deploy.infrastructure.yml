@@ -7,6 +7,14 @@ on:
         required: true
       subscription-name:
         required: true
+      sql-server-name:
+        required: true
+      sql-admin-username:
+        required: true
+      sql-admin-password:
+        required: true
+      sql-database-name:
+        required: true
 
 jobs:
   deploy-resource-group:
@@ -51,12 +59,17 @@ jobs:
               --subscription ${{ secrets.subscription-name }} \
               --resource-group toolbox \
               --template-file src/infrastructure/sql-server.bicep
+              --parameters serverName=${{ secrets.sql-server-name }} \
+                           administratorUsername=${{ secrets.sql-admin-username }} \
+                           administratorPassword=${{ secrets.sql-admin-password }}
 
       - name: 💽 Deploy SQL Database
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az deployment group create \
+            az deployment group create \`
               --subscription ${{ secrets.subscription-name }} \
               --resource-group toolbox \
-              --template-file src/infrastructure/database.bicep
+              --template-file src/infrastructure/database.bicep \
+              --parameters sqlServerName=${{ secrets.sql-server-name }} \
+                           sqlDatabaseName=${{ secrets.sql-database-name }}
