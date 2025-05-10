@@ -24,10 +24,8 @@ jobs:
 
       - name: 📦 Publish Database Project
         uses: azure/sql-action@v2
-        env:
-          AZURE_SQL_CONNECTION_STRING: ${{ secrets.azure-sql-connection-string }}
         with:
-          connection-string: $AZURE_SQL_CONNECTION_STRING
+          connection-string: ${{ secrets.azure-sql-connection-string }}
           path: './src/database/toolbox.sqlproj'
           action: 'publish'
           build-arguments: '-c Release'
