@@ -2,9 +2,10 @@ name: 🚀 Release Database
 
 on:
   workflow_call:
-    secrets:
+    inputs:
       azure-sql-connection-string:
         required: true
+        type: string
 
 jobs:
   release-database:

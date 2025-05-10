@@ -2,9 +2,10 @@ name: 🚀 Release Extension
 
 on:
   workflow_call:
-    secrets:
+    inputs:
       marketplace-token:
         required: true
+        type: string
 
 jobs:
   publish-extension:
