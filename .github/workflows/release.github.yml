@@ -5,7 +5,7 @@ on:
 
 jobs:
   create-github-release:
-    name: 📦 Create GitHub Release
+    name: 🏷️ Create GitHub Release
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout Repository
@@ -15,7 +15,7 @@ jobs:
         id: get_version
         run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
-      - name: 🏷️ Configure Git User
+      - name: ⚙️ Configure Git User
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

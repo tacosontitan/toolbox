@@ -7,15 +7,22 @@ on:
   workflow_dispatch:
 
 jobs:
-  release-database:
-    name: 🚀 Release Database
+  deploy-infrastructure:
+    name: 🏗️ Deploy Infrastructure
+    uses: ./.github/workflows/release.infrastructure.yml
+    inputs:
+      subscription-name: ${{ secrets.AZURE_SUBSCRIPTION_NAME }}
+
+  deploy-services:
+    needs: deploy-infrastructure
+    name: 🚀 Deploy Services
     uses: ./.github/workflows/release.database.yml
     secrets:
       azure-sql-connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
 
   release-extension:
-    needs: release-database
-    name: 🚀 Release Extension
+    needs: deploy-services
+    name: 🎁 Release Extension
     uses: ./.github/workflows/release.extension.yml
     secrets:
       marketplace-token: ${{ secrets.MARKETPLACE_TOKEN }}

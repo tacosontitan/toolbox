@@ -1,0 +1,45 @@
+name: 🏗️ Deploy Infrastructure
+
+on:
+  workflow_call:
+    inputs:
+      subscription-name:
+        type: string
+        required: true
+
+jobs:
+  deploy-resource-group:
+    name: 🚀 Deploy Resource Group
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📦 Deploy Resource Group
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az deployment sub create \
+              --subscription ${{ inputs.subscription-name }} \
+              --location EastUS \
+              --template-file src/infrastructure/resource-group.bicep
+
+  deploy-database:
+    needs: deploy-resource-group
+    name: 🚀 Deploy Database
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🖥️ Deploy SQL Server
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az deployment group create \
+              --subscription ${{ inputs.subscription-name }} \
+              --resource-group toolbox \
+              --template-file src/infrastructure/sql-server.bicep
+
+      - name: 💽 Deploy SQL Database
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az deployment group create \
+              --subscription ${{ inputs.subscription-name }} \
+              --resource-group toolbox \
+              --template-file src/infrastructure/database.bicep

@@ -1,0 +1,14 @@
+name: 🚀 Release Services
+
+on:
+  workflow_call:
+    secrets:
+      azure-sql-connection-string:
+        required: true
+
+jobs:
+  release-database:
+    name: 🚀 Release Database
+    uses: ./.github/workflows/release.database.yml
+    secrets:
+      azure-sql-connection-string: ${{ secrets.azure-sql-connection-string }}
