@@ -11,6 +11,7 @@ jobs:
     name: 🏗️ Deploy Infrastructure
     uses: ./.github/workflows/deploy.infrastructure.yml
     secrets:
+      azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
       subscription-name: ${{ secrets.AZURE_SUBSCRIPTION_NAME }}
 
   deploy-services:
