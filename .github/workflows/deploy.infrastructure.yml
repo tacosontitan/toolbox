@@ -67,7 +67,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az deployment group create \`
+            az deployment group create \
               --subscription ${{ secrets.subscription-name }} \
               --resource-group toolbox \
               --template-file src/infrastructure/database.bicep \
