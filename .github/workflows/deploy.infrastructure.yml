@@ -58,7 +58,7 @@ jobs:
             az deployment group create \
               --subscription ${{ secrets.subscription-name }} \
               --resource-group toolbox \
-              --template-file src/infrastructure/sql-server.bicep
+              --template-file src/infrastructure/sql-server.bicep \
               --parameters serverName="${{ secrets.sql-server-name }}" \
                            administratorUsername="${{ secrets.sql-admin-username }}" \
                            administratorPassword="${{ secrets.sql-admin-password }}"
@@ -71,5 +71,5 @@ jobs:
               --subscription ${{ secrets.subscription-name }} \
               --resource-group toolbox \
               --template-file src/infrastructure/database.bicep \
-              --parameters sqlServerName="${{ secrets.sql-server-name }}" \
-                           sqlDatabaseName="${{ secrets.sql-database-name }}"
+              --parameters serverName="${{ secrets.sql-server-name }}" \
+                           databaseName="${{ secrets.sql-database-name }}"
