@@ -3,6 +3,8 @@ name: 🏗️ Deploy Infrastructure
 on:
   workflow_call:
     secrets:
+      azure-credentials:
+        required: true
       subscription-name:
         required: true
 
@@ -13,6 +15,11 @@ jobs:
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v2
+
+      - name: 🔑 Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.azure-credentials }}
 
       - name: 📦 Deploy Resource Group
         uses: azure/CLI@v1
@@ -30,6 +37,11 @@ jobs:
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v2
+
+      - name: 🔑 Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.azure-credentials }}
 
       - name: 🖥️ Deploy SQL Server
         uses: azure/CLI@v1
