@@ -59,9 +59,9 @@ jobs:
               --subscription ${{ secrets.subscription-name }} \
               --resource-group toolbox \
               --template-file src/infrastructure/sql-server.bicep
-              --parameters serverName=${{ secrets.sql-server-name }} \
-                           administratorUsername=${{ secrets.sql-admin-username }} \
-                           administratorPassword=${{ secrets.sql-admin-password }}
+              --parameters serverName="${{ secrets.sql-server-name }}" \
+                           administratorUsername="${{ secrets.sql-admin-username }}" \
+                           administratorPassword="${{ secrets.sql-admin-password }}"
 
       - name: 💽 Deploy SQL Database
         uses: azure/CLI@v1
@@ -71,5 +71,5 @@ jobs:
               --subscription ${{ secrets.subscription-name }} \
               --resource-group toolbox \
               --template-file src/infrastructure/database.bicep \
-              --parameters sqlServerName=${{ secrets.sql-server-name }} \
-                           sqlDatabaseName=${{ secrets.sql-database-name }}
+              --parameters sqlServerName="${{ secrets.sql-server-name }}" \
+                           sqlDatabaseName="${{ secrets.sql-database-name }}"
