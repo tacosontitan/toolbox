@@ -2,9 +2,8 @@ name: 🏗️ Deploy Infrastructure
 
 on:
   workflow_call:
-    inputs:
+    secrets:
       subscription-name:
-        type: string
         required: true
 
 jobs:
@@ -17,7 +16,7 @@ jobs:
         with:
           inlineScript: |
             az deployment sub create \
-              --subscription ${{ inputs.subscription-name }} \
+              --subscription ${{ secrets.subscription-name }} \
               --location EastUS \
               --template-file src/infrastructure/resource-group.bicep
 
@@ -31,7 +30,7 @@ jobs:
         with:
           inlineScript: |
             az deployment group create \
-              --subscription ${{ inputs.subscription-name }} \
+              --subscription ${{ secrets.subscription-name }} \
               --resource-group toolbox \
               --template-file src/infrastructure/sql-server.bicep
 
@@ -40,6 +39,6 @@ jobs:
         with:
           inlineScript: |
             az deployment group create \
-              --subscription ${{ inputs.subscription-name }} \
+              --subscription ${{ secrets.subscription-name }} \
               --resource-group toolbox \
               --template-file src/infrastructure/database.bicep
