@@ -2,6 +2,9 @@ name: 🚀 Release Extension
 
 on:
   workflow_call:
+    secrets:
+      marketplace-token:
+        required: true
 
 jobs:
   publish-extension:
@@ -28,7 +31,5 @@ jobs:
           vsce package
 
       - name: 🚀 Publish Extension
-        env:
-          MARKETPLACE_TOKEN: ${{ secrets.MARKETPLACE_TOKEN }}
         run: |
-          vsce publish --pat $MARKETPLACE_TOKEN
+          vsce publish --pat ${{ secrets.marketplace-token }}
