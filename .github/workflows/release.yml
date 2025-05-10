@@ -7,20 +7,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  release-database:
-    name: 🚀 Release Database
-    uses: ./.github/workflows/release.database.yml
-    secrets:
-      azure-sql-connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+  release:
+    name: 🚀 Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💽 Release Database
+        uses: ./.github/workflows/release.database.yml
+        with:
+          azure-sql-connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
 
-  release-extension:
-    needs: release-database
-    name: 🚀 Release Extension
-    uses: ./.github/workflows/release.extension.yml
-    secrets:
-      marketplace-token: ${{ secrets.MARKETPLACE_TOKEN }}
+      - name: 🔌 Release Extension
+        uses: ./.github/workflows/release.extension.yml
+        with:
+          marketplace-token: ${{ secrets.MARKETPLACE_TOKEN }}
 
   create-github-release:
-    needs: release-extension
+    needs: release
     name: 🏷️ Create GitHub Release
     uses: ./.github/workflows/release.github.yml
