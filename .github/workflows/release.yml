@@ -1,16 +1,16 @@
 name: 🚀 Release
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   deploy-infrastructure:
     name: 🏗️ Deploy Infrastructure
     uses: ./.github/workflows/deploy.infrastructure.yml
-    inputs:
+    secrets:
       subscription-name: ${{ secrets.AZURE_SUBSCRIPTION_NAME }}
 
   deploy-services:
