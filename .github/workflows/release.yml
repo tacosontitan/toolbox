@@ -17,6 +17,8 @@ jobs:
     needs: release-database
     name: 🚀 Release Extension
     uses: ./.github/workflows/release.extension.yml
+    secrets:
+      marketplace-token: ${{ secrets.MARKETPLACE_TOKEN }}
 
   create-github-release:
     needs: release-extension
