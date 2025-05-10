@@ -16,9 +16,7 @@ jobs:
 
       - name: 🛠️ Print Secret Value (For Debugging)
         run: |
-          echo "Secret Value: $AZURE_SQL_CONNECTION_STRING"
-        env:
-          AZURE_SQL_CONNECTION_STRING: ${{ secrets.azure-sql-connection-string }}
+          echo "Secret Value: ${{ secrets.azure-sql-connection-string }}"
 
       - name: 🧩 Setup .NET
         uses: actions/setup-dotnet@v4
