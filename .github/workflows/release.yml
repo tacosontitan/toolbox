@@ -13,6 +13,10 @@ jobs:
     secrets:
       azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
       subscription-name: ${{ secrets.AZURE_SUBSCRIPTION_NAME }}
+      sql-server-name: ${{ secrets.SQL_SERVER_NAME }}
+      sql-admin-username: ${{ secrets.SQL_ADMIN_USERNAME }}
+      sql-admin-password: ${{ secrets.SQL_ADMIN_PASSWORD }}
+      sql-database-name: ${{ secrets.SQL_DATABASE_NAME }}
 
   deploy-services:
     needs: deploy-infrastructure
