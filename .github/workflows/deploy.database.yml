@@ -3,6 +3,8 @@ name: 🚀 Release Database
 on:
   workflow_call:
     secrets:
+      azure-credentials:
+        required: true
       azure-sql-connection-string:
         required: true
 
@@ -21,6 +23,11 @@ jobs:
 
       - name: 🏗️ Build Database Project
         run: dotnet build src/database/toolbox.sqlproj
+
+      - name: 🔑 Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.azure-credentials }}
 
       - name: 📦 Publish Database Project
         uses: azure/sql-action@v2
