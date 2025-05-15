@@ -1,4 +1,4 @@
-name: 🚀 Release Extension
+name: 🚀 Deploy Extension
 
 on:
   workflow_call:
@@ -7,8 +7,8 @@ on:
         required: true
 
 jobs:
-  publish-extension:
-    name: 📦 Publish Extension
+  deploy-extension:
+    name: 🚀 Deploy Extension
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout Repository
