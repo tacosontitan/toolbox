@@ -1,0 +1,54 @@
+name: 🚀 Deploy Function App
+
+on:
+  workflow_call:
+    secrets:
+      azure-credentials:
+        required: true
+    inputs:
+      functionAppName:
+        required: true
+        type: string
+      resourceGroup:
+        required: true
+        type: string
+      projectPath:
+        required: true
+        type: string
+
+jobs:
+  deploy-function-app:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: 🎛️ Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: 📦 Restore Dependencies
+      run: dotnet restore ${{ inputs.projectPath }}
+
+    - name: 🏗️ Build Function App
+      run: dotnet publish ${{ inputs.projectPath }} -c Release -o publish_output
+
+    - name: 💻 Setup Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.azure-credentials }}
+
+    - name: 🚀 Deploy Function App
+      run: |
+        az functionapp deployment source config-zip \
+          --name ${{ inputs.functionAppName }} \
+          --resource-group ${{ inputs.resourceGroup }} \
+          --src-path publish_output.zip
+
+    - name: 🔍 Verify Deployment
+      run: |
+        az functionapp show \
+          --name ${{ inputs.functionAppName }} \
+          --resource-group ${{ inputs.resourceGroup }}

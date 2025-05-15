@@ -3,6 +3,8 @@ name: 🚀 Deploy Services
 on:
   workflow_call:
     secrets:
+      azure-credentials:
+        required: true
       azure-sql-connection-string:
         required: true
 
@@ -12,3 +14,13 @@ jobs:
     uses: ./.github/workflows/deploy.database.yml
     secrets:
       azure-sql-connection-string: ${{ secrets.azure-sql-connection-string }}
+
+  deploy-time-function:
+    name: 🚀 Deploy Time Function
+    uses: ./.github/workflows/deploy.function.yml
+    secrets:
+      azure-credentials: ${{ secrets.azure-credentials }}
+    with:
+      projectPath: src/functions/time/time.csproj
+      functionAppName: toolbox-time
+      resourceGroup: toolbox
