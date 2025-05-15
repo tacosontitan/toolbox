@@ -1,4 +1,4 @@
-name: 🚀 Release Database
+name: 🚀 Deploy Database
 
 on:
   workflow_call:
@@ -9,8 +9,8 @@ on:
         required: true
 
 jobs:
-  release-database:
-    name: 🚀 Release Database
+  deploy-database:
+    name: 🚀 Deploy Database
     runs-on: windows-latest
     steps:
       - name: 📥 Checkout Repository
