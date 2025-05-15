@@ -87,7 +87,7 @@ export class CreateDefaultTasksCommand
 				const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItemNumber, areaPath, iterationPath);
 				let completed = 0;
 				for (const task of DefaultTasks) {
-					progress.report({ message: `Creating '${task.name}' (${++completed}/${DefaultTasks.length})` });
+					progress.report({ message: `Creating '${task.Title}' (${++completed}/${DefaultTasks.length})` });
 					try {
 						const patchDocument = taskMapper.map(task);
 						const createdTask = await workItemTrackingClient.createWorkItem(
@@ -97,10 +97,10 @@ export class CreateDefaultTasksCommand
 							'Task'
 						);
 
-						assistant.writeLine(`Created task '${task.name}' with ID ${createdTask.id} under work item #${workItemNumber}.`);
+						assistant.writeLine(`Created task '${task.Title}' with ID ${createdTask.id} under work item #${workItemNumber}.`);
 					} catch (error) {
 						const errorMessage = (error as Error).message;
-						assistant.writeLine(`Failed to create task '${task.name}': ${errorMessage}`);
+						assistant.writeLine(`Failed to create task '${task.Title}': ${errorMessage}`);
 					}
 				}
 
