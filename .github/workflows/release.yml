@@ -29,7 +29,7 @@ jobs:
   release-extension:
     needs: deploy-services
     name: 🎁 Release Extension
-    uses: ./.github/workflows/release.extension.yml
+    uses: ./.github/workflows/deploy.extension.yml
     secrets:
       marketplace-token: ${{ secrets.MARKETPLACE_TOKEN }}
 
