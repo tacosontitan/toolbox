@@ -59,7 +59,12 @@ export class PreDefinedTaskJsonPatchDocumentMapper
                         comment: 'Task created by Hazel\'s Toolbox',
                     },
                 },
-            }
+            },
+            {
+                op: Operation.Add,
+                path: '/fields/Microsoft.VSTS.Common.Activity',
+                value: input.activity,
+            },
         ];
 
         if (input.assigneeRequired) {
