@@ -5,7 +5,6 @@ import { PreDefinedTask } from "./pre-defined-tasks/pre-defined-task";
  * Defines the default tasks used to execute a work item in an Agile workflow.
  */
 export const DefaultTasks: PreDefinedTask[] = [
-    PreDefinedTasks.ReviewPreDefinedTasks,
     PreDefinedTasks.ReviewWorkItem,
     PreDefinedTasks.ReproduceLocally,
     PreDefinedTasks.ReviewExistingImplementations,
