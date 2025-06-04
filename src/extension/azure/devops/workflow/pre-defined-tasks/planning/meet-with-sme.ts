@@ -10,5 +10,6 @@ export const MeetWithSme: PreDefinedTask = {
     assigneeRequired: true,
     name: 'Meet with Subject Matter Expert',
     activity: 'Requirements',
-    description: 'Meet with the noted subject matter expert to discuss the work item\'s implementation.'
+    description: 'Meet with the noted subject matter expert to discuss the work item\'s implementation.',
+    requiredFields: [ 'Subject Matter Expert' ]
 };

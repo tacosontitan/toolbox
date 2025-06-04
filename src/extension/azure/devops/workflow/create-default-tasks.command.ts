@@ -88,7 +88,8 @@ export class CreateDefaultTasksCommand
 			return;
 		}
 
-
+		const parentWorkItem = await workItemTrackingClient.getWorkItem(workItemNumber);
+		const workItemFields = parentWorkItem.fields || {}; // Extract fields for easier access
 
 		await vscode.window.withProgress(
 			{
@@ -100,7 +101,13 @@ export class CreateDefaultTasksCommand
 				assistant.writeLine(`Creating default tasks for work item #${workItemNumber} in project '${projectName}'.`);
 				const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItemNumber, areaPath, iterationPath);
 				let completed = 0;
+
 				for (const task of DefaultTasks) {
+					if (task.requiredFields && !task.requiredFields.every(field => workItemFields[field] !== undefined && workItemFields[field] !== null && workItemFields[field] !== '')) {
+						assistant.writeLine(`Skipping task '${task.name}' as one or more required fields are missing or empty.`);
+						continue;
+					}
+
 					progress.report({ message: `Creating '${task.name}' (${++completed}/${DefaultTasks.length})` });
 					try {
 						const patchDocument = taskMapper.map(task);
