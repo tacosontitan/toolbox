@@ -10,5 +10,6 @@ export const NotifyStakeholdersOfDeployment: PreDefinedTask = {
     assigneeRequired: true,
     name: 'Notify Stakeholders of Deployment',
     activity: 'Requirements',
-    description: 'Notify stakeholders about the deployment to production and its status.'
+    description: 'Notify stakeholders about the deployment to production and its status.',
+    requiredFields: [ 'Stakeholder' ]
 };

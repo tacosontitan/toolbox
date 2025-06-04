@@ -10,5 +10,6 @@ export const MeetWithStakeholders: PreDefinedTask = {
     assigneeRequired: true,
     name: 'Meet with Stakeholders',
     activity: 'Requirements',
-    description: 'Meet with stakeholders to gather feedback and ensure the work item aligns with their expectations.'
+    description: 'Meet with stakeholders to gather feedback and ensure the work item aligns with their expectations.',
+    requiredFields: [ 'Stakeholder' ]
 };
