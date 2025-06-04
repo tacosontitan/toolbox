@@ -19,6 +19,26 @@ export interface IAssistant {
 	 * Shows the output channel to the user.
 	 */
 	showOutputChannel(): void;
+
+	/**
+	 * Prompts the user for input.
+	 * @param prompt The message to display to the user.
+	 * @returns A promise that resolves to the user's input.
+	 */
+	promptUser(prompt: string): Promise<string | undefined>;
+
+	/**
+	 * Logs a message to the output channel.
+	 * @param message The message to log.
+	 */
+	log(message: string): void;
+
+	/**
+	 * Prompts the user for confirmation.
+	 * @param message The message to display to the user.
+	 * @returns A promise that resolves to the user's confirmation.
+	 */
+	confirmUser(message: string): Promise<boolean>;
 }
 
 /**
@@ -48,5 +68,26 @@ export class RuntimeAssistant implements IAssistant {
 	/** @inheritdoc */
 	showOutputChannel(): void {
 		this.outputChannel.show();
+	}
+
+	/** @inheritdoc */
+	promptUser(prompt: string): Promise<string | undefined> {
+		return new Promise((resolve) => {
+			vscode.window.showInputBox({ prompt }).then(resolve);
+		});
+	}
+
+	/** @inheritdoc */
+	log(message: string): void {
+		this.writeLine(message);
+	}
+
+	/** @inheritdoc */
+	confirmUser(message: string): Promise<boolean> {
+		return new Promise((resolve) => {
+			vscode.window.showQuickPick(['Yes', 'No'], { placeHolder: message }).then((selection) => {
+				resolve(selection === 'Yes');
+			});
+		});
 	}
 }
