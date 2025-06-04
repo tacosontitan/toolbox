@@ -3,6 +3,7 @@ export * from './planning/create-implementation-tasks';
 export * from './planning/meet-with-feature-leader';
 export * from './planning/meet-with-product-owners';
 export * from './planning/meet-with-qa';
+export * from './planning/meet-with-sme';
 export * from './planning/meet-with-stakeholders';
 export * from './planning/reproduce-locally';
 export * from './planning/review-existing-implementations';
@@ -28,3 +29,4 @@ export * from './review/publish-pr';
 export * from './review/resolve-pr-feedback';
 export * from './review/run-pr-validations';
 export * from './review/self-review-pr';
+

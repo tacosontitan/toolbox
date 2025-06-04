@@ -9,6 +9,7 @@ export const DefaultTasks: PreDefinedTask[] = [
     PreDefinedTasks.ReproduceLocally,
     PreDefinedTasks.ReviewExistingImplementations,
     PreDefinedTasks.MeetWithFeatureLeader,
+    PreDefinedTasks.MeetWithSme,
     PreDefinedTasks.MeetWithProductOwners,
     PreDefinedTasks.MeetWithStakeholders,
     PreDefinedTasks.MeetWithQualityAssurance,
