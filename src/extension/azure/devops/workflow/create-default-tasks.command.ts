@@ -68,6 +68,18 @@ export class CreateDefaultTasksCommand
 		let iterationPath: string | undefined;
 		try {
 			const parentWorkItem = await workItemTrackingClient.getWorkItem(workItemNumber);
+			const workItemTitle = parentWorkItem.fields?.['System.Title'] as string;
+			const confirmation = await vscode.window.showInformationMessage(
+				`Are you sure you want to create default tasks for work item #${workItemNumber} (${workItemTitle})?`,
+				'Yes',
+				'No'
+			);
+
+			if (confirmation !== 'Yes') {
+				assistant.writeLine(`User cancelled the operation to create default tasks for work item #${workItemNumber}.`);
+				return;
+			}
+
 			areaPath = parentWorkItem.fields?.['System.AreaPath'] as string;
 			iterationPath = parentWorkItem.fields?.['System.IterationPath'] as string;
 		} catch (error) {
@@ -75,6 +87,8 @@ export class CreateDefaultTasksCommand
 			assistant.writeLine(`Failed to retrieve parent work item #${workItemNumber}: ${(error as Error).message}`);
 			return;
 		}
+
+
 
 		await vscode.window.withProgress(
 			{
