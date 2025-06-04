@@ -7,7 +7,7 @@ export class WorkItemType {
 	 * @example "Bug"
 	 */
 	public name: string;
-	
+
 	/**
 	 * Creates a new work item type instance with the specified name.
 	 * @param name The name of the work item type.
@@ -15,14 +15,23 @@ export class WorkItemType {
 	constructor(name: string) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Represents the "task" work item type.
 	 */
 	public static Bug = new WorkItemType('Bug');
-	
+
 	/**
 	 * Represents the "user story" work item type.
 	 */
 	public static UserStory = new WorkItemType('User Story');
+}
+
+/**
+ * Represents a work item in Azure DevOps.
+ */
+export interface IWorkItem {
+    id: number;
+    title: string;
+    state: string;
 }
