@@ -7,6 +7,7 @@ export * from './planning/meet-with-sme';
 export * from './planning/meet-with-stakeholders';
 export * from './planning/reproduce-locally';
 export * from './planning/review-existing-implementations';
+export * from './planning/review-feature';
 export * from './planning/review-work-item';
 export * from './quality-assurance/create-qa-build';
 export * from './quality-assurance/dev-review-test-cases';
