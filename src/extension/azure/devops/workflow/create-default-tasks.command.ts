@@ -103,17 +103,17 @@ export class CreateDefaultTasksCommand
 						assistant.writeLine(`Failed to create task '${task.name}': ${errorMessage}`);
 					}
 				}
-
-				const action = await vscode.window.showInformationMessage(
-					`Default tasks created for work item #${workItemNumber}.`,
-					'Show Output'
-				);
-
-				if (action === 'Show Output' && typeof assistant.showOutputChannel === 'function') {
-					assistant.showOutputChannel();
-				}
 			}
 		);
+
+		const action = await vscode.window.showInformationMessage(
+			`Default tasks created for work item #${workItemNumber}.`,
+			'Show Output'
+		);
+
+		if (action === 'Show Output' && typeof assistant.showOutputChannel === 'function') {
+			assistant.showOutputChannel();
+		}
 
 		return Promise.resolve();
 	}
