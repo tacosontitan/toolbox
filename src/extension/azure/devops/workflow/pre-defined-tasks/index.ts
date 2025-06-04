@@ -1,11 +1,11 @@
 export * from './development/setup-environment';
 export * from './planning/create-implementation-tasks';
+export * from './planning/meet-with-feature-leader';
 export * from './planning/meet-with-product-owners';
 export * from './planning/meet-with-qa';
 export * from './planning/meet-with-stakeholders';
 export * from './planning/reproduce-locally';
 export * from './planning/review-existing-implementations';
-export * from './planning/review-pre-defined-tasks';
 export * from './planning/review-work-item';
 export * from './quality-assurance/create-qa-build';
 export * from './quality-assurance/dev-review-test-cases';
@@ -28,4 +28,3 @@ export * from './review/publish-pr';
 export * from './review/resolve-pr-feedback';
 export * from './review/run-pr-validations';
 export * from './review/self-review-pr';
-
