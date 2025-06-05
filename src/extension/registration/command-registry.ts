@@ -1,9 +1,10 @@
-import { Command } from "../command";
 import * as vscode from 'vscode';
-import { IRegistrar } from "./registrar";
-import { AzureRegistrar } from "../azure/azure.registrar";
-import { CommandProvider } from "./command-provider";
 import { IAssistant, RuntimeAssistant } from "../assistant";
+import { AzureRegistrar } from "../azure/azure.registrar";
+import { Command } from "../command";
+import { GitService } from "../source-control/git/git.service";
+import { CommandProvider } from "./command-provider";
+import { IRegistrar } from "./registrar";
 
 /**
  * Registry for all commands in the extension.
@@ -20,7 +21,8 @@ export class CommandRegistry {
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
 	public static registerCommands(context: vscode.ExtensionContext) {
-		const assistant = new RuntimeAssistant(context);
+		const sourceControlService = new GitService();
+		const assistant = new RuntimeAssistant(sourceControlService, context);
 		const commandProvider = new CommandProvider();
 		for (const registrar of CommandRegistry.registrars) {
 			registrar.registerCommands(commandProvider);
