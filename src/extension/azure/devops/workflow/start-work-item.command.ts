@@ -1,5 +1,4 @@
 import { IAssistant } from "../../../assistant";
-import { GitHelper } from "../../../utils/git-helper";
 import { DevOpsCommand } from "../devops-command";
 import { IWorkItem } from "../work-item-type";
 
@@ -33,29 +32,16 @@ export class StartWorkItemCommand
         await this.changeWorkItemState(workItem, "Planning");
 
         // Step 6: Create a new branch for the work item
-        const branchName = `feature/${workItemNumber}-${workItem.title.replace(/\s+/g, '-').toLowerCase()}`;
-        const gitHelper = new GitHelper();
-
         try {
-            // 6a: Switch to the main branch and pull latest changes
-            await gitHelper.checkoutBranch("main");
-            await gitHelper.pullLatestChanges();
-
-            // 6b: Stash any changes
-            await gitHelper.stashChanges();
-
-            // 6: Create and switch to the new branch
-            await gitHelper.createBranch(branchName);
-
-            // 6c: Pop the stashed changes
-            await gitHelper.popStashedChanges();
-
-            // 6d: Publish the new branch
-            await gitHelper.publishBranch(branchName);
-
+            const branchName = `feature/${workItemNumber}-${workItem.title.replace(/\s+/g, '-').toLowerCase()}`;
+            await assistant.sourceControl.createBranchFromMain(branchName);
             assistant.log(`Branch '${branchName}' created and published successfully.`);
         } catch (error) {
-            assistant.log(`Error during branch creation: ${error.message}`);
+            if (error instanceof Error) {
+                assistant.log(`Error during branch creation: ${error.message}`);
+            } else {
+                assistant.log("An unknown error occurred during branch creation.");
+            }
         }
     }
 
