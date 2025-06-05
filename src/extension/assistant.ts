@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { ISourceControlService } from './source-control/source-control.service';
 
 /**
  * Defines members for handling non-functional requirements of the extension.
@@ -8,6 +9,12 @@ export interface IAssistant {
 	 * The extension context provided by Visual Studio Code.
 	 */
 	get extensionContext(): vscode.ExtensionContext;
+
+	/**
+	 * Gets the service for managing source control operations.
+	 * @returns The source control service instance.
+	 */
+	get sourceControl(): ISourceControlService;
 
 	/**
 	 * Writes a message to the output channel.
@@ -51,8 +58,15 @@ export class RuntimeAssistant implements IAssistant {
 	 * Creates a new {@link RuntimeAssistant} instance.
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
-	constructor(private readonly context: vscode.ExtensionContext) {
+	constructor(
+		private readonly sourceControlService: ISourceControlService,
+		private readonly context: vscode.ExtensionContext) {
 		this.outputChannel = vscode.window.createOutputChannel("Hazel's Toolbox");
+	}
+
+	/** @inheritdoc */
+	get sourceControl(): ISourceControlService {
+		return this.sourceControlService;
 	}
 
 	/** @inheritdoc */
