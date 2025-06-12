@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import { ISourceControlService } from './source-control/source-control.service';
+import { ILogger } from './telemetry';
 
 /**
  * Defines members for handling non-functional requirements of the extension.
@@ -10,15 +12,30 @@ export interface IAssistant {
 	get extensionContext(): vscode.ExtensionContext;
 
 	/**
-	 * Writes a message to the output channel.
-	 * @param message The message to write to the output channel.
+	 * Gets the service for managing source control operations.
+	 * @returns The source control service instance.
 	 */
-	writeLine(message: string): void;
+	get sourceControl(): ISourceControlService;
 
 	/**
-	 * Shows the output channel to the user.
+	 * Gets the logger for the extension.
+	 * @returns The logger instance.
 	 */
-	showOutputChannel(): void;
+	get logger(): ILogger;
+
+	/**
+	 * Prompts the user for input.
+	 * @param prompt The message to display to the user.
+	 * @returns A promise that resolves to the user's input.
+	 */
+	promptUser(prompt: string): Promise<string | undefined>;
+
+	/**
+	 * Prompts the user for confirmation.
+	 * @param message The message to display to the user.
+	 * @returns A promise that resolves to the user's confirmation.
+	 */
+	confirmUser(message: string): Promise<boolean>;
 }
 
 /**
@@ -28,11 +45,24 @@ export class RuntimeAssistant implements IAssistant {
 	private outputChannel: vscode.OutputChannel;
 
 	/**
-	 * Creates a new {@link RuntimeAssistant} instance.
+	 * Creates a new {@link IAssistant} instance.
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
-	constructor(private readonly context: vscode.ExtensionContext) {
+	constructor(
+		private readonly loggerService: ILogger,
+		private readonly sourceControlService: ISourceControlService,
+		private readonly context: vscode.ExtensionContext) {
 		this.outputChannel = vscode.window.createOutputChannel("Hazel's Toolbox");
+	}
+
+	/** @inheritdoc */
+	get logger(): ILogger {
+		return this.loggerService;
+	}
+
+	/** @inheritdoc */
+	get sourceControl(): ISourceControlService {
+		return this.sourceControlService;
 	}
 
 	/** @inheritdoc */
@@ -41,12 +71,18 @@ export class RuntimeAssistant implements IAssistant {
 	}
 
 	/** @inheritdoc */
-	writeLine(message: string): void {
-		this.outputChannel.appendLine(message);
+	promptUser(prompt: string): Promise<string | undefined> {
+		return new Promise((resolve) => {
+			vscode.window.showInputBox({ prompt }).then(resolve);
+		});
 	}
 
 	/** @inheritdoc */
-	showOutputChannel(): void {
-		this.outputChannel.show();
+	confirmUser(message: string): Promise<boolean> {
+		return new Promise((resolve) => {
+			vscode.window.showQuickPick(['Yes', 'No'], { placeHolder: message }).then((selection) => {
+				resolve(selection === 'Yes');
+			});
+		});
 	}
 }
