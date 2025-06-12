@@ -1,4 +1,4 @@
-import { TransactionalService } from "../../transactional-service";
+import { TransactionalService } from "../../workflow/transactional-service";
 import { ISourceControlService } from "../source-control.service";
 import { ChangeBranchTransaction } from "./transactions/branch.change.transaction";
 import { CreateBranchTransaction } from "./transactions/branch.create.transaction";

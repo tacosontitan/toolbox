@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { ITransaction } from "../../../transaction";
+import { ITransaction } from "../../../workflow/transaction";
 
 /**
  * Represents a transaction that executes git commands in the terminal.
