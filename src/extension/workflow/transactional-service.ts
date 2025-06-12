@@ -1,19 +1,24 @@
-import { ITransaction } from "./transaction";
+import { IAssistant } from "../assistant";
+import { Transaction } from "./transaction";
 
 export abstract class TransactionalService {
-    protected executeTransactions(transactions: ITransaction[]): Promise<void> {
+    constructor(
+        private readonly assistant: IAssistant)
+    { }
+
+    protected executeTransactions(transactions: Transaction[]): Promise<void> {
         return new Promise(async (resolve, reject) => {
-            let completedTransactions: ITransaction[] = [];
+            let completedTransactions: Transaction[] = [];
             try {
                 for (const transaction of transactions) {
-                    await transaction.commit();
+                    await transaction.commit(this.assistant);
                     completedTransactions.push(transaction);
                 }
                 resolve();
             } catch (error) {
                 const transactionsToRollback = completedTransactions.reverse();
                 for (const completedTransaction of transactionsToRollback) {
-                    await completedTransaction.rollback();
+                    await completedTransaction.rollback(this.assistant);
                 }
                 reject(new Error(`Transaction failed: ${(error as Error).message}`));
             }

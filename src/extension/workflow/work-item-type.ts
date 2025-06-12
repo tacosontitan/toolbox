@@ -26,12 +26,3 @@ export class WorkItemType {
 	 */
 	public static UserStory = new WorkItemType('User Story');
 }
-
-/**
- * Represents a work item in Azure DevOps.
- */
-export interface IWorkItem {
-    id: number;
-    title: string;
-    state: string;
-}
