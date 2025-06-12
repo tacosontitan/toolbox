@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { ISourceControlService } from './source-control/source-control.service';
+import { ILogger } from './telemetry';
 
 /**
  * Defines members for handling non-functional requirements of the extension.
@@ -17,15 +18,10 @@ export interface IAssistant {
 	get sourceControl(): ISourceControlService;
 
 	/**
-	 * Writes a message to the output channel.
-	 * @param message The message to write to the output channel.
+	 * Gets the logger for the extension.
+	 * @returns The logger instance.
 	 */
-	writeLine(message: string): void;
-
-	/**
-	 * Shows the output channel to the user.
-	 */
-	showOutputChannel(): void;
+	get logger(): ILogger;
 
 	/**
 	 * Prompts the user for input.
@@ -33,12 +29,6 @@ export interface IAssistant {
 	 * @returns A promise that resolves to the user's input.
 	 */
 	promptUser(prompt: string): Promise<string | undefined>;
-
-	/**
-	 * Logs a message to the output channel.
-	 * @param message The message to log.
-	 */
-	log(message: string): void;
 
 	/**
 	 * Prompts the user for confirmation.
@@ -55,13 +45,19 @@ export class RuntimeAssistant implements IAssistant {
 	private outputChannel: vscode.OutputChannel;
 
 	/**
-	 * Creates a new {@link RuntimeAssistant} instance.
+	 * Creates a new {@link IAssistant} instance.
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
 	constructor(
+		private readonly loggerService: ILogger,
 		private readonly sourceControlService: ISourceControlService,
 		private readonly context: vscode.ExtensionContext) {
 		this.outputChannel = vscode.window.createOutputChannel("Hazel's Toolbox");
+	}
+
+	/** @inheritdoc */
+	get logger(): ILogger {
+		return this.loggerService;
 	}
 
 	/** @inheritdoc */
@@ -75,25 +71,10 @@ export class RuntimeAssistant implements IAssistant {
 	}
 
 	/** @inheritdoc */
-	writeLine(message: string): void {
-		this.outputChannel.appendLine(message);
-	}
-
-	/** @inheritdoc */
-	showOutputChannel(): void {
-		this.outputChannel.show();
-	}
-
-	/** @inheritdoc */
 	promptUser(prompt: string): Promise<string | undefined> {
 		return new Promise((resolve) => {
 			vscode.window.showInputBox({ prompt }).then(resolve);
 		});
-	}
-
-	/** @inheritdoc */
-	log(message: string): void {
-		this.writeLine(message);
 	}
 
 	/** @inheritdoc */
