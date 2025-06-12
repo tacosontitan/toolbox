@@ -1,4 +1,5 @@
 import { IAssistant } from "../../../assistant";
+import { LogLevel } from "../../../telemetry";
 import { DevOpsCommand } from "../devops-command";
 import { IWorkItem } from "../work-item-type";
 
@@ -10,21 +11,21 @@ export class StartWorkItemCommand
         // Step 1: Prompt the user for the work item number
         const workItemNumber = await assistant.promptUser("Enter the work item number:");
         if (!workItemNumber) {
-            assistant.log("No work item number provided. Exiting.");
+            assistant.logger.log(LogLevel.Warning, "No work item number provided. Exiting.");
             return;
         }
 
         // Step 2: Load the work item details
         const workItem: IWorkItem | null = await this.loadWorkItemDetails(workItemNumber);
         if (!workItem) {
-            assistant.log(`Work item #${workItemNumber} not found. Exiting."`);
+            assistant.logger.log(LogLevel.Error, `Work item #${workItemNumber} not found. Exiting."`);
             return;
         }
 
         // Step 3: Confirm with the user
         const confirm = await assistant.confirmUser(`Do you want to start work item #${workItemNumber} - ${workItem.title}?`);
         if (!confirm) {
-            assistant.log("User declined to start the work item. Exiting.");
+            assistant.logger.log(LogLevel.Warning, "User declined to start the work item. Exiting.");
             return;
         }
 
@@ -35,12 +36,12 @@ export class StartWorkItemCommand
         try {
             const branchName = `feature/${workItemNumber}-${workItem.title.replace(/\s+/g, '-').toLowerCase()}`;
             await assistant.sourceControl.createBranchFromMain(branchName);
-            assistant.log(`Branch '${branchName}' created and published successfully.`);
+            assistant.logger.log(LogLevel.Information, `Branch '${branchName}' created and published successfully.`);
         } catch (error) {
             if (error instanceof Error) {
-                assistant.log(`Error during branch creation: ${error.message}`);
+                assistant.logger.log(LogLevel.Error, `Error during branch creation: ${error.message}`);
             } else {
-                assistant.log("An unknown error occurred during branch creation.");
+                assistant.logger.log(LogLevel.Error, "An unknown error occurred during branch creation.");
             }
         }
     }

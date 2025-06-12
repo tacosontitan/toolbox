@@ -3,6 +3,7 @@ import { IAssistant, RuntimeAssistant } from "../assistant";
 import { AzureRegistrar } from "../azure/azure.registrar";
 import { Command } from "../command";
 import { GitService } from "../source-control/git/git.service";
+import { OutputLogger } from '../telemetry';
 import { CommandProvider } from "./command-provider";
 import { IRegistrar } from "./registrar";
 
@@ -21,8 +22,9 @@ export class CommandRegistry {
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
 	public static registerCommands(context: vscode.ExtensionContext) {
+		const logger = new OutputLogger("Hazel's Toolbox");
 		const sourceControlService = new GitService();
-		const assistant = new RuntimeAssistant(sourceControlService, context);
+		const assistant = new RuntimeAssistant(logger, sourceControlService, context);
 		const commandProvider = new CommandProvider();
 		for (const registrar of CommandRegistry.registrars) {
 			registrar.registerCommands(commandProvider);
