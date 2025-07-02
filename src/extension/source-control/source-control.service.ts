@@ -1,7 +1,7 @@
 /**
  * Defines members for handling source control operations in the extension.
  */
-export interface ISourceControlService {
+export abstract class ISourceControlService {
     /**
      * Creates a new branch from the main branch and optionally stashes changes.
      *
@@ -16,5 +16,5 @@ export interface ISourceControlService {
      * @param applyStashAfterChange Whether to apply the stashed changes after creating the branch.
      * @returns A promise that resolves when the branch is created.
      */
-    createBranchFromMain(branchName: string, stashChanges?: boolean, applyStashAfterChange?: boolean): Promise<void>;
+    abstract createBranchFromMain(branchName: string, stashChanges?: boolean, applyStashAfterChange?: boolean): Promise<void>;
 }

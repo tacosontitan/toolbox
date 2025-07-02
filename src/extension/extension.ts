@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import { IAssistant, RuntimeAssistant } from './assistant';
 import { IServiceCollection, ServiceContainer } from './dependency-injection';
 import { CommandRegistry } from './registration/command-registry';
+import { GitService } from './source-control/git/git.service';
+import { ISourceControlService } from './source-control/source-control.service';
 import { ILogger, OutputLogger } from './telemetry';
 
 /**
@@ -20,4 +22,5 @@ export function activate(context: vscode.ExtensionContext) {
 function registerServices(services: IServiceCollection) {
 	services.addScoped(ILogger, OutputLogger);
 	services.addScoped(IAssistant, RuntimeAssistant);
+	services.addSingleton(ISourceControlService, GitService);
 }
