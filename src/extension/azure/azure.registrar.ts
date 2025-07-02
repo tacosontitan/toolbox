@@ -1,3 +1,4 @@
+import { IServiceProvider } from "../dependency-injection";
 import { ICommandProvider } from "../registration/command-provider";
 import { IRegistrar } from "../registration/registrar";
 import { DevOpsRegistrar } from "./devops/devops.registrar";
@@ -10,11 +11,11 @@ export class AzureRegistrar
 	private readonly children: IRegistrar[] = [
 		new DevOpsRegistrar()
 	];
-	
+
 	/** @inheritdoc */
-	public registerCommands(commands: ICommandProvider): void {
+	public registerCommands(serviceProvider: IServiceProvider, commands: ICommandProvider): void {
 		for (const child of this.children) {
-			child.registerCommands(commands);
+			child.registerCommands(serviceProvider, commands);
 		}
 	}
 }

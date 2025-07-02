@@ -47,7 +47,6 @@ export class WorkItem {
     public additionalFields: { [key: string]: any } = {};
 
     /**
-     * Creates a new work item instance with the specified details.
      * @param title The title of the work item.
      * @param description The description of the work item.
      * @param remainingWork The number of hours the work item is estimated to take.

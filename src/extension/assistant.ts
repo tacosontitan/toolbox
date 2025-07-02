@@ -5,37 +5,37 @@ import { ILogger } from './telemetry';
 /**
  * Defines members for handling non-functional requirements of the extension.
  */
-export interface IAssistant {
+export abstract class IAssistant {
 	/**
 	 * The extension context provided by Visual Studio Code.
 	 */
-	get extensionContext(): vscode.ExtensionContext;
+	abstract get extensionContext(): vscode.ExtensionContext;
 
 	/**
 	 * Gets the service for managing source control operations.
 	 * @returns The source control service instance.
 	 */
-	get sourceControl(): ISourceControlService;
+	abstract get sourceControl(): ISourceControlService;
 
 	/**
 	 * Gets the logger for the extension.
 	 * @returns The logger instance.
 	 */
-	get logger(): ILogger;
+	abstract get logger(): ILogger;
 
 	/**
 	 * Prompts the user for input.
 	 * @param prompt The message to display to the user.
 	 * @returns A promise that resolves to the user's input.
 	 */
-	promptUser(prompt: string): Promise<string | undefined>;
+	abstract promptUser(prompt: string): Promise<string | undefined>;
 
 	/**
 	 * Prompts the user for confirmation.
 	 * @param message The message to display to the user.
 	 * @returns A promise that resolves to the user's confirmation.
 	 */
-	confirmUser(message: string): Promise<boolean>;
+	abstract confirmUser(message: string): Promise<boolean>;
 }
 
 /**
