@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 import { LogLevel } from './log-level';
 import { ILogger } from "./logger";
 
+/**
+ * Represents a logger that writes messages to a Visual Studio Code output channel.
+ */
 export class OutputLogger implements ILogger {
     private outputChannel: vscode.OutputChannel;
 

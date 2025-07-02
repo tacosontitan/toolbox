@@ -10,12 +10,16 @@ import { AzureCommand } from "../azure-command";
 export abstract class DevOpsCommand
 	extends AzureCommand {
 
+	protected readonly assistant: IAssistant;
+
 	/**
 	 * Creates a new {@link DevOpsCommand} with the specified ID.
 	 * @param id The unique identifier for the command.
+	 * @param logger The logger to use for logging messages.
 	 */
-	protected constructor(id: string) {
+	protected constructor(id: string, assistant: IAssistant) {
 		super(`devops.${id}`);
+		this.assistant = assistant;
 	}
 
 	/**
@@ -23,9 +27,9 @@ export abstract class DevOpsCommand
 	 * @returns The personal access token if configured; otherwise, null.
 	 * @remarks If the PAT is not configured, an error message is displayed to the user, and null is returned.
 	 */
-	protected async getPersonalAccessToken(assistant: IAssistant): Promise<string | null> {
+	protected async getPersonalAccessToken(): Promise<string | null> {
 		const personalAccessTokenSecretId = "tacosontitan.toolbox.azure.devops.personalAccessToken";
-		let personalAccessToken = await assistant.extensionContext.secrets.get(personalAccessTokenSecretId);
+		let personalAccessToken = await this.assistant.extensionContext.secrets.get(personalAccessTokenSecretId);
 		let tokenIsValid = await this.determineIfPersonalAccessTokenIsValid(personalAccessToken);
 		if (personalAccessToken && tokenIsValid) {
 			return personalAccessToken;
@@ -41,7 +45,7 @@ export abstract class DevOpsCommand
 			return null;
 		}
 
-		await assistant.extensionContext.secrets.store(personalAccessTokenSecretId, personalAccessToken);
+		await this.assistant.extensionContext.secrets.store(personalAccessTokenSecretId, personalAccessToken);
 		return personalAccessToken;
 	}
 
