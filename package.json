@@ -3,7 +3,7 @@
   "displayName": "Hazel's Toolbox",
   "description": "Just a collection of tools created by and for Hazel to just do her job on a day-to-day basis.",
   "publisher": "tacosontitan",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "engines": {
     "vscode": "^1.98.0"
   },
