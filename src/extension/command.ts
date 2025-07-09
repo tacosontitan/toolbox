@@ -1,22 +1,27 @@
 
-import { IAssistant } from './assistant';
 import { IServiceProvider } from './dependency-injection';
+import { ILogger } from './telemetry';
 
 /**
  * Represents a command that can be executed within the Visual Studio Code extension.
  */
 export abstract class Command {
+
 	/**
-	 * The assistant instance that provides context and functionality for the command.
+	 * The logger service used for recording diagnostic information.
 	 */
-	private _assistant: IAssistant | undefined;
+	protected logger: ILogger;
 
 	/**
 	 * Creates a new command instance with the specified identifier.
 	 * @param id The unique identifier for the command.
 	 */
-	constructor(id: string) {
+	constructor(
+		id: string,
+		serviceProvider: IServiceProvider
+	) {
 		this.id = `tacosontitan.toolbox.${id}`;
+		this.logger = serviceProvider.getRequiredService(ILogger);
 	}
 
 	/**
@@ -25,27 +30,8 @@ export abstract class Command {
 	public id: string;
 
 	/**
-	 * Gets the assistant instance associated with this command.
-	 */
-	public get assistant(): IAssistant {
-		if (!this._assistant) {
-			throw new Error(`Assistant is not set for command ${this.id}.`);
-		}
-
-		return this._assistant;
-	}
-
-	public execute(serviceProvider: IServiceProvider, ...args: any[]): Promise<void> {
-		if (!this._assistant) {
-			this._assistant = serviceProvider.getRequiredService(IAssistant);
-		}
-
-		return this.executeCommand(...args);
-	}
-
-	/**
 	 * Executes the command.
 	 * @param args The arguments to pass to the command.
 	 */
-	protected abstract executeCommand(...args: any[]): Promise<void>;
+	protected abstract execute(): Promise<void>;
 }
