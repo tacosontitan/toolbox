@@ -11,7 +11,7 @@ import { ILogger, OutputLogger } from './telemetry';
  * @param context The extension context provided by VS Code.
  */
 export function activate(context: vscode.ExtensionContext) {
-	ServiceContainer.configure(registerServices);
+	ServiceContainer.configure(configureServices);
 	CommandRegistry.registerCommands(context);
 }
 
@@ -19,8 +19,9 @@ export function activate(context: vscode.ExtensionContext) {
  * Registers services with the dependency injection container.
  * @param services The service collection to register services with.
  */
-function registerServices(services: IServiceCollection) {
+function configureServices(services: IServiceCollection) {
 	services.addScoped(ILogger, OutputLogger);
 	services.addScoped(IAssistant, RuntimeAssistant);
 	services.addSingleton(ISourceControlService, GitService);
+
 }

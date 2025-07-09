@@ -12,12 +12,6 @@ export abstract class IAssistant {
 	abstract get extensionContext(): vscode.ExtensionContext;
 
 	/**
-	 * Gets the service for managing source control operations.
-	 * @returns The source control service instance.
-	 */
-	abstract get sourceControl(): ISourceControlService;
-
-	/**
 	 * Gets the logger for the extension.
 	 * @returns The logger instance.
 	 */
