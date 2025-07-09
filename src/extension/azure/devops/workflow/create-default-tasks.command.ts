@@ -3,7 +3,6 @@ import * as vscode from 'vscode';
 
 import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
-import { IAssistant } from '../../../assistant';
 import { IServiceProvider } from "../../../dependency-injection";
 import { LogLevel } from "../../../telemetry";
 import { DevOpsCommand } from '../devops-command';
@@ -20,8 +19,7 @@ export class CreateDefaultTasksCommand
 	 * Creates a new {@link CreateDefaultTasksCommand} instance.
 	 */
 	constructor(serviceProvider: IServiceProvider) {
-		const assistant = serviceProvider.getRequiredService(IAssistant);
-		super('createDefaultTasks', assistant);
+		super('createDefaultTasks', serviceProvider);
 	}
 
 	/** @inheritdoc */
@@ -29,28 +27,28 @@ export class CreateDefaultTasksCommand
 		const personalAccessToken = await this.getPersonalAccessToken();
 		if (!personalAccessToken) {
 			vscode.window.showErrorMessage('This command requires a personal access token (PAT) to be configured.');
-			this.assistant.logger.log(LogLevel.Error, 'Personal access token (PAT) is not configured. Please set it in the configuration.');
+			this.logger.log(LogLevel.Error, 'Personal access token (PAT) is not configured. Please set it in the configuration.');
 			return;
 		}
 
-		const organizationUri = this.getOrganizationUri();
+		const organizationUri = await this.getOrganizationUri();
 		if (!organizationUri) {
 			vscode.window.showErrorMessage('This command requires an Azure DevOps organization to be configured.');
-			this.assistant.logger.log(LogLevel.Error, 'Azure DevOps organization is not configured. Please set it in the configuration.');
+			this.logger.log(LogLevel.Error, 'Azure DevOps organization is not configured. Please set it in the configuration.');
 			return;
 		}
 
-		const projectName = this.getProjectName();
+		const projectName = await this.getProjectName();
 		if (!projectName) {
 			vscode.window.showErrorMessage("Azure DevOps project is not configured. Commands that require it will not work.");
-			this.assistant.logger.log(LogLevel.Error, "Azure DevOps project is not configured. Commands that require it will not work.");
+			this.logger.log(LogLevel.Error, "Azure DevOps project is not configured. Commands that require it will not work.");
 			return;
 		}
 
-		const userDisplayName = this.getUserDisplayName();
+		const userDisplayName = await this.getUserDisplayName();
 		if (!userDisplayName) {
 			vscode.window.showErrorMessage('This command requires a user display name to be configured.');
-			this.assistant.logger.log(LogLevel.Error, 'User display name is not configured. Please set it in the configuration.');
+			this.logger.log(LogLevel.Error, 'User display name is not configured. Please set it in the configuration.');
 			return;
 		}
 
@@ -62,7 +60,7 @@ export class CreateDefaultTasksCommand
 		const workItemNumber = parseInt(workItemNumberResponse ?? '-1');
 		if (isNaN(workItemNumber) || workItemNumber <= 0) {
 			vscode.window.showErrorMessage('Work item number is required to create default tasks.');
-			this.assistant.logger.log(LogLevel.Error, 'Invalid work item number provided. Please enter a valid work item number.');
+			this.logger.log(LogLevel.Error, 'Invalid work item number provided. Please enter a valid work item number.');
 			return;
 		}
 
@@ -79,7 +77,7 @@ export class CreateDefaultTasksCommand
 			);
 
 			if (confirmation !== 'Yes') {
-				this.assistant.logger.log(LogLevel.Trace, `User cancelled the operation to create default tasks for work item #${workItemNumber}.`);
+				this.logger.log(LogLevel.Trace, `User cancelled the operation to create default tasks for work item #${workItemNumber}.`);
 				return;
 			}
 
@@ -87,7 +85,7 @@ export class CreateDefaultTasksCommand
 			iterationPath = parentWorkItem.fields?.['System.IterationPath'] as string;
 		} catch (error) {
 			vscode.window.showErrorMessage(`Failed to retrieve parent work item #${workItemNumber}: ${(error as Error).message}`);
-			this.assistant.logger.log(LogLevel.Error, `Failed to retrieve parent work item #${workItemNumber}: ${(error as Error).message}`);
+			this.logger.log(LogLevel.Error, `Failed to retrieve parent work item #${workItemNumber}: ${(error as Error).message}`);
 			return;
 		}
 
@@ -101,13 +99,13 @@ export class CreateDefaultTasksCommand
 				cancellable: false
 			},
 			async (progress) => {
-				this.assistant.logger.log(LogLevel.Debug, `Creating default tasks for work item #${workItemNumber} in project '${projectName}'.`);
+				this.logger.log(LogLevel.Debug, `Creating default tasks for work item #${workItemNumber} in project '${projectName}'.`);
 				const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItemNumber, areaPath, iterationPath);
 				let completed = 0;
 
 				for (const task of DefaultTasks) {
 					if (task.requiredFields && !task.requiredFields.every(field => workItemFields[field] !== undefined && workItemFields[field] !== null && workItemFields[field] !== '')) {
-						this.assistant.logger.log(LogLevel.Warning, `Skipping task '${task.name}' as one or more required fields are missing or empty.`);
+						this.logger.log(LogLevel.Warning, `Skipping task '${task.name}' as one or more required fields are missing or empty.`);
 						continue;
 					}
 
@@ -121,14 +119,14 @@ export class CreateDefaultTasksCommand
 							'Task'
 						);
 
-						this.assistant.logger.log(LogLevel.Debug, `Created task '${task.name}' with ID ${createdTask.id} under work item #${workItemNumber}.`);
+						this.logger.log(LogLevel.Debug, `Created task '${task.name}' with ID ${createdTask.id} under work item #${workItemNumber}.`);
 					} catch (error) {
 						const errorMessage = (error as Error).message;
-						this.assistant.logger.log(LogLevel.Error, `Failed to create task '${task.name}': ${errorMessage}`);
+						this.logger.log(LogLevel.Error, `Failed to create task '${task.name}': ${errorMessage}`);
 					}
 				}
 
-				this.assistant.logger.log(LogLevel.Information, `Default tasks created for work item #${workItemNumber}.`);
+				this.logger.log(LogLevel.Information, `Default tasks created for work item #${workItemNumber}.`);
 			}
 		);
 
@@ -137,8 +135,8 @@ export class CreateDefaultTasksCommand
 			'Show Output'
 		);
 
-		if (action === 'Show Output' && typeof this.assistant.logger.open === 'function') {
-			this.assistant.logger.open();
+		if (action === 'Show Output' && typeof this.logger.open === 'function') {
+			this.logger.open();
 		}
 
 		return Promise.resolve();
