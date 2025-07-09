@@ -1,45 +1,40 @@
 import * as vscode from 'vscode';
-import { AzureRegistrar } from "../azure/azure.registrar";
+import { CreateDefaultTasksCommand } from '../../azure/devops/workflow/create-default-tasks.command';
 import { Command } from "../command";
-import { IServiceProvider, ServiceContainer } from "../dependency-injection";
-import { CommandProvider } from "./command-provider";
-import { IRegistrar } from "./registrar";
+import { LogLevel, OutputLogger } from '../telemetry';
 
 /**
  * Registry for all commands in the extension.
  */
 export class CommandRegistry {
-	private static registrars: IRegistrar[] = [
-		new AzureRegistrar()
-	];
-
-	private constructor() { }
+	private static readonly logger = new OutputLogger("Hazel's Toolbox");
 
 	/**
 	 * Registers all commands with the provided extension context.
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
 	public static registerCommands(context: vscode.ExtensionContext) {
-		const serviceProvider = ServiceContainer.getServiceProvider();
-
-		const commandProvider = new CommandProvider();
-		for (const registrar of CommandRegistry.registrars) {
-			registrar.registerCommands(serviceProvider, commandProvider);
-		}
-
-		const commands = commandProvider.getCommands();
+		const commands = this.getCommandsToRegister();
 		for (const command of commands) {
-			CommandRegistry.registerCommand(command, serviceProvider, context);
+			this.registerCommand(command, context);
 		}
 	}
 
-	private static registerCommand(command: Command, serviceProvider: IServiceProvider, context: vscode.ExtensionContext) {
+	private static registerCommand(command: Command, context: vscode.ExtensionContext) {
 		const disposable = vscode.commands.registerCommand(command.id, () => {
 			command.execute().catch((error) => {
-				vscode.window.showErrorMessage(`Error executing command ${command.id}: ${error.message}`);
+				this.logger.log(LogLevel.Error, `Error executing command ${command.id}: ${error.message}`);
 			});
 		});
 
 		context.subscriptions.push(disposable);
+	}
+
+	private static getCommandsToRegister(): Command[] {
+		let commands = [
+			new CreateDefaultTasksCommand(this.logger)
+		];
+
+		return commands;
 	}
 }

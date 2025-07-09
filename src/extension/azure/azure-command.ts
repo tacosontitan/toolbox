@@ -1,5 +1,4 @@
 import { Command } from "../core/command";
-import { IServiceProvider } from "../dependency-injection";
 
 /**
  * Represents a {@link Command} that is focused on Azure operations.
@@ -12,8 +11,7 @@ export abstract class AzureCommand
 	 */
 	protected constructor(
 		id: string,
-		serviceProvider: IServiceProvider
 	) {
-		super(`azure.${id}`, serviceProvider);
+		super(`azure.${id}`);
 	}
 }
