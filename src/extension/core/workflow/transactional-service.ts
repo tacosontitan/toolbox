@@ -1,11 +1,6 @@
-import { IAssistant } from "../assistant";
 import { Transaction } from "./transaction";
 
 export abstract class TransactionalService {
-    constructor(
-        private readonly assistant: IAssistant)
-    { }
-
     protected executeTransactions(transactions: Transaction[]): Promise<void> {
         return new Promise(async (resolve, reject) => {
             let completedTransactions: Transaction[] = [];
