@@ -1,4 +1,4 @@
-import { WorkItemType } from "../../../../../workflow/work-item-type";
+import { WorkItemType } from "../../../../../core/workflow/work-item-type";
 import { PreDefinedTask } from "../pre-defined-task";
 
 /**

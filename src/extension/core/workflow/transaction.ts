@@ -1,5 +1,4 @@
 import { UUID } from "crypto";
-import { IAssistant } from "../assistant";
 
 /**
  * Defines members for handling transactions in the extension.
@@ -24,11 +23,11 @@ export abstract class Transaction {
      * Commits the transaction.
      * @return A promise that resolves when the transaction is complete.
      */
-    abstract commit(assistant: IAssistant): Promise<void>;
+    abstract commit(): Promise<void>;
 
     /**
      * Rolls back the transaction.
      * @return A promise that resolves when the transaction is rolled back.
      */
-    abstract rollback(assistant: IAssistant): Promise<void>;
+    abstract rollback(): Promise<void>;
 }

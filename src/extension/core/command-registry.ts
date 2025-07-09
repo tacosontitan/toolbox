@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
 import { Command } from "./command";
+import { NativeSecretProvider } from './configuration';
 import { LogLevel, OutputLogger } from './telemetry';
 
 /**
@@ -14,7 +15,7 @@ export class CommandRegistry {
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
 	public static registerCommands(context: vscode.ExtensionContext) {
-		const commands = this.getCommandsToRegister();
+		const commands = this.getCommandsToRegister(context);
 		for (const command of commands) {
 			this.registerCommand(command, context);
 		}
@@ -30,9 +31,11 @@ export class CommandRegistry {
 		context.subscriptions.push(disposable);
 	}
 
-	private static getCommandsToRegister(): Command[] {
+	private static getCommandsToRegister(context: vscode.ExtensionContext): Command[] {
+		const secretProvider = new NativeSecretProvider(context);
+		const configurationProvider = new NativeSecretProvider(context);
 		let commands = [
-			new CreateDefaultTasksCommand(this.logger)
+			new CreateDefaultTasksCommand(this.logger, secretProvider, configurationProvider)
 		];
 
 		return commands;
