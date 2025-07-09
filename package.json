@@ -47,8 +47,41 @@
       {
         "command": "tacosontitan.toolbox.azure.devops.createDefaultTasks",
         "title": "Hazel's Toolbox: Create Default Azure DevOps Tasks"
+      },
+      {
+        "command": "tacosontitan.toolbox.azure.devops.setWorkItem",
+        "title": "Set Work Item",
+        "icon": "$(search)"
+      },
+      {
+        "command": "tacosontitan.toolbox.azure.devops.refreshTasks",
+        "title": "Refresh",
+        "icon": "$(refresh)"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "tasksTreeView",
+          "name": "Tasks",
+          "when": "true"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "tacosontitan.toolbox.azure.devops.setWorkItem",
+          "when": "view == tasksTreeView",
+          "group": "navigation"
+        },
+        {
+          "command": "tacosontitan.toolbox.azure.devops.refreshTasks",
+          "when": "view == tasksTreeView",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
