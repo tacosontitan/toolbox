@@ -19,9 +19,9 @@ export class CreateDefaultTasksCommand
 	 * Creates a new {@link CreateDefaultTasksCommand} instance.
 	 */
 	constructor(
-		private readonly logger: ILogger,
 		secretProvider: ISecretProvider,
-		configurationProvider: IConfigurationProvider
+		configurationProvider: IConfigurationProvider,
+		private readonly logger: ILogger
 	) {
 		super('createDefaultTasks', secretProvider, configurationProvider);
 	}
