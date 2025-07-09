@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { CreateDefaultTasksCommand } from './azure/devops/workflow/create-default-tasks.command';
 import { Command } from './core/command';
-import { CommandRegistry } from './core/registration/command-registry';
+import { CommandRegistry } from './core/command-registry';
 import { LogLevel, OutputLogger } from './core/telemetry';
 
 /**
