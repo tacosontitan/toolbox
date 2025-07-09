@@ -33,5 +33,5 @@ export abstract class Command {
 	 * Executes the command.
 	 * @param args The arguments to pass to the command.
 	 */
-	protected abstract execute(): Promise<void>;
+	public abstract execute(): Promise<void>;
 }

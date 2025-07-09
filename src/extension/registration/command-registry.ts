@@ -35,7 +35,7 @@ export class CommandRegistry {
 
 	private static registerCommand(command: Command, serviceProvider: IServiceProvider, context: vscode.ExtensionContext) {
 		const disposable = vscode.commands.registerCommand(command.id, () => {
-			command.execute(serviceProvider).catch((error) => {
+			command.execute().catch((error) => {
 				vscode.window.showErrorMessage(`Error executing command ${command.id}: ${error.message}`);
 			});
 		});
