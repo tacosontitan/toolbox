@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { CreateDefaultTasksCommand } from '../../azure/devops/workflow/create-default-tasks.command';
-import { Command } from "../command";
-import { LogLevel, OutputLogger } from '../telemetry';
+import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
+import { Command } from "./command";
+import { LogLevel, OutputLogger } from './telemetry';
 
 /**
  * Registry for all commands in the extension.
