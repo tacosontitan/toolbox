@@ -11,7 +11,7 @@ export class CreateBranchTransaction
      * @param branchName The name of the branch to create.
      */
     constructor(private readonly branchName: string) {
-        super();
+        super("Create Branch");
     }
 
     /** @inheritdoc */

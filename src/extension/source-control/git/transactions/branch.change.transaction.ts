@@ -5,7 +5,7 @@ import { GitTransaction } from "./git.transaction";
  */
 export class ChangeBranchTransaction extends GitTransaction {
     constructor(private readonly branchName: string) {
-        super();
+        super("Change Branch");
     }
 
     /** @inheritdoc */
