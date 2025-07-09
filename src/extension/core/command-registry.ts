@@ -1,7 +1,11 @@
 import * as vscode from 'vscode';
+import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
 import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
+import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
 import { Command } from "./command";
+import { NativeCommunicationService } from './communication';
 import { NativeSecretProvider } from './configuration';
+import { GitService } from './source-control/git.service';
 import { LogLevel, OutputLogger } from './telemetry';
 
 /**
@@ -32,10 +36,14 @@ export class CommandRegistry {
 	}
 
 	private static getCommandsToRegister(context: vscode.ExtensionContext): Command[] {
+		const sourceControlService = new GitService();
+		const communicationService = new NativeCommunicationService();
+		const workItemService = new AzureDevOpsWorkItemService();
 		const secretProvider = new NativeSecretProvider(context);
 		const configurationProvider = new NativeSecretProvider(context);
 		let commands = [
-			new CreateDefaultTasksCommand(this.logger, secretProvider, configurationProvider)
+			new CreateDefaultTasksCommand(secretProvider, configurationProvider, this.logger),
+			new StartWorkItemCommand(secretProvider, configurationProvider, this.logger, communicationService, sourceControlService, workItemService)
 		];
 
 		return commands;
