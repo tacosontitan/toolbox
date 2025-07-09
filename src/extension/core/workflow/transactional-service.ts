@@ -11,14 +11,14 @@ export abstract class TransactionalService {
             let completedTransactions: Transaction[] = [];
             try {
                 for (const transaction of transactions) {
-                    await transaction.commit(this.assistant);
+                    await transaction.commit();
                     completedTransactions.push(transaction);
                 }
                 resolve();
             } catch (error) {
                 const transactionsToRollback = completedTransactions.reverse();
                 for (const completedTransaction of transactionsToRollback) {
-                    await completedTransaction.rollback(this.assistant);
+                    await completedTransaction.rollback();
                 }
                 reject(new Error(`Transaction failed: ${(error as Error).message}`));
             }

@@ -1,9 +1,11 @@
-import { IWorkItemService, TransactionalService, WorkItem } from "../../../workflow";
+import { IWorkItemService, TransactionalService, WorkItem } from "../../../core/workflow";
 
 export class AzureDevOpsWorkItemService extends TransactionalService implements IWorkItemService {
-    public start(workItemId: number): Promise<WorkItem> {
-        return this.executeTransactions([
-            // Define your transactions here
+    public async start(workItemId: number): Promise<WorkItem> {
+        await this.executeTransactions([
+            // Define your transactions herenp
         ]);
+
+        return new WorkItem("", "", 1, "");
     }
 }
