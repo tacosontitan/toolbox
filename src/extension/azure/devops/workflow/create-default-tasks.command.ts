@@ -3,8 +3,8 @@ import * as vscode from 'vscode';
 
 import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
-import { IServiceProvider } from "../../../dependency-injection";
-import { LogLevel } from "../../../telemetry";
+import { IConfigurationProvider, ISecretProvider } from "../../../core/configuration";
+import { ILogger, LogLevel } from "../../../core/telemetry";
 import { DevOpsCommand } from '../devops-command';
 import { DefaultTasks } from "./default-tasks";
 import { PreDefinedTaskJsonPatchDocumentMapper } from './pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
@@ -18,8 +18,12 @@ export class CreateDefaultTasksCommand
 	/**
 	 * Creates a new {@link CreateDefaultTasksCommand} instance.
 	 */
-	constructor(serviceProvider: IServiceProvider) {
-		super('createDefaultTasks', serviceProvider);
+	constructor(
+		private readonly logger: ILogger,
+		secretProvider: ISecretProvider,
+		configurationProvider: IConfigurationProvider
+	) {
+		super('createDefaultTasks', secretProvider, configurationProvider);
 	}
 
 	/** @inheritdoc */
