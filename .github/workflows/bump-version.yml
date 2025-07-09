@@ -12,26 +12,77 @@ on:
           - patch
           - minor
           - major
+  issue_comment:
+    types: [created]
 
 jobs:
   bump-version:
     name: 🔢 Bump Version
     runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' && 
+       github.event.issue.pull_request &&
+       startsWith(github.event.comment.body, '/bump-version'))
     steps:
+      - name: 🔍 Parse Comment Command
+        id: parse-command
+        if: github.event_name == 'issue_comment'
+        run: |
+          comment="${{ github.event.comment.body }}"
+          if [[ $comment =~ ^/bump-version[[:space:]]+(patch|minor|major)$ ]]; then
+            version_type=$(echo "$comment" | awk '{print $2}')
+            echo "version_type=$version_type" >> $GITHUB_OUTPUT
+            echo "valid=true" >> $GITHUB_OUTPUT
+          elif [[ $comment =~ ^/bump-version[[:space:]]*$ ]]; then
+            echo "version_type=patch" >> $GITHUB_OUTPUT
+            echo "valid=true" >> $GITHUB_OUTPUT
+          else
+            echo "valid=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: ❌ Exit if Invalid Command
+        if: github.event_name == 'issue_comment' && steps.parse-command.outputs.valid != 'true'
+        run: |
+          echo "Invalid command. Use: /bump-version [patch|minor|major]"
+          exit 1
+
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || 'main' }}
 
       - name: 🧩 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
+      - name: 🔢 Set Version Type
+        id: version-type
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "type=${{ github.event.inputs.version_type }}" >> $GITHUB_OUTPUT
+          else
+            echo "type=${{ steps.parse-command.outputs.version_type }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: 🔢 Bump Version Number
-        run: npm version ${{ github.event.inputs.version_type }} --no-git-tag-version
+        run: npm version ${{ steps.version-type.outputs.type }} --no-git-tag-version
 
       - name: 🔄 Commit and Push
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "🔢 Bump version to ${{ github.event.inputs.version_type }} in `package.json`"
+          commit_message: "🔢 Bump version to ${{ steps.version-type.outputs.type }} in `package.json`"
+
+      - name: ✅ Add Success Comment
+        if: github.event_name == 'issue_comment'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ Version bumped to **${{ steps.version-type.outputs.type }}** successfully! The version has been updated in package.json.`
+            })
