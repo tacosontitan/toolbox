@@ -1,8 +1,6 @@
 import * as devops from 'azure-devops-node-api';
 import * as vscode from 'vscode';
-import { IConfigurationProvider, ISecretProvider } from '../../configuration';
-import { ConfigurationManager } from "../../core/configuration-manager";
-import { IServiceProvider } from '../../dependency-injection';
+import { IConfigurationProvider, ISecretProvider } from '../../core/configuration';
 import { AzureCommand } from "../azure-command";
 
 /**
@@ -10,9 +8,6 @@ import { AzureCommand } from "../azure-command";
  */
 export abstract class DevOpsCommand
 	extends AzureCommand {
-	private readonly secretProvider: ISecretProvider;
-	private readonly configurationProvider: IConfigurationProvider;
-
 	/**
 	 * Creates a new {@link DevOpsCommand} with the specified ID.
 	 * @param id The unique identifier for the command.
@@ -20,11 +15,10 @@ export abstract class DevOpsCommand
 	 */
 	protected constructor(
 		id: string,
-		serviceProvider: IServiceProvider
+		protected readonly secretProvider: ISecretProvider,
+		protected readonly configurationProvider: IConfigurationProvider
 	) {
-		super(`devops.${id}`, serviceProvider);
-		this.secretProvider = serviceProvider.getRequiredService(ISecretProvider);
-		this.configurationProvider = serviceProvider.getRequiredService(IConfigurationProvider);
+		super(`devops.${id}`);
 	}
 
 	/**
@@ -79,7 +73,7 @@ export abstract class DevOpsCommand
 			return null;
 		}
 
-		const useClassicUri = ConfigurationManager.get<boolean>("azure.devops.useClassicUri");
+		const useClassicUri = await this.configurationProvider.get<boolean>("azure.devops.useClassicUri");
 		if (useClassicUri) {
 			return `https://${organization}.visualstudio.com`;
 		}
