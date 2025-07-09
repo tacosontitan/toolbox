@@ -1,44 +1,40 @@
+import { ICommunicationService } from "../../../core/communication";
 import { IConfigurationProvider, ISecretProvider } from "../../../core/configuration";
+import { ISourceControlService } from "../../../core/source-control/source-control.service";
 import { ILogger, LogLevel } from "../../../core/telemetry";
-import { WorkItem } from "../../../core/workflow";
+import { IWorkItemService, WorkItem } from "../../../core/workflow";
 import { DevOpsCommand } from "../devops-command";
 
 export class StartWorkItemCommand
     extends DevOpsCommand {
 
     constructor(
-        private readonly logger: ILogger,
         secretProvider: ISecretProvider,
-        configurationProvider: IConfigurationProvider
+        configurationProvider: IConfigurationProvider,
+        private readonly logger: ILogger,
+        private readonly communicationService: ICommunicationService,
+        private readonly sourceControlService: ISourceControlService,
+        private readonly workItemService: IWorkItemService
     ) {
         super('startWorkItem', secretProvider, configurationProvider);
     }
 
     /** @inheritdoc */
     public async execute(): Promise<void> {
-        const workItemNumber = await assistant.promptUser("Enter the work item number:");
+        const workItemNumber = await this.communicationService.prompt<number>(`Enter the work item number:`);
         if (!workItemNumber) {
             this.logger.log(LogLevel.Warning, "No work item number provided. Exiting.");
             return;
         }
 
-        const workItem: WorkItem | null = await this.loadWorkItemDetails(workItemNumber);
-        if (!workItem) {
-            this.logger.log(LogLevel.Error, `Work item #${workItemNumber} not found. Exiting."`);
-            return;
-        }
+        const workItem: WorkItem = await this.workItemService.start(workItemNumber);
+        await this.createTopicBranch(workItem);
+    }
 
-        const confirm = await assistant.confirmUser(`Do you want to start work item #${workItemNumber} - ${workItem.title}?`);
-        if (!confirm) {
-            this.logger.log(LogLevel.Warning, "User declined to start the work item. Exiting.");
-            return;
-        }
-
-        await this.changeWorkItemState(workItem, "Planning");
-
+    private async createTopicBranch(workItem: WorkItem): Promise<void> {
         try {
-            const branchName = `feature/${workItemNumber}-${workItem.title.replace(/\s+/g, '-').toLowerCase()}`;
-            await assistant.sourceControl.createBranchFromMain(branchName);
+            const branchName = `feature/${workItem.id}-${workItem.title.replace(/\s+/g, '-').toLowerCase()}`;
+            await this.sourceControlService.createBranchFromMain(branchName);
             this.logger.log(LogLevel.Information, `Branch '${branchName}' created and published successfully.`);
         } catch (error) {
             if (error instanceof Error) {
