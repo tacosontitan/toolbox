@@ -1,7 +1,7 @@
 import * as devops from 'azure-devops-node-api';
 import * as vscode from 'vscode';
 import { IConfigurationProvider, ISecretProvider } from '../../configuration';
-import { ConfigurationManager } from "../../configuration-manager";
+import { ConfigurationManager } from "../../core/configuration-manager";
 import { IServiceProvider } from '../../dependency-injection';
 import { AzureCommand } from "../azure-command";
 
