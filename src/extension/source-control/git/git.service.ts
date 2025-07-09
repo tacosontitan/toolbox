@@ -1,3 +1,4 @@
+import { Transaction } from "../../workflow";
 import { TransactionalService } from "../../workflow/transactional-service";
 import { ISourceControlService } from "../source-control.service";
 import { ChangeBranchTransaction } from "./transactions/branch.change.transaction";
@@ -25,7 +26,7 @@ export class GitService
         branchName: string,
         stashChanges: boolean = true,
         applyStashAfterChange: boolean = true): Promise<void> {
-        let transactions = [
+        let transactions: Transaction[] = [
             new ChangeBranchTransaction("main"),
             new PullTransaction(),
             new CreateBranchTransaction(branchName),

@@ -1,11 +1,14 @@
 import { exec } from 'child_process';
-import { ITransaction } from "../../../workflow/transaction";
+import { Transaction } from "../../../workflow/transaction";
 
 /**
  * Represents a transaction that executes git commands in the terminal.
  */
 export abstract class GitTransaction
-    implements ITransaction {
+    extends Transaction {
+    constructor(displayName: string) {
+        super(displayName);
+    }
 
     /** @inheritdoc */
     public abstract commit(): Promise<void>;
