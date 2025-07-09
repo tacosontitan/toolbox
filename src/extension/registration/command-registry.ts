@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
-import { IAssistant } from "../assistant";
 import { AzureRegistrar } from "../azure/azure.registrar";
 import { Command } from "../command";
-import { ServiceContainer } from "../dependency-injection";
+import { IServiceProvider, ServiceContainer } from "../dependency-injection";
 import { CommandProvider } from "./command-provider";
 import { IRegistrar } from "./registrar";
 
@@ -21,30 +20,22 @@ export class CommandRegistry {
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
 	public static registerCommands(context: vscode.ExtensionContext) {
-		// Get the service provider from the configured DI container
 		const serviceProvider = ServiceContainer.getServiceProvider();
-		
-		// Get the assistant service using type-safe resolution
-		const assistant = serviceProvider.getRequiredService(IAssistant);
-		
-		// Create command provider
+
 		const commandProvider = new CommandProvider();
-		
-		// Register commands with each registrar, passing the service provider
 		for (const registrar of CommandRegistry.registrars) {
 			registrar.registerCommands(serviceProvider, commandProvider);
 		}
 
-		// Register all commands with VS Code
 		const commands = commandProvider.getCommands();
 		for (const command of commands) {
-			CommandRegistry.registerCommand(command, assistant, context);
+			CommandRegistry.registerCommand(command, serviceProvider, context);
 		}
 	}
 
-	private static registerCommand(command: Command, assistant: IAssistant, context: vscode.ExtensionContext) {
+	private static registerCommand(command: Command, serviceProvider: IServiceProvider, context: vscode.ExtensionContext) {
 		const disposable = vscode.commands.registerCommand(command.id, () => {
-			command.execute(assistant).catch((error) => {
+			command.execute(serviceProvider).catch((error) => {
 				vscode.window.showErrorMessage(`Error executing command ${command.id}: ${error.message}`);
 			});
 		});
