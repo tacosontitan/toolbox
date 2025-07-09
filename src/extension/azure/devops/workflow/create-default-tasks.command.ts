@@ -22,7 +22,7 @@ export class CreateDefaultTasksCommand
 	}
 
 	/** @inheritdoc */
-	public async execute(assistant: IAssistant, ...args: any[]): Promise<void> {
+	public async execute(assistant: IAssistant, ..._args: any[]): Promise<void> {
 		const personalAccessToken = await this.getPersonalAccessToken(assistant);
 		if (!personalAccessToken) {
 			vscode.window.showErrorMessage('This command requires a personal access token (PAT) to be configured.');
