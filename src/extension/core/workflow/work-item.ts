@@ -42,6 +42,16 @@ export class WorkItem {
     public type: WorkItemType | undefined = undefined;
 
     /**
+     * The area path of the work item.
+     */
+    public areaPath: string | undefined = undefined;
+
+    /**
+     * The iteration path of the work item.
+     */
+    public iterationPath: string | undefined = undefined;
+
+    /**
      * The additional fields associated with the work item.
      */
     public additionalFields: { [key: string]: any } = {};
