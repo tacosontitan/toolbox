@@ -47,6 +47,10 @@
       {
         "command": "tacosontitan.toolbox.azure.devops.createDefaultTasks",
         "title": "Hazel's Toolbox: Create Default Azure DevOps Tasks"
+      },
+      {
+        "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
+        "title": "Hazel's Toolbox: Start Work Item"
       }
     ]
   },
