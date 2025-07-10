@@ -42,7 +42,7 @@ export class CommandRegistry {
 		const configurationProvider = new NativeConfigurationProvider();
 		const sourceControlService = new GitService();
 		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		const workItemService = new AzureDevOpsWorkItemService(secretProvider, configurationProvider, this.logger, communicationService, devOpsService);
+		const workItemService = new AzureDevOpsWorkItemService(this.logger, communicationService, devOpsService);
 		let commands = [
 			new CreateDefaultTasksCommand(secretProvider, configurationProvider, this.logger, workItemService, devOpsService),
 			new StartWorkItemCommand(secretProvider, configurationProvider, this.logger, communicationService, sourceControlService, workItemService)

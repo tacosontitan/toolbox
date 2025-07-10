@@ -5,15 +5,14 @@ import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 
 import { ICommunicationService } from "../../../core/communication";
-import { IConfigurationProvider, ISecretProvider } from "../../../core/configuration";
 import { ILogger, LogLevel } from "../../../core/telemetry";
 import { IWorkItemService, WorkItem, WorkItemState, WorkItemType } from "../../../core/workflow";
 import { DevOpsService } from "../devops-service";
+import { DefaultTasks } from "./default-tasks";
+import { PreDefinedTaskJsonPatchDocumentMapper } from "./pre-defined-tasks/pre-defined-task-json-patch-document-mapper";
 
 export class AzureDevOpsWorkItemService implements IWorkItemService {
     constructor(
-        private readonly secretProvider: ISecretProvider,
-        private readonly configurationProvider: IConfigurationProvider,
         private readonly logger: ILogger,
         private readonly communicationService: ICommunicationService,
         private readonly devOpsService: DevOpsService
@@ -35,7 +34,8 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
             return null;
         }
 
-        await this.changeWorkItemState(workItem, WorkItemState.Planning);
+        await this.changeWorkItemState(workItem, new WorkItemState("In Progress"));
+        await this.createDefaultTasks(workItem);
         return workItem;
     }
 
@@ -81,5 +81,61 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
 
     public async changeWorkItemState(workItem: WorkItem, state: WorkItemState): Promise<void> {
 
+    }
+
+    public async createDefaultTasks(workItem: WorkItem): Promise<void> {
+        const organizationUri = await this.devOpsService.getOrganizationUri();
+        if (!organizationUri) {
+            window.showErrorMessage("Unable to create default tasks without an Azure DevOps organization configured.");
+            this.logger.log(LogLevel.Error, "Unable to create default tasks without an Azure DevOps organization configured.");
+            return;
+        }
+
+        const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
+        if (!personalAccessToken) {
+            window.showErrorMessage("Unable to create default tasks without a personal access token configured.");
+            this.logger.log(LogLevel.Error, "Unable to create default tasks without a personal access token configured.");
+            return;
+        }
+
+        const projectName = await this.devOpsService.getProjectName();
+        if (!projectName) {
+            window.showErrorMessage("Azure DevOps project is not configured. Commands that require it will not work.");
+            this.logger.log(LogLevel.Error, "Azure DevOps project is not configured. Commands that require it will not work.");
+            return;
+        }
+
+        const userDisplayName = await this.devOpsService.getUserDisplayName();
+        if (!userDisplayName) {
+            window.showErrorMessage("Unable to create default tasks without a user display name configured.");
+            this.logger.log(LogLevel.Error, "Unable to create default tasks without a user display name configured.");
+            return;
+        }
+
+        const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
+        const connection = new WebApi(organizationUri, authenticationHandler);
+        const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
+        const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItem.id || -1, workItem.areaPath || "", workItem.iterationPath || "");
+        for (const task of DefaultTasks) {
+            // if (task.requiredFields && !task.requiredFields.every(field => workItemFields[field] !== undefined && workItemFields[field] !== null && workItemFields[field] !== '')) {
+            // 	this.logger.log(LogLevel.Warning, `Skipping task '${task.name}' as one or more required fields are missing or empty.`);
+            // 	continue;
+            // }
+
+            try {
+                const patchDocument = taskMapper.map(task);
+                const createdTask = await workItemTrackingClient.createWorkItem(
+                    [],
+                    patchDocument,
+                    projectName,
+                    'Task'
+                );
+
+                this.logger.log(LogLevel.Debug, `Created task '${task.name}' with ID ${createdTask.id} under work item #${workItem.id}.`);
+            } catch (error) {
+                const errorMessage = (error as Error).message;
+                this.logger.log(LogLevel.Error, `Failed to create task '${task.name}': ${errorMessage}`);
+            }
+        }
     }
 }
