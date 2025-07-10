@@ -8,7 +8,7 @@ export class NativeCommunicationService implements ICommunicationService {
     }
 
     public async confirm(message: string): Promise<boolean> {
-        const response = await window.showInformationMessage(message, { modal: true }, "Yes", "No");
+        const response = await window.showInformationMessage(message, "Yes", "No");
         return response === "Yes";
     }
 }
