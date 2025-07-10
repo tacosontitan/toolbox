@@ -1,23 +1,27 @@
+import * as devops from "azure-devops-node-api";
 import { window } from "vscode";
+
+import { WebApi } from 'azure-devops-node-api/WebApi';
+import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
+
 import { ICommunicationService } from "../../../core/communication";
 import { IConfigurationProvider, ISecretProvider } from "../../../core/configuration";
 import { ILogger, LogLevel } from "../../../core/telemetry";
 import { IWorkItemService, WorkItem, WorkItemState, WorkItemType } from "../../../core/workflow";
+import { DevOpsService } from "../devops-service";
 
 export class AzureDevOpsWorkItemService implements IWorkItemService {
-    private readonly organizationUri: string;
-
     constructor(
         private readonly secretProvider: ISecretProvider,
         private readonly configurationProvider: IConfigurationProvider,
         private readonly logger: ILogger,
-        private readonly communicationService: ICommunicationService
+        private readonly communicationService: ICommunicationService,
+        private readonly devOpsService: DevOpsService
     ) {
 
     }
 
     public async start(workItemId: number): Promise<WorkItem | null> {
-        await this.loadPersonalAccessToken();
         const workItem: WorkItem | null = await this.getWorkItem(workItemId);
         if (!workItem) {
             this.logger.log(LogLevel.Error, `Work item #${workItemId} not found. Exiting."`);
@@ -37,6 +41,20 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
 
     public async getWorkItem(workItemId: number): Promise<WorkItem | null> {
         try {
+            const organizationUri = await this.devOpsService.getOrganizationUri();
+            if (!organizationUri) {
+                window.showErrorMessage("Unable to query work item details without an Azure DevOps organization configured.");
+                this.logger.log(LogLevel.Error, "Unable to query work item details without an Azure DevOps organization configured.");
+                return null;
+            }
+
+            const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
+            if (!personalAccessToken) {
+                window.showErrorMessage("Unable to query work item details without a personal access token configured.");
+                this.logger.log(LogLevel.Error, "Unable to query work item details without a personal access token configured.");
+                return null;
+            }
+
             const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
             const connection = new WebApi(organizationUri, authenticationHandler);
             const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
@@ -55,28 +73,13 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
                 additionalFields: parentWorkItem.fields || {}
             };
         } catch (error) {
-            window.showErrorMessage(`Failed to retrieve parent work item #${workItemId}: ${(error as Error).message}`);
-            this.logger.log(LogLevel.Error, `Failed to retrieve parent work item #${workItemId}: ${(error as Error).message}`);
+            window.showErrorMessage(`Failed to retrieve work item #${workItemId}: ${(error as Error).message}`);
+            this.logger.log(LogLevel.Error, `Failed to retrieve work item #${workItemId}: ${(error as Error).message}`);
             return null;
         }
     }
 
-    private async changeWorkItemState(workItem: WorkItem, state: WorkItemState): Promise<void> {
+    public async changeWorkItemState(workItem: WorkItem, state: WorkItemState): Promise<void> {
 
-    }
-
-    private async loadPersonalAccessToken(): Promise<string | null> {
-        const organization = await this.configurationProvider.get<string>("azure.devops.organization");
-        if (!organization) {
-            window.showErrorMessage("Azure DevOps organization is not configured. Commands that require it will not work.");
-            return null;
-        }
-
-        const useClassicUri = await this.configurationProvider.get<boolean>("azure.devops.useClassicUri");
-        if (useClassicUri) {
-            return `https://${organization}.visualstudio.com`;
-        }
-
-        return `https://dev.azure.com/${organization}`;
     }
 }
