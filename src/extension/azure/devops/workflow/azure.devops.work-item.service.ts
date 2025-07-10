@@ -80,7 +80,59 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
     }
 
     public async changeWorkItemState(workItem: WorkItem, state: WorkItemState): Promise<void> {
+        try {
+            const organizationUri = await this.devOpsService.getOrganizationUri();
+            if (!organizationUri) {
+                window.showErrorMessage("Unable to change work item state without an Azure DevOps organization configured.");
+                this.logger.log(LogLevel.Error, "Unable to change work item state without an Azure DevOps organization configured.");
+                return;
+            }
 
+            const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
+            if (!personalAccessToken) {
+                window.showErrorMessage("Unable to change work item state without a personal access token configured.");
+                this.logger.log(LogLevel.Error, "Unable to change work item state without a personal access token configured.");
+                return;
+            }
+
+            const projectName = await this.devOpsService.getProjectName();
+            if (!projectName) {
+                window.showErrorMessage("Azure DevOps project is not configured. Cannot change work item state.");
+                this.logger.log(LogLevel.Error, "Azure DevOps project is not configured. Cannot change work item state.");
+                return;
+            }
+
+            if (!workItem.id) {
+                window.showErrorMessage("Work item ID is required to change state.");
+                this.logger.log(LogLevel.Error, "Work item ID is required to change state.");
+                return;
+            }
+
+            const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
+            const connection = new WebApi(organizationUri, authenticationHandler);
+            const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
+            const patchDocument = [
+                {
+                    op: "add",
+                    path: "/fields/System.State",
+                    value: state.name
+                }
+            ];
+
+            await workItemTrackingClient.updateWorkItem(
+                [],
+                patchDocument,
+                workItem.id
+            );
+
+            workItem.state = state;
+            this.logger.log(LogLevel.Information, `Successfully changed work item #${workItem.id} state to '${state.name}'.`);
+        } catch (error) {
+            const errorMessage = `Failed to change work item #${workItem.id} state to '${state.name}': ${(error as Error).message}`;
+            window.showErrorMessage(errorMessage);
+            this.logger.log(LogLevel.Error, errorMessage);
+            throw error;
+        }
     }
 
     public async createDefaultTasks(workItem: WorkItem): Promise<void> {
