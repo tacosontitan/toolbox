@@ -23,12 +23,17 @@ export class StartWorkItemCommand
     public async execute(): Promise<void> {
         const workItemNumber = await this.communicationService.prompt<number>(`Enter the work item number:`);
         if (!workItemNumber) {
-            this.logger.log(LogLevel.Warning, "No work item number provided. Exiting.");
+            this.logger.log(LogLevel.Warning, "No work item number provided.");
             return;
         }
 
-        const workItem: WorkItem = await this.workItemService.start(workItemNumber);
-        await this.createTopicBranch(workItem);
+        const workItem: WorkItem | null = await this.workItemService.start(workItemNumber);
+        if (!workItem) {
+            this.logger.log(LogLevel.Error, `Unable to start work item #${workItemNumber}.`);
+            return;
+        }
+
+        //await this.createTopicBranch(workItem);
     }
 
     private async createTopicBranch(workItem: WorkItem): Promise<void> {
