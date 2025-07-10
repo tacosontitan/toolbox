@@ -34,7 +34,7 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
             return null;
         }
 
-        await this.changeWorkItemState(workItem, new WorkItemState("In Progress"));
+        await this.changeWorkItemState(workItem, new WorkItemState("Doing"));
         await this.createDefaultTasks(workItem);
         return workItem;
     }
