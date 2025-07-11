@@ -91,8 +91,8 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
                     }
 
                     .tiles-container {
-                        display: flex;
-                        flex-direction: column;
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
                         gap: 12px;
                     }
 
@@ -102,6 +102,10 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
                         border-radius: 6px;
                         padding: 16px;
                         transition: background-color 0.2s ease;
+                        aspect-ratio: 1;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
                     }
 
                     .tile:hover {
