@@ -3,8 +3,11 @@ import * as vscode from 'vscode';
 
 import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
-import { IAssistant } from '../../../assistant';
+import { IConfigurationProvider, ISecretProvider } from "../../../core/configuration";
+import { ILogger, LogLevel } from "../../../core/telemetry";
+import { IWorkItemService } from "../../../core/workflow";
 import { DevOpsCommand } from '../devops-command';
+import { DevOpsService } from "../devops-service";
 import { DefaultTasks } from "./default-tasks";
 import { PreDefinedTaskJsonPatchDocumentMapper } from './pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
 
@@ -17,37 +20,43 @@ export class CreateDefaultTasksCommand
 	/**
 	 * Creates a new {@link CreateDefaultTasksCommand} instance.
 	 */
-	constructor() {
-		super('createDefaultTasks');
+	constructor(
+		secretProvider: ISecretProvider,
+		configurationProvider: IConfigurationProvider,
+		private readonly logger: ILogger,
+		private readonly workItemService: IWorkItemService,
+		private readonly devOpsService: DevOpsService,
+	) {
+		super('createDefaultTasks', secretProvider, configurationProvider);
 	}
 
 	/** @inheritdoc */
-	public async execute(assistant: IAssistant, ...args: any[]): Promise<void> {
-		const personalAccessToken = await this.getPersonalAccessToken(assistant);
+	public async execute(...args: any[]): Promise<void> {
+		const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
 		if (!personalAccessToken) {
 			vscode.window.showErrorMessage('This command requires a personal access token (PAT) to be configured.');
-			assistant.writeLine('Personal access token (PAT) is not configured. Please set it in the configuration.');
+			this.logger.log(LogLevel.Error, 'Personal access token (PAT) is not configured. Please set it in the configuration.');
 			return;
 		}
 
-		const organizationUri = this.getOrganizationUri();
+		const organizationUri = await this.devOpsService.getOrganizationUri();
 		if (!organizationUri) {
 			vscode.window.showErrorMessage('This command requires an Azure DevOps organization to be configured.');
-			assistant.writeLine('Azure DevOps organization is not configured. Please set it in the configuration.');
+			this.logger.log(LogLevel.Error, 'Azure DevOps organization is not configured. Please set it in the configuration.');
 			return;
 		}
 
-		const projectName = this.getProjectName();
+		const projectName = await this.devOpsService.getProjectName();
 		if (!projectName) {
 			vscode.window.showErrorMessage("Azure DevOps project is not configured. Commands that require it will not work.");
-			assistant.writeLine("Azure DevOps project is not configured. Commands that require it will not work.");
+			this.logger.log(LogLevel.Error, "Azure DevOps project is not configured. Commands that require it will not work.");
 			return;
 		}
 
-		const userDisplayName = this.getUserDisplayName();
+		const userDisplayName = await this.devOpsService.getUserDisplayName();
 		if (!userDisplayName) {
 			vscode.window.showErrorMessage('This command requires a user display name to be configured.');
-			assistant.writeLine('User display name is not configured. Please set it in the configuration.');
+			this.logger.log(LogLevel.Error, 'User display name is not configured. Please set it in the configuration.');
 			return;
 		}
 
@@ -59,37 +68,15 @@ export class CreateDefaultTasksCommand
 		const workItemNumber = parseInt(workItemNumberResponse ?? '-1');
 		if (isNaN(workItemNumber) || workItemNumber <= 0) {
 			vscode.window.showErrorMessage('Work item number is required to create default tasks.');
-			assistant.writeLine('Invalid work item number provided. Please enter a valid work item number.');
+			this.logger.log(LogLevel.Error, 'Invalid work item number provided. Please enter a valid work item number.');
 			return;
 		}
 
-		// Retrieve the parent work item details
-		let areaPath: string | undefined;
-		let iterationPath: string | undefined;
-		try {
-			const parentWorkItem = await workItemTrackingClient.getWorkItem(workItemNumber);
-			const workItemTitle = parentWorkItem.fields?.['System.Title'] as string;
-			const confirmation = await vscode.window.showInformationMessage(
-				`Are you sure you want to create default tasks for work item #${workItemNumber} (${workItemTitle})?`,
-				'Yes',
-				'No'
-			);
-
-			if (confirmation !== 'Yes') {
-				assistant.writeLine(`User cancelled the operation to create default tasks for work item #${workItemNumber}.`);
-				return;
-			}
-
-			areaPath = parentWorkItem.fields?.['System.AreaPath'] as string;
-			iterationPath = parentWorkItem.fields?.['System.IterationPath'] as string;
-		} catch (error) {
-			vscode.window.showErrorMessage(`Failed to retrieve parent work item #${workItemNumber}: ${(error as Error).message}`);
-			assistant.writeLine(`Failed to retrieve parent work item #${workItemNumber}: ${(error as Error).message}`);
+		const workItem = await this.workItemService.getWorkItem(workItemNumber);
+		if (!workItem) {
+			vscode.window.showErrorMessage(`Work item #${workItemNumber} not found.`);
 			return;
 		}
-
-		const parentWorkItem = await workItemTrackingClient.getWorkItem(workItemNumber);
-		const workItemFields = parentWorkItem.fields || {}; // Extract fields for easier access
 
 		await vscode.window.withProgress(
 			{
@@ -98,15 +85,15 @@ export class CreateDefaultTasksCommand
 				cancellable: false
 			},
 			async (progress) => {
-				assistant.writeLine(`Creating default tasks for work item #${workItemNumber} in project '${projectName}'.`);
-				const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItemNumber, areaPath, iterationPath);
+				this.logger.log(LogLevel.Debug, `Creating default tasks for work item #${workItemNumber} in project '${projectName}'.`);
+				const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItemNumber, workItem.areaPath || "", workItem.iterationPath || "");
 				let completed = 0;
 
 				for (const task of DefaultTasks) {
-					if (task.requiredFields && !task.requiredFields.every(field => workItemFields[field] !== undefined && workItemFields[field] !== null && workItemFields[field] !== '')) {
-						assistant.writeLine(`Skipping task '${task.name}' as one or more required fields are missing or empty.`);
-						continue;
-					}
+					// if (task.requiredFields && !task.requiredFields.every(field => workItemFields[field] !== undefined && workItemFields[field] !== null && workItemFields[field] !== '')) {
+					// 	this.logger.log(LogLevel.Warning, `Skipping task '${task.name}' as one or more required fields are missing or empty.`);
+					// 	continue;
+					// }
 
 					progress.report({ message: `Creating '${task.name}' (${++completed}/${DefaultTasks.length})` });
 					try {
@@ -118,12 +105,14 @@ export class CreateDefaultTasksCommand
 							'Task'
 						);
 
-						assistant.writeLine(`Created task '${task.name}' with ID ${createdTask.id} under work item #${workItemNumber}.`);
+						this.logger.log(LogLevel.Debug, `Created task '${task.name}' with ID ${createdTask.id} under work item #${workItemNumber}.`);
 					} catch (error) {
 						const errorMessage = (error as Error).message;
-						assistant.writeLine(`Failed to create task '${task.name}': ${errorMessage}`);
+						this.logger.log(LogLevel.Error, `Failed to create task '${task.name}': ${errorMessage}`);
 					}
 				}
+
+				this.logger.log(LogLevel.Information, `Default tasks created for work item #${workItemNumber}.`);
 			}
 		);
 
@@ -132,8 +121,8 @@ export class CreateDefaultTasksCommand
 			'Show Output'
 		);
 
-		if (action === 'Show Output' && typeof assistant.showOutputChannel === 'function') {
-			assistant.showOutputChannel();
+		if (action === 'Show Output' && typeof this.logger.open === 'function') {
+			this.logger.open();
 		}
 
 		return Promise.resolve();

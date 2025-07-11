@@ -7,27 +7,27 @@ on:
       - main
 
 jobs:
-  deploy-infrastructure:
-    name: 🏗️ Deploy Infrastructure
-    uses: ./.github/workflows/deploy.infrastructure.yml
-    secrets:
-      azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
-      subscription-name: ${{ secrets.AZURE_SUBSCRIPTION_NAME }}
-      sql-server-name: ${{ secrets.SQL_SERVER_NAME }}
-      sql-admin-username: ${{ secrets.SQL_ADMIN_USERNAME }}
-      sql-admin-password: ${{ secrets.SQL_ADMIN_PASSWORD }}
-      sql-database-name: ${{ secrets.SQL_DATABASE_NAME }}
+  # deploy-infrastructure:
+  #   name: 🏗️ Deploy Infrastructure
+  #   uses: ./.github/workflows/deploy.infrastructure.yml
+  #   secrets:
+  #     azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+  #     subscription-name: ${{ secrets.AZURE_SUBSCRIPTION_NAME }}
+  #     sql-server-name: ${{ secrets.SQL_SERVER_NAME }}
+  #     sql-admin-username: ${{ secrets.SQL_ADMIN_USERNAME }}
+  #     sql-admin-password: ${{ secrets.SQL_ADMIN_PASSWORD }}
+  #     sql-database-name: ${{ secrets.SQL_DATABASE_NAME }}
 
-  deploy-services:
-    needs: deploy-infrastructure
-    name: 🚀 Deploy Services
-    uses: ./.github/workflows/deploy.database.yml
-    secrets:
-      azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
-      azure-sql-connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+  # deploy-services:
+  #   needs: deploy-infrastructure
+  #   name: 🚀 Deploy Services
+  #   uses: ./.github/workflows/deploy.database.yml
+  #   secrets:
+  #     azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+  #     azure-sql-connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
 
   release-extension:
-    needs: deploy-services
+    # needs: deploy-services
     name: 🎁 Release Extension
     uses: ./.github/workflows/deploy.extension.yml
     secrets:
