@@ -20,6 +20,26 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
 
     }
 
+    private async getWorkItemTrackingClient(): Promise<WorkItemTrackingApi | null> {
+        const organizationUri = await this.devOpsService.getOrganizationUri();
+        if (!organizationUri) {
+            window.showErrorMessage("Unable to access Azure DevOps without an organization configured.");
+            this.logger.log(LogLevel.Error, "Unable to access Azure DevOps without an organization configured.");
+            return null;
+        }
+
+        const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
+        if (!personalAccessToken) {
+            window.showErrorMessage("Unable to access Azure DevOps without a personal access token configured.");
+            this.logger.log(LogLevel.Error, "Unable to access Azure DevOps without a personal access token configured.");
+            return null;
+        }
+
+        const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
+        const connection = new WebApi(organizationUri, authenticationHandler);
+        return await connection.getWorkItemTrackingApi();
+    }
+
     public async start(workItemId: number): Promise<WorkItem | null> {
         const workItem: WorkItem | null = await this.getWorkItem(workItemId);
         if (!workItem) {
@@ -41,23 +61,11 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
 
     public async getWorkItem(workItemId: number): Promise<WorkItem | null> {
         try {
-            const organizationUri = await this.devOpsService.getOrganizationUri();
-            if (!organizationUri) {
-                window.showErrorMessage("Unable to query work item details without an Azure DevOps organization configured.");
-                this.logger.log(LogLevel.Error, "Unable to query work item details without an Azure DevOps organization configured.");
+            const workItemTrackingClient = await this.getWorkItemTrackingClient();
+            if (!workItemTrackingClient) {
                 return null;
             }
 
-            const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
-            if (!personalAccessToken) {
-                window.showErrorMessage("Unable to query work item details without a personal access token configured.");
-                this.logger.log(LogLevel.Error, "Unable to query work item details without a personal access token configured.");
-                return null;
-            }
-
-            const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
-            const connection = new WebApi(organizationUri, authenticationHandler);
-            const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
             const parentWorkItem = await workItemTrackingClient.getWorkItem(workItemId);
             const workItemTitle = parentWorkItem.fields?.['System.Title'] as string;
             return {
@@ -81,17 +89,8 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
 
     public async changeWorkItemState(workItem: WorkItem, state: WorkItemState): Promise<void> {
         try {
-            const organizationUri = await this.devOpsService.getOrganizationUri();
-            if (!organizationUri) {
-                window.showErrorMessage("Unable to change work item state without an Azure DevOps organization configured.");
-                this.logger.log(LogLevel.Error, "Unable to change work item state without an Azure DevOps organization configured.");
-                return;
-            }
-
-            const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
-            if (!personalAccessToken) {
-                window.showErrorMessage("Unable to change work item state without a personal access token configured.");
-                this.logger.log(LogLevel.Error, "Unable to change work item state without a personal access token configured.");
+            const workItemTrackingClient = await this.getWorkItemTrackingClient();
+            if (!workItemTrackingClient) {
                 return;
             }
 
@@ -108,9 +107,6 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
                 return;
             }
 
-            const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
-            const connection = new WebApi(organizationUri, authenticationHandler);
-            const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
             const patchDocument = [
                 {
                     op: "add",
@@ -136,17 +132,15 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
     }
 
     public async createDefaultTasks(workItem: WorkItem): Promise<void> {
+        const workItemTrackingClient = await this.getWorkItemTrackingClient();
+        if (!workItemTrackingClient) {
+            return;
+        }
+
         const organizationUri = await this.devOpsService.getOrganizationUri();
         if (!organizationUri) {
             window.showErrorMessage("Unable to create default tasks without an Azure DevOps organization configured.");
             this.logger.log(LogLevel.Error, "Unable to create default tasks without an Azure DevOps organization configured.");
-            return;
-        }
-
-        const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
-        if (!personalAccessToken) {
-            window.showErrorMessage("Unable to create default tasks without a personal access token configured.");
-            this.logger.log(LogLevel.Error, "Unable to create default tasks without a personal access token configured.");
             return;
         }
 
@@ -164,9 +158,6 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
             return;
         }
 
-        const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
-        const connection = new WebApi(organizationUri, authenticationHandler);
-        const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
         const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItem.id || -1, workItem.areaPath || "", workItem.iterationPath || "");
         for (const task of DefaultTasks) {
             // if (task.requiredFields && !task.requiredFields.every(field => workItemFields[field] !== undefined && workItemFields[field] !== null && workItemFields[field] !== '')) {
@@ -192,17 +183,15 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
     }
 
     public async createTask(parentWorkItemId: number, title: string, description: string = ''): Promise<void> {
+        const workItemTrackingClient = await this.getWorkItemTrackingClient();
+        if (!workItemTrackingClient) {
+            return;
+        }
+
         const organizationUri = await this.devOpsService.getOrganizationUri();
         if (!organizationUri) {
             window.showErrorMessage("Unable to create task without an Azure DevOps organization configured.");
             this.logger.log(LogLevel.Error, "Unable to create task without an Azure DevOps organization configured.");
-            return;
-        }
-
-        const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
-        if (!personalAccessToken) {
-            window.showErrorMessage("Unable to create task without a personal access token configured.");
-            this.logger.log(LogLevel.Error, "Unable to create task without a personal access token configured.");
             return;
         }
 
@@ -213,9 +202,7 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
             return;
         }
 
-        const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
-        const connection = new WebApi(organizationUri, authenticationHandler);
-        const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
+        const defaultTaskState = await this.devOpsService.getDefaultTaskState();
 
         const document = [
             {
@@ -231,7 +218,7 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
             {
                 op: "add",
                 path: "/fields/System.State",
-                value: "New"
+                value: defaultTaskState
             },
             {
                 op: "add",
@@ -265,17 +252,8 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
     }
 
     public async updateWorkItemState(workItemId: number, newState: string): Promise<void> {
-        const organizationUri = await this.devOpsService.getOrganizationUri();
-        if (!organizationUri) {
-            window.showErrorMessage("Unable to update work item state without an Azure DevOps organization configured.");
-            this.logger.log(LogLevel.Error, "Unable to update work item state without an Azure DevOps organization configured.");
-            return;
-        }
-
-        const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
-        if (!personalAccessToken) {
-            window.showErrorMessage("Unable to update work item state without a personal access token configured.");
-            this.logger.log(LogLevel.Error, "Unable to update work item state without a personal access token configured.");
+        const workItemTrackingClient = await this.getWorkItemTrackingClient();
+        if (!workItemTrackingClient) {
             return;
         }
 
@@ -285,10 +263,6 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
             this.logger.log(LogLevel.Error, "Azure DevOps project is not configured. Commands that require it will not work.");
             return;
         }
-
-        const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
-        const connection = new WebApi(organizationUri, authenticationHandler);
-        const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
 
         const document = [
             {

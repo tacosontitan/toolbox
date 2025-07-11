@@ -79,6 +79,11 @@ export class DevOpsService {
 		return userDisplayName;
 	}
 
+	public async getDefaultTaskState(): Promise<string> {
+		const defaultTaskState = await this.configurationProvider.get<string>("azure.devops.defaultTaskState");
+		return defaultTaskState || "New";
+	}
+
 	private async determineIfPersonalAccessTokenIsValid(token: string | null | undefined): Promise<boolean> {
 		try {
 			if (!token) {
