@@ -84,6 +84,11 @@ export class DevOpsService {
 		return defaultTaskState || "New";
 	}
 
+	public async getShowRemovedTasks(): Promise<boolean> {
+		const showRemovedTasks = await this.configurationProvider.get<boolean>("azure.devops.showRemovedTasks");
+		return showRemovedTasks || false;
+	}
+
 	private async determineIfPersonalAccessTokenIsValid(token: string | null | undefined): Promise<boolean> {
 		try {
 			if (!token) {

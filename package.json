@@ -55,6 +55,11 @@
           "type": "string",
           "default": "Done",
           "description": "What's the state you'd like to map to 'done' for tasks in your Azure DevOps project?"
+        },
+        "tacosontitan.toolbox.azure.devops.showRemovedTasks": {
+          "type": "boolean",
+          "default": false,
+          "description": "Should tasks in a 'removed' state be displayed in the task view?"
         }
       }
     },
