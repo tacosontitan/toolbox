@@ -6,6 +6,5 @@ import { CommandRegistry } from './core/command-registry';
  * @param context The extension context provided by VS Code.
  */
 export function activate(context: vscode.ExtensionContext) {
-	// Register regular commands
 	CommandRegistry.registerCommands(context);
 }

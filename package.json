@@ -50,22 +50,22 @@
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.setWorkItem",
-        "title": "Set Work Item",
+        "title": "Hazel's Toolbox: Set Work Item",
         "icon": "$(search)"
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.refreshTasks",
-        "title": "Refresh",
+        "title": "Hazel's Toolbox: Refresh",
         "icon": "$(refresh)"
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.addTask",
-        "title": "Add Task",
+        "title": "Hazel's Toolbox: Add Task",
         "icon": "$(add)"
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.changeTaskState",
-        "title": "Change State"
+        "title": "Hazel's Toolbox: Change State"
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
