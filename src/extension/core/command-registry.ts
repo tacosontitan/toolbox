@@ -97,7 +97,7 @@ export class CommandRegistry {
 		const workItemService = new AzureDevOpsWorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
 
 		return [
-			new SetWorkItemCommand(secretProvider, configurationProvider, tasksTreeProvider),
+			new SetWorkItemCommand(secretProvider, configurationProvider, tasksTreeProvider, devOpsService),
 			new RefreshTasksCommand(secretProvider, configurationProvider, tasksTreeProvider),
 			new AddTaskCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService)
 		];
