@@ -17,6 +17,7 @@ import { IConfigurationProvider, ISecretProvider, NativeConfigurationProvider, N
 import { GitService } from './source-control/git.service';
 import { LogLevel, OutputLogger } from './telemetry';
 import { IWorkItemService } from './workflow';
+import { MeetingViewProvider } from '../meetings/meeting-view-provider';
 
 /**
  * Registry for all commands in the extension.
@@ -31,6 +32,9 @@ export class CommandRegistry {
 	public static registerCommands(context: vscode.ExtensionContext) {
 		// Create and register the tasks tree view first
 		const tasksTreeProvider = this.createTasksTreeView(context);
+
+		// Create and register the meeting view
+		this.createMeetingView(context);
 
 		// Get regular commands
 		const commands = this.getCommandsToRegister(context);
@@ -88,6 +92,23 @@ export class CommandRegistry {
 		});
 
 		return tasksTreeProvider;
+	}
+
+	private static createMeetingView(context: vscode.ExtensionContext) {
+		const secretProvider = new NativeSecretProvider(context);
+		const configurationProvider = new NativeConfigurationProvider();
+		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
+
+		// Create the meeting view provider
+		const meetingViewProvider = new MeetingViewProvider(context.extensionUri, devOpsService);
+
+		// Register the webview view provider
+		context.subscriptions.push(
+			vscode.window.registerWebviewViewProvider(
+				MeetingViewProvider.viewType,
+				meetingViewProvider
+			)
+		);
 	}
 
 	private static getTasksTreeCommands(context: vscode.ExtensionContext, tasksTreeProvider: TasksTreeDataProvider): Command[] {

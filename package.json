@@ -157,6 +157,12 @@
           "id": "tasksTreeView",
           "name": "Active Work Items",
           "when": "true"
+        },
+        {
+          "id": "meetingView",
+          "name": "Meeting Notes",
+          "when": "true",
+          "type": "webview"
         }
       ]
     },
