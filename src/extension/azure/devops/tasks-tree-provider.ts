@@ -3,8 +3,7 @@ import * as devops from "azure-devops-node-api";
 import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 import { WorkItem } from 'azure-devops-node-api/interfaces/WorkItemTrackingInterfaces';
-import { ConfigurationManager } from '../../configuration-manager';
-import { IAssistant } from '../../assistant';
+import { DevOpsService } from './devops-service';
 
 export class WorkItemTreeItem extends vscode.TreeItem {
     constructor(
@@ -73,7 +72,7 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
     private workItem: WorkItem | undefined;
     private tasks: WorkItem[] = [];
 
-    constructor(private assistant: IAssistant) {}
+    constructor(private devOpsService: DevOpsService) {}
 
     refresh(): void {
         this._onDidChangeTreeData.fire();
@@ -130,9 +129,9 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         }
 
         try {
-            const personalAccessToken = await this.getPersonalAccessToken();
-            const organizationUri = this.getOrganizationUri();
-            const projectName = this.getProjectName();
+            const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
+            const organizationUri = await this.devOpsService.getOrganizationUri();
+            const projectName = await this.devOpsService.getProjectName();
 
             if (!personalAccessToken || !organizationUri || !projectName) {
                 vscode.window.showErrorMessage('Azure DevOps configuration is incomplete. Please check your settings.');
@@ -176,72 +175,4 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         }
     }
 
-    private async getPersonalAccessToken(): Promise<string | null> {
-        const personalAccessTokenSecretId = "tacosontitan.toolbox.azure.devops.personalAccessToken";
-        let personalAccessToken = await this.assistant.extensionContext.secrets.get(personalAccessTokenSecretId);
-        let tokenIsValid = await this.determineIfPersonalAccessTokenIsValid(personalAccessToken);
-        if (personalAccessToken && tokenIsValid) {
-            return personalAccessToken;
-        }
-
-        personalAccessToken = await vscode.window.showInputBox({
-            prompt: "🙏 Please provide your personal access token for Azure DevOps.",
-            password: true
-        });
-
-        tokenIsValid = await this.determineIfPersonalAccessTokenIsValid(personalAccessToken);
-        if (!personalAccessToken || !tokenIsValid) {
-            return null;
-        }
-
-        await this.assistant.extensionContext.secrets.store(personalAccessTokenSecretId, personalAccessToken);
-        return personalAccessToken;
-    }
-
-    private getProjectName(): string | null {
-        const projectName = ConfigurationManager.get<string | null>("azure.devops.project");
-        if (!projectName) {
-            vscode.window.showErrorMessage("Azure DevOps project is not configured. Commands that require it will not work.");
-            return null;
-        }
-        return projectName;
-    }
-
-    private getOrganizationUri(): string | null {
-        const organization = ConfigurationManager.get<string | null>("azure.devops.organization");
-        if (!organization) {
-            vscode.window.showErrorMessage("Azure DevOps organization is not configured. Commands that require it will not work.");
-            return null;
-        }
-
-        const useClassicUri = ConfigurationManager.get<boolean>("azure.devops.useClassicUri");
-        if (useClassicUri) {
-            return `https://${organization}.visualstudio.com`;
-        }
-        return `https://dev.azure.com/${organization}`;
-    }
-
-    private async determineIfPersonalAccessTokenIsValid(token: string | null | undefined): Promise<boolean> {
-        try {
-            if (!token) {
-                return false;
-            }
-
-            const organizationUri = this.getOrganizationUri();
-            if (!organizationUri) {
-                return false;
-            }
-
-            const authenticationHandler = devops.getPersonalAccessTokenHandler(token);
-            const connection = new devops.WebApi(organizationUri, authenticationHandler);
-            const workItemApi = await connection.getWorkItemTrackingApi();
-            await workItemApi.getWorkItems([1]);
-            return true;
-        } catch (error: any) {
-            if (error.statusCode === 401) {
-                return false;
-            }
-            return false;
-        }
-    }
 }

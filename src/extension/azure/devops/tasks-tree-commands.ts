@@ -1,17 +1,22 @@
 import * as vscode from 'vscode';
-import { IAssistant } from '../../assistant';
+import { IConfigurationProvider, ISecretProvider } from "../../core/configuration";
 import { DevOpsCommand } from './devops-command';
+import { DevOpsService } from './devops-service';
 import { TasksTreeDataProvider } from './tasks-tree-provider';
 
 /**
  * Command to set the work item number for the tasks tree view.
  */
 export class SetWorkItemCommand extends DevOpsCommand {
-    constructor(private tasksTreeProvider: TasksTreeDataProvider) {
-        super('setWorkItem');
+    constructor(
+        secretProvider: ISecretProvider,
+        configurationProvider: IConfigurationProvider,
+        private tasksTreeProvider: TasksTreeDataProvider
+    ) {
+        super('setWorkItem', secretProvider, configurationProvider);
     }
 
-    async execute(assistant: IAssistant, ...args: any[]): Promise<void> {
+    async execute(...args: any[]): Promise<void> {
         const workItemNumberResponse = await vscode.window.showInputBox({ 
             prompt: 'Enter the work item number to view its tasks',
             placeHolder: 'e.g., 12345'
@@ -32,11 +37,15 @@ export class SetWorkItemCommand extends DevOpsCommand {
  * Command to refresh the tasks tree view.
  */
 export class RefreshTasksCommand extends DevOpsCommand {
-    constructor(private tasksTreeProvider: TasksTreeDataProvider) {
-        super('refreshTasks');
+    constructor(
+        secretProvider: ISecretProvider,
+        configurationProvider: IConfigurationProvider,
+        private tasksTreeProvider: TasksTreeDataProvider
+    ) {
+        super('refreshTasks', secretProvider, configurationProvider);
     }
 
-    async execute(assistant: IAssistant, ...args: any[]): Promise<void> {
+    async execute(...args: any[]): Promise<void> {
         this.tasksTreeProvider.refresh();
         vscode.window.showInformationMessage('Tasks tree view refreshed');
     }

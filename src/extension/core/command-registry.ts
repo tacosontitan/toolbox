@@ -3,6 +3,8 @@ import { DevOpsService } from '../azure/devops/devops-service';
 import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
 import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
 import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
+import { SetWorkItemCommand, RefreshTasksCommand } from '../azure/devops/tasks-tree-commands';
+import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
 import { Command } from "./command";
 import { NativeCommunicationService } from './communication';
 import { NativeConfigurationProvider, NativeSecretProvider } from './configuration';
@@ -24,6 +26,9 @@ export class CommandRegistry {
 		for (const command of commands) {
 			this.registerCommand(command, context);
 		}
+
+		// Register tasks tree view and its commands
+		this.registerTasksTreeView(context);
 	}
 
 	private static registerCommand(command: Command, context: vscode.ExtensionContext) {
@@ -49,5 +54,38 @@ export class CommandRegistry {
 		];
 
 		return commands;
+	}
+
+	private static registerTasksTreeView(context: vscode.ExtensionContext) {
+		const secretProvider = new NativeSecretProvider(context);
+		const configurationProvider = new NativeConfigurationProvider();
+		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
+		
+		// Create the tasks tree provider
+		const tasksTreeProvider = new TasksTreeDataProvider(devOpsService);
+		
+		// Register the tree view
+		vscode.window.createTreeView('tasksTreeView', {
+			treeDataProvider: tasksTreeProvider,
+			showCollapseAll: true
+		});
+
+		// Create and register tree-specific commands
+		const setWorkItemCommand = new SetWorkItemCommand(secretProvider, configurationProvider, tasksTreeProvider);
+		const refreshTasksCommand = new RefreshTasksCommand(secretProvider, configurationProvider, tasksTreeProvider);
+
+		const setWorkItemDisposable = vscode.commands.registerCommand(setWorkItemCommand.id, () => {
+			setWorkItemCommand.execute().catch((error) => {
+				this.logger.log(LogLevel.Error, `Error executing command ${setWorkItemCommand.id}: ${error.message}`);
+			});
+		});
+
+		const refreshTasksDisposable = vscode.commands.registerCommand(refreshTasksCommand.id, () => {
+			refreshTasksCommand.execute().catch((error) => {
+				this.logger.log(LogLevel.Error, `Error executing command ${refreshTasksCommand.id}: ${error.message}`);
+			});
+		});
+
+		context.subscriptions.push(setWorkItemDisposable, refreshTasksDisposable);
 	}
 }
