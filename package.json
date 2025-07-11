@@ -127,6 +127,11 @@
           "type": "boolean",
           "default": true,
           "description": "Automatically clean up time entries older than the retention period when the extension starts."
+        },
+        "tacosontitan.toolbox.overview.recentCompletionsDays": {
+          "type": "number",
+          "default": 30,
+          "description": "Number of days to look back for recent work item completions in the Overview"
         }
       }
     },
