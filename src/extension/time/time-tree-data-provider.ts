@@ -37,7 +37,9 @@ export class TimeTreeDataProvider implements vscode.TreeDataProvider<DayTreeItem
                 
                 // Add "Load More" option if there might be more entries
                 if (dayEntries.length >= 10) {
-                    result.push(new PlaceholderTreeItem("Load more days...", "Click to load additional work days", 'arrow-down'));
+                    const loadMoreItem = new PlaceholderTreeItem("Load more days...", "Click to load additional work days", 'arrow-down');
+                    loadMoreItem.contextValue = 'loadMore';
+                    result.push(loadMoreItem);
                 }
 
                 return result;
