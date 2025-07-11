@@ -12,6 +12,7 @@ export class KanbanBoardProvider implements vscode.WebviewViewProvider {
     private _view?: vscode.WebviewView;
     private _workItemId?: number;
     private _tasks: WorkItem[] = [];
+    private _refreshInterval?: NodeJS.Timeout;
 
     constructor(
         private readonly _extensionUri: vscode.Uri,
@@ -43,8 +44,35 @@ export class KanbanBoardProvider implements vscode.WebviewViewProvider {
                 case 'updateTaskState':
                     await this.updateTaskState(data.taskId, data.newState);
                     break;
+                case 'refreshBoard':
+                    if (this._workItemId) {
+                        await this.loadWorkItem(this._workItemId);
+                    }
+                    break;
             }
         });
+
+        // Set up auto-refresh based on configuration
+        this.setupAutoRefresh();
+
+        webviewView.onDidDispose(() => {
+            if (this._refreshInterval) {
+                clearInterval(this._refreshInterval);
+            }
+        });
+    }
+
+    private setupAutoRefresh() {
+        const config = vscode.workspace.getConfiguration('tacosontitan.toolbox.kanban');
+        const refreshInterval = config.get<number>('refreshInterval', 30);
+        
+        if (refreshInterval > 0) {
+            this._refreshInterval = setInterval(async () => {
+                if (this._workItemId && this._view) {
+                    await this.loadWorkItem(this._workItemId);
+                }
+            }, refreshInterval * 1000);
+        }
     }
 
     public async loadWorkItem(workItemId: number) {
@@ -237,6 +265,7 @@ export class KanbanBoardProvider implements vscode.WebviewViewProvider {
                 <div class="work-item-input">
                     <input type="number" id="workItemId" placeholder="Enter work item ID..." />
                     <button onclick="loadWorkItem()">Load Work Item</button>
+                    <button onclick="refreshBoard()">Refresh</button>
                 </div>
             </div>
             
@@ -263,6 +292,12 @@ export class KanbanBoardProvider implements vscode.WebviewViewProvider {
 
             <script>
                 const vscode = acquireVsCodeApi();
+
+                function refreshBoard() {
+                    vscode.postMessage({
+                        type: 'refreshBoard'
+                    });
+                }
 
                 function loadWorkItem() {
                     const workItemId = document.getElementById('workItemId').value;
