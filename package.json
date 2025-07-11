@@ -158,6 +158,33 @@
         "command": "tacosontitan.toolbox.startWorkItem",
         "title": "Hazel's Toolbox: Start Work Item",
         "icon": "$(play)"
+      },
+      {
+        "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
+        "title": "Hazel's Toolbox: Start Work Item"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.clockIn",
+        "title": "Hazel's Toolbox: Clock In",
+        "icon": "$(play)"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.clockOut",
+        "title": "Hazel's Toolbox: Clock Out",
+        "icon": "$(stop)"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.refresh",
+        "title": "Hazel's Toolbox: Refresh Time",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.loadMore",
+        "title": "Hazel's Toolbox: Load More Days"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.clearAll",
+        "title": "Hazel's Toolbox: Clear All Time Entries"
       }
     ],
     "viewsContainers": {
@@ -181,6 +208,11 @@
           "name": "Meeting Notes",
           "when": "true",
           "type": "webview"
+        },
+        {
+          "id": "timeTreeView",
+          "name": "Time Tracking",
+          "when": "true"
         }
       ]
     },
@@ -205,6 +237,21 @@
           "command": "tacosontitan.toolbox.startWorkItem",
           "when": "view == tasksTreeView",
           "group": "navigation"
+        },
+        {
+          "command": "tacosontitan.toolbox.time.clockIn",
+          "when": "view == timeTreeView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "tacosontitan.toolbox.time.clockOut",
+          "when": "view == timeTreeView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "tacosontitan.toolbox.time.refresh",
+          "when": "view == timeTreeView",
+          "group": "navigation@3"
         }
       ],
       "view/item/context": [
@@ -227,6 +274,11 @@
           "command": "tacosontitan.toolbox.setTaskStateToClosed",
           "when": "view == tasksTreeView && viewItem =~ /taskCanSetToClosed/",
           "group": "1_state"
+        },
+        {
+          "command": "tacosontitan.toolbox.time.loadMore",
+          "when": "view == timeTreeView && viewItem == placeholder",
+          "group": "inline"
         }
       ]
     }
