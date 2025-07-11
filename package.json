@@ -55,6 +55,11 @@
           "type": "string",
           "default": "Done",
           "description": "What's the state you'd like to map to 'done' for tasks in your Azure DevOps project?"
+        },
+        "tacosontitan.toolbox.overview.recentCompletionsDays": {
+          "type": "number",
+          "default": 30,
+          "description": "Number of days to look back for recent work item completions in the Overview"
         }
       }
     },
