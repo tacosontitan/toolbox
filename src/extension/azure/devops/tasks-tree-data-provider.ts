@@ -73,7 +73,18 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
             if (this.tasks.length === 0) {
                 return [new PlaceholderTreeItem("No tasks found", "This work item has no child tasks", 'info')];
             }
-            return this.tasks.map(task => new TaskTreeItem(task));
+            
+            // Filter out removed tasks if the configuration is set to false
+            const showRemovedTasks = await this.devOpsService.getShowRemovedTasks();
+            const filteredTasks = showRemovedTasks 
+                ? this.tasks 
+                : this.tasks.filter(task => task.fields?.['System.State'] !== 'Removed');
+            
+            if (filteredTasks.length === 0) {
+                return [new PlaceholderTreeItem("No tasks found", showRemovedTasks ? "This work item has no child tasks" : "This work item has no child tasks (removed tasks are hidden)", 'info')];
+            }
+            
+            return filteredTasks.map(task => new TaskTreeItem(task));
         }
 
         return [];
