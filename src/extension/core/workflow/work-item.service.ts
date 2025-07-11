@@ -1,4 +1,6 @@
 import { WorkItem } from "./work-item";
+import { WorkItemState } from "./work-item-state";
+import { WorkItemType } from "./work-item-type";
 
 /**
  * Represents a service for managing work items in a workflow.
@@ -40,5 +42,5 @@ export interface IWorkItemService {
      * @param workItemType The type of work item (e.g., 'Task', 'User Story', 'Bug').
      * @returns A promise that resolves to an array of available state names.
      */
-    getAvailableStates(workItemType: string): Promise<string[]>;
+    getAvailableStates(workItemType: WorkItemType): Promise<WorkItemState[]>;
 }

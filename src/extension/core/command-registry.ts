@@ -1,16 +1,16 @@
 import * as vscode from 'vscode';
 import { DevOpsService } from '../azure/devops/devops-service';
+import {
+	SetTaskStateToActiveCommand,
+	SetTaskStateToClosedCommand,
+	SetTaskStateToNewCommand,
+	SetTaskStateToResolvedCommand
+} from '../azure/devops/set-task-state-command';
+import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../azure/devops/tasks-tree-commands';
+import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
 import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
 import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
 import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
-import { SetWorkItemCommand, RefreshTasksCommand, AddTaskCommand, ChangeTaskStateCommand } from '../azure/devops/tasks-tree-commands';
-import { 
-	SetTaskStateToNewCommand, 
-	SetTaskStateToActiveCommand, 
-	SetTaskStateToResolvedCommand, 
-	SetTaskStateToClosedCommand 
-} from '../azure/devops/set-task-state-command';
-import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
 import { Command } from "./command";
 import { NativeCommunicationService } from './communication';
 import { IConfigurationProvider, ISecretProvider, NativeConfigurationProvider, NativeSecretProvider } from './configuration';
@@ -31,7 +31,7 @@ export class CommandRegistry {
 	public static registerCommands(context: vscode.ExtensionContext) {
 		// Create and register the tasks tree view first
 		const tasksTreeProvider = this.createTasksTreeView(context);
-		
+
 		// Get regular commands
 		const commands = this.getCommandsToRegister(context);
 		for (const command of commands) {
@@ -77,10 +77,10 @@ export class CommandRegistry {
 		const secretProvider = new NativeSecretProvider(context);
 		const configurationProvider = new NativeConfigurationProvider();
 		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		
+
 		// Create the tasks tree provider
 		const tasksTreeProvider = new TasksTreeDataProvider(devOpsService);
-		
+
 		// Register the tree view
 		vscode.window.createTreeView('tasksTreeView', {
 			treeDataProvider: tasksTreeProvider,
@@ -108,24 +108,11 @@ export class CommandRegistry {
 		const configurationProvider = new NativeConfigurationProvider();
 		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
 		const workItemService = new AzureDevOpsWorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
-		
-		// Register the original change task state command (with dialog)
-		const changeTaskStateCommand = new ChangeTaskStateCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService);
-		
-		const changeTaskStateDisposable = vscode.commands.registerCommand(changeTaskStateCommand.id, (taskItem) => {
-			changeTaskStateCommand.execute(taskItem).catch((error) => {
-				this.logger.log(LogLevel.Error, `Error executing command ${changeTaskStateCommand.id}: ${error.message}`);
-			});
-		});
-		
-		context.subscriptions.push(changeTaskStateDisposable);
-
-		// Register individual state change commands
 		this.registerTaskStateCommands(context, tasksTreeProvider, secretProvider, configurationProvider, workItemService);
 	}
 
 	private static registerTaskStateCommands(
-		context: vscode.ExtensionContext, 
+		context: vscode.ExtensionContext,
 		tasksTreeProvider: TasksTreeDataProvider,
 		secretProvider: ISecretProvider,
 		configurationProvider: IConfigurationProvider,

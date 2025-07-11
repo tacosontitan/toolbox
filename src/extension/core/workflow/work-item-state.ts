@@ -69,4 +69,19 @@ export class WorkItemState {
 	 * Represents the "closed" work item state.
 	 */
 	public static Closed = new WorkItemState('Closed');
+
+	/**
+	 * Represents the "to do" work item state.
+	 */
+	public static ToDo = new WorkItemState('To Do');
+
+	/**
+	 * Represents the "doing" work item state.
+	 */
+	public static Doing = new WorkItemState('Doing');
+
+	/**
+	 * Represents the "done" work item state.
+	 */
+	public static Done = new WorkItemState('Done');
 }

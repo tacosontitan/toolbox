@@ -41,10 +41,20 @@
           "default": "",
           "description": "What's your display name in Azure DevOps?"
         },
-        "tacosontitan.toolbox.azure.devops.defaultTaskState": {
+        "tacosontitan.toolbox.azure.devops.readyTaskState": {
           "type": "string",
-          "default": "New",
-          "description": "What's the default state for new tasks in your Azure DevOps project?"
+          "default": "To Do",
+          "description": "What's the state you'd like to map to 'ready' for tasks in your Azure DevOps project?"
+        },
+        "tacosontitan.toolbox.azure.devops.inProgressTaskState": {
+          "type": "string",
+          "default": "Doing",
+          "description": "What's the state you'd like to map to 'in progress' for tasks in your Azure DevOps project?"
+        },
+        "tacosontitan.toolbox.azure.devops.doneTaskState": {
+          "type": "string",
+          "default": "Done",
+          "description": "What's the state you'd like to map to 'done' for tasks in your Azure DevOps project?"
         }
       }
     },
@@ -69,24 +79,20 @@
         "icon": "$(add)"
       },
       {
-        "command": "tacosontitan.toolbox.azure.devops.changeTaskState",
-        "title": "Hazel's Toolbox: Change State"
-      },
-      {
         "command": "tacosontitan.toolbox.azure.devops.setTaskStateToNew",
-        "title": "Set to New"
+        "title": "Hazel's Toolbox: Set Task to New"
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.setTaskStateToActive",
-        "title": "Set to Active"
+        "title": "Hazel's Toolbox: Set Task to Active"
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.setTaskStateToResolved",
-        "title": "Set to Resolved"
+        "title": "Hazel's Toolbox: Set Task to Resolved"
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.setTaskStateToClosed",
-        "title": "Set to Closed"
+        "title": "Hazel's Toolbox: Set Task to Closed"
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.startWorkItem",

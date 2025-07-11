@@ -20,26 +20,6 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
 
     }
 
-    private async getWorkItemTrackingClient(): Promise<WorkItemTrackingApi | null> {
-        const organizationUri = await this.devOpsService.getOrganizationUri();
-        if (!organizationUri) {
-            window.showErrorMessage("Unable to access Azure DevOps without an organization configured.");
-            this.logger.log(LogLevel.Error, "Unable to access Azure DevOps without an organization configured.");
-            return null;
-        }
-
-        const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
-        if (!personalAccessToken) {
-            window.showErrorMessage("Unable to access Azure DevOps without a personal access token configured.");
-            this.logger.log(LogLevel.Error, "Unable to access Azure DevOps without a personal access token configured.");
-            return null;
-        }
-
-        const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
-        const connection = new WebApi(organizationUri, authenticationHandler);
-        return await connection.getWorkItemTrackingApi();
-    }
-
     public async start(workItemId: number): Promise<WorkItem | null> {
         const workItem: WorkItem | null = await this.getWorkItem(workItemId);
         if (!workItem) {
@@ -317,7 +297,7 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
         }
     }
 
-    public async getAvailableStates(workItemType: string): Promise<string[]> {
+    public async getAvailableStates(workItemType: WorkItemType): Promise<WorkItemState[]> {
         const workItemTrackingClient = await this.getWorkItemTrackingClient();
         if (!workItemTrackingClient) {
             return [];
@@ -330,23 +310,37 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
         }
 
         try {
-            // Get work item type definition to find available states
-            const workItemTypeDefinition = await workItemTrackingClient.getWorkItemType(projectName, workItemType);
-            
-            // Get state field definition
+            const workItemTypeDefinition = await workItemTrackingClient.getWorkItemType(projectName, workItemType.name);
             const stateField = workItemTypeDefinition.fields?.find(field => field.referenceName === 'System.State');
-            
             if (stateField && stateField.allowedValues) {
-                return stateField.allowedValues.map(value => value.toString());
+                return stateField.allowedValues.map(value => new WorkItemState(value.toString()));
             }
 
-            // Fallback to common states if we can't get the specific ones
             this.logger.log(LogLevel.Warning, `Could not retrieve available states for work item type '${workItemType}'. Using fallback states.`);
-            return ['New', 'Active', 'Resolved', 'Closed'];
+            return [ WorkItemState.ToDo, WorkItemState.Doing, WorkItemState.Done ];
         } catch (error) {
             this.logger.log(LogLevel.Error, `Failed to get available states for work item type '${workItemType}': ${(error as Error).message}`);
-            // Return common states as fallback
-            return ['New', 'Active', 'Resolved', 'Closed'];
+            return [ WorkItemState.ToDo, WorkItemState.Doing, WorkItemState.Done ];
         }
+    }
+
+    private async getWorkItemTrackingClient(): Promise<WorkItemTrackingApi | null> {
+        const organizationUri = await this.devOpsService.getOrganizationUri();
+        if (!organizationUri) {
+            window.showErrorMessage("Unable to access Azure DevOps without an organization configured.");
+            this.logger.log(LogLevel.Error, "Unable to access Azure DevOps without an organization configured.");
+            return null;
+        }
+
+        const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
+        if (!personalAccessToken) {
+            window.showErrorMessage("Unable to access Azure DevOps without a personal access token configured.");
+            this.logger.log(LogLevel.Error, "Unable to access Azure DevOps without a personal access token configured.");
+            return null;
+        }
+
+        const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
+        const connection = new WebApi(organizationUri, authenticationHandler);
+        return await connection.getWorkItemTrackingApi();
     }
 }
