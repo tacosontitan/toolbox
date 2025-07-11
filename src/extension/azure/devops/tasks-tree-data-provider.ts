@@ -76,7 +76,7 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
 
             // Get all active work items (bugs and user stories) assigned to the user
             const wiql = {
-                query: `SELECT [System.Id] FROM WorkItems WHERE [System.AssignedTo] = '${userDisplayName}' AND ([System.WorkItemType] = 'Bug' OR [System.WorkItemType] = 'User Story') AND [System.State] <> 'Closed' AND [System.State] <> 'Removed' ORDER BY [System.Id]`
+                query: `SELECT [System.Id] FROM WorkItems WHERE [System.AssignedTo] CONTAINS '${userDisplayName}' AND ([System.WorkItemType] = 'Bug' OR [System.WorkItemType] = 'User Story') AND [System.State] <> 'Closed' AND [System.State] <> 'Removed' ORDER BY [System.Id]`
             };
 
             const queryResult = await workItemTrackingClient.queryByWiql(wiql);
