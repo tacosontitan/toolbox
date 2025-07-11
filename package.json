@@ -116,6 +116,12 @@
     "views": {
       "toolbox": [
         {
+          "id": "overviewWebView",
+          "name": "Overview",
+          "type": "webview",
+          "when": "true"
+        },
+        {
           "id": "tasksTreeView",
           "name": "Active Work Items",
           "when": "true"

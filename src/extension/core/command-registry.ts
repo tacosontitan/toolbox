@@ -11,6 +11,7 @@ import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
 import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
 import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
 import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
+import { OverviewWebviewProvider } from '../overview/overview-webview-provider';
 import { Command } from "./command";
 import { NativeCommunicationService } from './communication';
 import { IConfigurationProvider, ISecretProvider, NativeConfigurationProvider, NativeSecretProvider } from './configuration';
@@ -29,7 +30,10 @@ export class CommandRegistry {
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
 	public static registerCommands(context: vscode.ExtensionContext) {
-		// Create and register the tasks tree view first
+		// Create and register the overview webview first
+		this.createOverviewWebview(context);
+
+		// Create and register the tasks tree view
 		const tasksTreeProvider = this.createTasksTreeView(context);
 
 		// Get regular commands
@@ -71,6 +75,23 @@ export class CommandRegistry {
 		];
 
 		return commands;
+	}
+
+	private static createOverviewWebview(context: vscode.ExtensionContext): OverviewWebviewProvider {
+		// Create dependencies
+		const secretProvider = new NativeSecretProvider(context);
+		const configurationProvider = new NativeConfigurationProvider();
+		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
+
+		// Create the overview webview provider
+		const overviewWebviewProvider = new OverviewWebviewProvider(context.extensionUri, devOpsService);
+
+		// Register the webview view
+		context.subscriptions.push(
+			vscode.window.registerWebviewViewProvider(OverviewWebviewProvider.viewType, overviewWebviewProvider)
+		);
+
+		return overviewWebviewProvider;
 	}
 
 	private static createTasksTreeView(context: vscode.ExtensionContext): TasksTreeDataProvider {
