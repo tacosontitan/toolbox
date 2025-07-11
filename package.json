@@ -114,6 +114,12 @@
           "id": "tasksTreeView",
           "name": "Tasks",
           "when": "true"
+        },
+        {
+          "id": "meetingView",
+          "name": "Meeting Notes",
+          "when": "true",
+          "type": "webview"
         }
       ]
     },
