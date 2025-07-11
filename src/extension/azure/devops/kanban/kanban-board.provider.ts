@@ -78,25 +78,32 @@ export class KanbanBoardProvider implements vscode.WebviewViewProvider {
     public async loadWorkItem(workItemId: number) {
         this._workItemId = workItemId;
         
-        // Load the parent work item and its child tasks
-        const parentWorkItem = await this._workItemService.getWorkItem(workItemId);
-        if (!parentWorkItem) {
+        try {
+            // Load the parent work item and its child tasks
+            const parentWorkItem = await this._workItemService.getWorkItem(workItemId);
+            if (!parentWorkItem) {
+                this._view?.webview.postMessage({
+                    type: 'error',
+                    message: `Work item #${workItemId} not found. Please check that the work item ID exists and you have access to it.`
+                });
+                return;
+            }
+
+            // Get child work items
+            this._tasks = await this.getChildTasks(workItemId);
+
+            this._view?.webview.postMessage({
+                type: 'workItemLoaded',
+                parentWorkItem: parentWorkItem,
+                tasks: this._tasks,
+                hasNoTasks: this._tasks.length === 0
+            });
+        } catch (error) {
             this._view?.webview.postMessage({
                 type: 'error',
-                message: `Work item #${workItemId} not found`
+                message: `Failed to load work item #${workItemId}: ${(error as Error).message}`
             });
-            return;
         }
-
-        // For now, we'll simulate child tasks since the current service doesn't have this method
-        // In a real implementation, we'd extend the service to get child work items
-        this._tasks = await this.getChildTasks(workItemId);
-
-        this._view?.webview.postMessage({
-            type: 'workItemLoaded',
-            parentWorkItem: parentWorkItem,
-            tasks: this._tasks
-        });
     }
 
     private async getChildTasks(parentWorkItemId: number): Promise<WorkItem[]> {
@@ -257,6 +264,29 @@ export class KanbanBoardProvider implements vscode.WebviewViewProvider {
                     color: var(--vscode-descriptionForeground);
                     padding: 32px;
                 }
+                
+                .no-tasks-message {
+                    background: var(--vscode-editor-inactiveSelectionBackground);
+                    border: 1px solid var(--vscode-panel-border);
+                    border-radius: 4px;
+                    padding: 16px;
+                    color: var(--vscode-foreground);
+                    font-size: 0.9em;
+                    line-height: 1.4;
+                }
+                
+                .no-tasks-message p {
+                    margin: 8px 0;
+                }
+                
+                .no-tasks-message ul, .no-tasks-message ol {
+                    margin: 8px 0;
+                    padding-left: 20px;
+                }
+                
+                .no-tasks-message li {
+                    margin: 4px 0;
+                }
             </style>
         </head>
         <body>
@@ -321,11 +351,34 @@ export class KanbanBoardProvider implements vscode.WebviewViewProvider {
                     }, 5000);
                 }
 
-                function renderTasks(tasks) {
+                function renderTasks(tasks, hasNoTasks) {
                     // Clear existing tasks
                     document.getElementById('todoColumn').innerHTML = '';
                     document.getElementById('activeColumn').innerHTML = '';
                     document.getElementById('closedColumn').innerHTML = '';
+
+                    if (hasNoTasks) {
+                        // Show a helpful message when no tasks are found
+                        const noTasksMessage = document.createElement('div');
+                        noTasksMessage.className = 'no-tasks-message';
+                        noTasksMessage.innerHTML = \`
+                            <p><strong>No child tasks found for this work item.</strong></p>
+                            <p>This could mean:</p>
+                            <ul>
+                                <li>The work item doesn't have any child tasks linked to it</li>
+                                <li>The child tasks are in a different Azure DevOps project</li>
+                                <li>The tasks are not linked using the parent-child relationship</li>
+                            </ul>
+                            <p>To add child tasks:</p>
+                            <ol>
+                                <li>Go to Azure DevOps and open work item #\${window.workItemId || 'N/A'}</li>
+                                <li>Create new tasks and link them as children to this work item</li>
+                                <li>Refresh this board to see the tasks</li>
+                            </ol>
+                        \`;
+                        document.getElementById('todoColumn').appendChild(noTasksMessage);
+                        return;
+                    }
 
                     tasks.forEach(task => {
                         const taskElement = createTaskElement(task);
@@ -390,7 +443,9 @@ export class KanbanBoardProvider implements vscode.WebviewViewProvider {
                         case 'workItemLoaded':
                             document.getElementById('kanbanBoard').style.display = 'flex';
                             document.getElementById('emptyState').style.display = 'none';
-                            renderTasks(message.tasks);
+                            // Store workItemId globally for use in renderTasks
+                            window.workItemId = message.parentWorkItem.id;
+                            renderTasks(message.tasks, message.hasNoTasks);
                             break;
                         case 'error':
                             showError(message.message);

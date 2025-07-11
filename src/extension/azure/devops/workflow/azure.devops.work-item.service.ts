@@ -137,26 +137,33 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
 
     public async getChildWorkItems(parentWorkItemId: number): Promise<WorkItem[]> {
         try {
+            this.logger.log(LogLevel.Information, `Attempting to retrieve child work items for parent work item #${parentWorkItemId}`);
+            
             const organizationUri = await this.devOpsService.getOrganizationUri();
             if (!organizationUri) {
-                window.showErrorMessage("Unable to query child work items without an Azure DevOps organization configured.");
-                this.logger.log(LogLevel.Error, "Unable to query child work items without an Azure DevOps organization configured.");
+                const message = "Unable to query child work items without an Azure DevOps organization configured.";
+                window.showErrorMessage(message);
+                this.logger.log(LogLevel.Error, message);
                 return [];
             }
 
             const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
             if (!personalAccessToken) {
-                window.showErrorMessage("Unable to query child work items without a personal access token configured.");
-                this.logger.log(LogLevel.Error, "Unable to query child work items without a personal access token configured.");
+                const message = "Unable to query child work items without a personal access token configured.";
+                window.showErrorMessage(message);
+                this.logger.log(LogLevel.Error, message);
                 return [];
             }
 
             const projectName = await this.devOpsService.getProjectName();
             if (!projectName) {
-                window.showErrorMessage("Azure DevOps project is not configured. Cannot query child work items.");
-                this.logger.log(LogLevel.Error, "Azure DevOps project is not configured. Cannot query child work items.");
+                const message = "Azure DevOps project is not configured. Cannot query child work items.";
+                window.showErrorMessage(message);
+                this.logger.log(LogLevel.Error, message);
                 return [];
             }
+
+            this.logger.log(LogLevel.Information, `Querying child work items for #${parentWorkItemId} in project '${projectName}' at '${organizationUri}'`);
 
             const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
             const connection = new WebApi(organizationUri, authenticationHandler);
@@ -171,8 +178,18 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
                         MODE (Recursive)`
             };
 
+            this.logger.log(LogLevel.Debug, `Executing WIQL query: ${wiql.query}`);
+
             const queryResult = await workItemTrackingClient.queryByWiql(wiql, { project: projectName });
+            
+            this.logger.log(LogLevel.Debug, `WIQL query returned ${queryResult.workItemRelations?.length || 0} work item relations`);
+            
             if (!queryResult.workItemRelations || queryResult.workItemRelations.length === 0) {
+                this.logger.log(LogLevel.Information, `No child work items found for parent work item #${parentWorkItemId}. This could mean:`);
+                this.logger.log(LogLevel.Information, `  1. The work item has no child tasks linked to it`);
+                this.logger.log(LogLevel.Information, `  2. The child tasks are in a different project`);
+                this.logger.log(LogLevel.Information, `  3. The link types are not using 'System.LinkTypes.Hierarchy-Forward'`);
+                window.showInformationMessage(`No child work items found for work item #${parentWorkItemId}. Make sure the work item has child tasks linked to it.`);
                 return [];
             }
 
@@ -181,14 +198,19 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
                 .filter(relation => relation.target && relation.target.id !== parentWorkItemId)
                 .map(relation => relation.target!.id!);
 
+            this.logger.log(LogLevel.Debug, `Found ${childWorkItemIds.length} child work item IDs: [${childWorkItemIds.join(', ')}]`);
+
             if (childWorkItemIds.length === 0) {
+                this.logger.log(LogLevel.Information, `All relations were filtered out (likely pointing back to parent #${parentWorkItemId})`);
+                window.showInformationMessage(`No child work items found for work item #${parentWorkItemId}. The work item might only have parent links or self-references.`);
                 return [];
             }
 
             // Get details for all child work items
+            this.logger.log(LogLevel.Information, `Retrieving details for ${childWorkItemIds.length} child work items`);
             const childWorkItems = await workItemTrackingClient.getWorkItems(childWorkItemIds);
             
-            return childWorkItems.map(workItem => ({
+            const results = childWorkItems.map(workItem => ({
                 id: workItem.id,
                 title: workItem.fields?.['System.Title'] as string || '',
                 type: { name: workItem.fields?.['System.WorkItemType'] as string || 'Task' },
@@ -201,10 +223,18 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
                 additionalFields: workItem.fields || {}
             } as WorkItem));
 
+            this.logger.log(LogLevel.Information, `Successfully retrieved ${results.length} child work items for parent #${parentWorkItemId}`);
+            results.forEach(item => {
+                this.logger.log(LogLevel.Debug, `  - #${item.id}: ${item.title} (${item.state.name})`);
+            });
+
+            return results;
+
         } catch (error) {
             const errorMessage = `Failed to retrieve child work items for #${parentWorkItemId}: ${(error as Error).message}`;
             window.showErrorMessage(errorMessage);
             this.logger.log(LogLevel.Error, errorMessage);
+            this.logger.log(LogLevel.Error, `Error details: ${(error as Error).stack}`);
             return [];
         }
     }
