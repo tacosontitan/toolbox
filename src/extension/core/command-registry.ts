@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import { DevOpsService } from '../azure/devops/devops-service';
+import { KanbanBoardProvider } from '../azure/devops/kanban/kanban-board.provider';
+import { OpenKanbanBoardCommand } from '../azure/devops/kanban/open-kanban-board.command';
 import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
 import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
 import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
@@ -24,6 +26,9 @@ export class CommandRegistry {
 		for (const command of commands) {
 			this.registerCommand(command, context);
 		}
+
+		// Register WebView providers
+		this.registerWebViewProviders(context);
 	}
 
 	private static registerCommand(command: Command, context: vscode.ExtensionContext) {
@@ -45,9 +50,23 @@ export class CommandRegistry {
 		const workItemService = new AzureDevOpsWorkItemService(this.logger, communicationService, devOpsService);
 		let commands = [
 			new CreateDefaultTasksCommand(secretProvider, configurationProvider, this.logger, workItemService, devOpsService),
-			new StartWorkItemCommand(secretProvider, configurationProvider, this.logger, communicationService, sourceControlService, workItemService)
+			new StartWorkItemCommand(secretProvider, configurationProvider, this.logger, communicationService, sourceControlService, workItemService),
+			new OpenKanbanBoardCommand(this.logger)
 		];
 
 		return commands;
+	}
+
+	private static registerWebViewProviders(context: vscode.ExtensionContext) {
+		const communicationService = new NativeCommunicationService();
+		const secretProvider = new NativeSecretProvider(context);
+		const configurationProvider = new NativeConfigurationProvider();
+		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
+		const workItemService = new AzureDevOpsWorkItemService(this.logger, communicationService, devOpsService);
+
+		const kanbanBoardProvider = new KanbanBoardProvider(context.extensionUri, workItemService);
+		context.subscriptions.push(
+			vscode.window.registerWebviewViewProvider(KanbanBoardProvider.viewType, kanbanBoardProvider)
+		);
 	}
 }

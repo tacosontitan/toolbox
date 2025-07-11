@@ -51,8 +51,22 @@
       {
         "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
         "title": "Hazel's Toolbox: Start Work Item"
+      },
+      {
+        "command": "tacosontitan.toolbox.azure.devops.openKanbanBoard",
+        "title": "Hazel's Toolbox: Open Kanban Board"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "tacosontitan.toolbox.kanbanBoard",
+          "name": "Kanban Board",
+          "when": "true"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

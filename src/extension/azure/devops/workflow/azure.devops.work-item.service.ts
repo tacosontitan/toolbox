@@ -135,6 +135,80 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
         }
     }
 
+    public async getChildWorkItems(parentWorkItemId: number): Promise<WorkItem[]> {
+        try {
+            const organizationUri = await this.devOpsService.getOrganizationUri();
+            if (!organizationUri) {
+                window.showErrorMessage("Unable to query child work items without an Azure DevOps organization configured.");
+                this.logger.log(LogLevel.Error, "Unable to query child work items without an Azure DevOps organization configured.");
+                return [];
+            }
+
+            const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
+            if (!personalAccessToken) {
+                window.showErrorMessage("Unable to query child work items without a personal access token configured.");
+                this.logger.log(LogLevel.Error, "Unable to query child work items without a personal access token configured.");
+                return [];
+            }
+
+            const projectName = await this.devOpsService.getProjectName();
+            if (!projectName) {
+                window.showErrorMessage("Azure DevOps project is not configured. Cannot query child work items.");
+                this.logger.log(LogLevel.Error, "Azure DevOps project is not configured. Cannot query child work items.");
+                return [];
+            }
+
+            const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
+            const connection = new WebApi(organizationUri, authenticationHandler);
+            const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
+
+            // Query for child work items using WIQL (Work Item Query Language)
+            const wiql = {
+                query: `SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.Description], [Microsoft.VSTS.Scheduling.RemainingWork], [Microsoft.VSTS.Common.Activity]
+                        FROM WorkItemLinks 
+                        WHERE (Source.[System.Id] = ${parentWorkItemId}) 
+                        AND ([System.Links.LinkType] = 'System.LinkTypes.Hierarchy-Forward') 
+                        MODE (Recursive)`
+            };
+
+            const queryResult = await workItemTrackingClient.queryByWiql(wiql, { project: projectName });
+            if (!queryResult.workItemRelations || queryResult.workItemRelations.length === 0) {
+                return [];
+            }
+
+            // Get the IDs of child work items (exclude the parent)
+            const childWorkItemIds = queryResult.workItemRelations
+                .filter(relation => relation.target && relation.target.id !== parentWorkItemId)
+                .map(relation => relation.target!.id!);
+
+            if (childWorkItemIds.length === 0) {
+                return [];
+            }
+
+            // Get details for all child work items
+            const childWorkItems = await workItemTrackingClient.getWorkItems(childWorkItemIds);
+            
+            return childWorkItems.map(workItem => ({
+                id: workItem.id,
+                title: workItem.fields?.['System.Title'] as string || '',
+                type: { name: workItem.fields?.['System.WorkItemType'] as string || 'Task' },
+                state: new WorkItemState(workItem.fields?.['System.State'] as string || 'New'),
+                areaPath: workItem.fields?.['System.AreaPath'] as string || '',
+                iterationPath: workItem.fields?.['System.IterationPath'] as string || '',
+                description: workItem.fields?.['System.Description'] as string || '',
+                remainingWork: workItem.fields?.['Microsoft.VSTS.Scheduling.RemainingWork'] as number || 0,
+                activity: workItem.fields?.['Microsoft.VSTS.Common.Activity'] as string || '',
+                additionalFields: workItem.fields || {}
+            } as WorkItem));
+
+        } catch (error) {
+            const errorMessage = `Failed to retrieve child work items for #${parentWorkItemId}: ${(error as Error).message}`;
+            window.showErrorMessage(errorMessage);
+            this.logger.log(LogLevel.Error, errorMessage);
+            return [];
+        }
+    }
+
     public async createDefaultTasks(workItem: WorkItem): Promise<void> {
         const organizationUri = await this.devOpsService.getOrganizationUri();
         if (!organizationUri) {
