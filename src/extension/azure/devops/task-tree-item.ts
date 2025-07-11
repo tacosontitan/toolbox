@@ -37,7 +37,7 @@ export class TaskTreeItem extends vscode.TreeItem {
             this.iconPath = new vscode.ThemeIcon('circle-filled', new vscode.ThemeColor('charts.blue'));
         } else if (state === 'New' || state === 'To Do' || state === 'Ready') {
             this.iconPath = new vscode.ThemeIcon('circle-outline', new vscode.ThemeColor('charts.gray'));
-        } else if (state === 'Removed') {
+        } else if (state === 'Removed' || state === 'Spiked') {
             this.iconPath = new vscode.ThemeIcon('circle-filled', new vscode.ThemeColor('charts.red'));
         } else {
             this.iconPath = new vscode.ThemeIcon('circle-filled', new vscode.ThemeColor('charts.blue'));

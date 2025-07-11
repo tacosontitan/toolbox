@@ -157,10 +157,10 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         const doneState = await this.devOpsService.getDoneTaskState();
         const showRemovedTasks = await this.devOpsService.getShowRemovedTasks();
 
-        // Filter out removed tasks if configured to not show them
+        // Filter out removed tasks if configured to not show them, and always filter out spiked tasks
         const filteredTasks = showRemovedTasks 
-            ? tasks 
-            : tasks.filter(task => task.fields?.['System.State'] !== 'Removed');
+            ? tasks.filter(task => task.fields?.['System.State'] !== 'Spiked')
+            : tasks.filter(task => task.fields?.['System.State'] !== 'Removed' && task.fields?.['System.State'] !== 'Spiked');
 
         // Group tasks by their mapped state categories
         const groups: { [key: string]: WorkItem[] } = {};
@@ -229,6 +229,11 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
 
         return tasks.filter(task => {
             const taskState = task.fields?.['System.State'];
+            
+            // Always filter out spiked tasks
+            if (taskState === 'Spiked') {
+                return false;
+            }
             
             // Filter out removed tasks if configured to not show them
             if (!showRemovedTasks && taskState === 'Removed') {

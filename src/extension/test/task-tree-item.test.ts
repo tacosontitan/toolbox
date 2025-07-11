@@ -103,4 +103,29 @@ suite('TaskTreeItem Test Suite', () => {
         const themeColor = themeIcon.color as vscode.ThemeColor;
         assert.strictEqual(themeColor.id, 'charts.gray');
     });
+
+    test('Task with Spiked state should have red icon', () => {
+        // Arrange
+        const mockTask: WorkItem = {
+            id: 127,
+            fields: {
+                'System.Title': 'Test Spiked Task',
+                'System.State': 'Spiked',
+                'System.AssignedTo': { displayName: 'Test User' },
+                'Microsoft.VSTS.Scheduling.RemainingWork': 2,
+                'System.Description': 'Test spiked task description'
+            }
+        };
+
+        // Act
+        const taskTreeItem = new TaskTreeItem(mockTask);
+
+        // Assert
+        assert.ok(taskTreeItem.iconPath instanceof vscode.ThemeIcon);
+        const themeIcon = taskTreeItem.iconPath as vscode.ThemeIcon;
+        assert.strictEqual(themeIcon.id, 'circle-filled');
+        assert.ok(themeIcon.color instanceof vscode.ThemeColor);
+        const themeColor = themeIcon.color as vscode.ThemeColor;
+        assert.strictEqual(themeColor.id, 'charts.red');
+    });
 });
