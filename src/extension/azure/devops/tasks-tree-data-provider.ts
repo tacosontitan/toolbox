@@ -94,7 +94,7 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
 
             // Get all active work items (bugs and user stories) assigned to the user
             const wiql = {
-                query: `SELECT [System.Id] FROM WorkItems WHERE [System.AssignedTo] CONTAINS '${userDisplayName}' AND ([System.WorkItemType] = 'Bug' OR [System.WorkItemType] = 'User Story') AND [System.State] <> 'Closed' AND [System.State] <> 'Removed' ORDER BY [System.Id]`
+                query: `SELECT [System.Id] FROM WorkItems WHERE [System.AssignedTo] CONTAINS '${userDisplayName}' AND ([System.WorkItemType] = 'Bug' OR [System.WorkItemType] = 'User Story') AND [System.State] <> 'Closed' AND [System.State] <> 'Removed' AND [System.State] <> 'Spiked' ORDER BY [System.Id]`
             };
 
             const queryResult = await workItemTrackingClient.queryByWiql(wiql);
@@ -157,10 +157,10 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         const doneState = await this.devOpsService.getDoneTaskState();
         const showRemovedTasks = await this.devOpsService.getShowRemovedTasks();
 
-        // Filter out removed tasks if configured to not show them, and always filter out spiked tasks
+        // Filter out removed tasks if configured to not show them
         const filteredTasks = showRemovedTasks 
-            ? tasks.filter(task => task.fields?.['System.State'] !== 'Spiked')
-            : tasks.filter(task => task.fields?.['System.State'] !== 'Removed' && task.fields?.['System.State'] !== 'Spiked');
+            ? tasks 
+            : tasks.filter(task => task.fields?.['System.State'] !== 'Removed');
 
         // Group tasks by their mapped state categories
         const groups: { [key: string]: WorkItem[] } = {};
@@ -229,11 +229,6 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
 
         return tasks.filter(task => {
             const taskState = task.fields?.['System.State'];
-            
-            // Always filter out spiked tasks
-            if (taskState === 'Spiked') {
-                return false;
-            }
             
             // Filter out removed tasks if configured to not show them
             if (!showRemovedTasks && taskState === 'Removed') {
