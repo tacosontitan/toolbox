@@ -17,6 +17,15 @@ import { IConfigurationProvider, ISecretProvider, NativeConfigurationProvider, N
 import { GitService } from './source-control/git.service';
 import { LogLevel, OutputLogger } from './telemetry';
 import { IWorkItemService } from './workflow';
+import { 
+	TimeEntryService, 
+	TimeTreeDataProvider, 
+	ClockInCommand, 
+	ClockOutCommand, 
+	RefreshTimeCommand, 
+	LoadMoreDaysCommand,
+	ClearTimeEntriesCommand 
+} from '../time';
 
 /**
  * Registry for all commands in the extension.
@@ -32,6 +41,9 @@ export class CommandRegistry {
 		// Create and register the tasks tree view first
 		const tasksTreeProvider = this.createTasksTreeView(context);
 
+		// Create and register the time tree view
+		const timeTreeProvider = this.createTimeTreeView(context);
+
 		// Get regular commands
 		const commands = this.getCommandsToRegister(context);
 		for (const command of commands) {
@@ -44,8 +56,17 @@ export class CommandRegistry {
 			this.registerCommand(command, context);
 		}
 
+		// Get and register time tree view commands
+		const timeCommands = this.getTimeTreeCommands(context, timeTreeProvider);
+		for (const command of timeCommands) {
+			this.registerCommand(command, context);
+		}
+
 		// Special handling for the change task state command which takes a parameter
 		this.registerChangeTaskStateCommand(context, tasksTreeProvider);
+
+		// Special handling for load more days command
+		this.registerLoadMoreDaysCommand(context, timeTreeProvider);
 	}
 
 	private static registerCommand(command: Command, context: vscode.ExtensionContext) {
@@ -103,12 +124,48 @@ export class CommandRegistry {
 		];
 	}
 
+	private static createTimeTreeView(context: vscode.ExtensionContext): TimeTreeDataProvider {
+		const timeEntryService = new TimeEntryService(context);
+
+		// Create the time tree provider
+		const timeTreeProvider = new TimeTreeDataProvider(timeEntryService);
+
+		// Register the tree view
+		vscode.window.createTreeView('timeTreeView', {
+			treeDataProvider: timeTreeProvider,
+			showCollapseAll: true
+		});
+
+		return timeTreeProvider;
+	}
+
+	private static getTimeTreeCommands(context: vscode.ExtensionContext, timeTreeProvider: TimeTreeDataProvider): Command[] {
+		const timeEntryService = new TimeEntryService(context);
+
+		return [
+			new ClockInCommand(timeEntryService, timeTreeProvider),
+			new ClockOutCommand(timeEntryService, timeTreeProvider),
+			new RefreshTimeCommand(timeTreeProvider),
+			new ClearTimeEntriesCommand(timeEntryService, timeTreeProvider)
+		];
+	}
+
 	private static registerChangeTaskStateCommand(context: vscode.ExtensionContext, tasksTreeProvider: TasksTreeDataProvider) {
 		const secretProvider = new NativeSecretProvider(context);
 		const configurationProvider = new NativeConfigurationProvider();
 		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
 		const workItemService = new AzureDevOpsWorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
 		this.registerTaskStateCommands(context, tasksTreeProvider, secretProvider, configurationProvider, workItemService);
+	}
+
+	private static registerLoadMoreDaysCommand(context: vscode.ExtensionContext, timeTreeProvider: TimeTreeDataProvider) {
+		const loadMoreCommand = new LoadMoreDaysCommand(timeTreeProvider);
+		const disposable = vscode.commands.registerCommand(loadMoreCommand.id, () => {
+			loadMoreCommand.execute().catch((error: Error) => {
+				this.logger.log(LogLevel.Error, `Error executing command ${loadMoreCommand.id}: ${error.message}`);
+			});
+		});
+		context.subscriptions.push(disposable);
 	}
 
 	private static registerTaskStateCommands(
