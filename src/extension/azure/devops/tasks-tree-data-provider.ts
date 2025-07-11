@@ -239,4 +239,8 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
             return mappedState === stateName;
         });
     }
+
+    getActiveWorkItems(): WorkItem[] {
+        return this.activeWorkItems;
+    }
 }
