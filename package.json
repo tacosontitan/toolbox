@@ -155,11 +155,6 @@
           "command": "tacosontitan.toolbox.azure.devops.setTaskStateToClosed",
           "when": "view == tasksTreeView && viewItem =~ /taskCanSetToClosed/",
           "group": "1_state"
-        },
-        {
-          "command": "tacosontitan.toolbox.azure.devops.changeTaskState",
-          "when": "view == tasksTreeView && viewItem == task",
-          "group": "2_more"
         }
       ]
     }
