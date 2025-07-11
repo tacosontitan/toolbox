@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { CommandRegistry } from './registration/command-registry';
+import { CommandRegistry } from './core/command-registry';
 
 /**
  * Activates the extension when it is loaded by VS Code.
