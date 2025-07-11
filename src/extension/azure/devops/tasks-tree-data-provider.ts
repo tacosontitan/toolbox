@@ -155,11 +155,17 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         const readyState = await this.devOpsService.getReadyTaskState();
         const inProgressState = await this.devOpsService.getInProgressTaskState();
         const doneState = await this.devOpsService.getDoneTaskState();
+        const showRemovedTasks = await this.devOpsService.getShowRemovedTasks();
+
+        // Filter out removed tasks if configured to not show them
+        const filteredTasks = showRemovedTasks 
+            ? tasks 
+            : tasks.filter(task => task.fields?.['System.State'] !== 'Removed');
 
         // Group tasks by their mapped state categories
         const groups: { [key: string]: WorkItem[] } = {};
         
-        for (const task of tasks) {
+        for (const task of filteredTasks) {
             const taskState = task.fields?.['System.State'];
             const mappedState = this.mapTaskStateToGroup(taskState, readyState, inProgressState, doneState);
             
@@ -176,9 +182,9 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         for (const stateName of stateOrder) {
             const tasksInState = groups[stateName];
             if (tasksInState && tasksInState.length > 0) {
-                // Skip "Removed" if configured to not show (we'll check this later if needed)
-                if (stateName === 'Removed') {
-                    // For now, we'll show it. Configuration to hide can be added later if needed
+                // Skip "Removed" if configured to not show
+                if (stateName === 'Removed' && !showRemovedTasks) {
+                    continue;
                 }
                 const stateGroup = new StateGroupTreeItem(stateName, tasksInState.length);
                 this.stateGroupToWorkItem.set(stateGroup, workItemId);
@@ -219,9 +225,16 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         const readyState = await this.devOpsService.getReadyTaskState();
         const inProgressState = await this.devOpsService.getInProgressTaskState();
         const doneState = await this.devOpsService.getDoneTaskState();
+        const showRemovedTasks = await this.devOpsService.getShowRemovedTasks();
 
         return tasks.filter(task => {
             const taskState = task.fields?.['System.State'];
+            
+            // Filter out removed tasks if configured to not show them
+            if (!showRemovedTasks && taskState === 'Removed') {
+                return false;
+            }
+            
             const mappedState = this.mapTaskStateToGroup(taskState, readyState, inProgressState, doneState);
             return mappedState === stateName;
         });
