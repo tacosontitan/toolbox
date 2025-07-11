@@ -11,6 +11,7 @@ import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
 import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
 import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
 import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
+import { OverviewTreeDataProvider } from '../overview/overview-tree-data-provider';
 import { Command } from "./command";
 import { NativeCommunicationService } from './communication';
 import { IConfigurationProvider, ISecretProvider, NativeConfigurationProvider, NativeSecretProvider } from './configuration';
@@ -29,7 +30,10 @@ export class CommandRegistry {
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
 	public static registerCommands(context: vscode.ExtensionContext) {
-		// Create and register the tasks tree view first
+		// Create and register the overview tree view first
+		this.createOverviewTreeView();
+
+		// Create and register the tasks tree view
 		const tasksTreeProvider = this.createTasksTreeView(context);
 
 		// Get regular commands
@@ -71,6 +75,19 @@ export class CommandRegistry {
 		];
 
 		return commands;
+	}
+
+	private static createOverviewTreeView(): OverviewTreeDataProvider {
+		// Create the overview tree provider
+		const overviewTreeProvider = new OverviewTreeDataProvider();
+
+		// Register the tree view
+		vscode.window.createTreeView('overviewTreeView', {
+			treeDataProvider: overviewTreeProvider,
+			showCollapseAll: false
+		});
+
+		return overviewTreeProvider;
 	}
 
 	private static createTasksTreeView(context: vscode.ExtensionContext): TasksTreeDataProvider {
