@@ -19,7 +19,19 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
     constructor(private devOpsService: DevOpsService) {}
 
     refresh(): void {
-        this._onDidChangeTreeData.fire();
+        // Actually reload data from Azure DevOps when refreshing
+        if (this.workItemNumber) {
+            this.loadWorkItemAndTasks().then(() => {
+                this._onDidChangeTreeData.fire();
+            }).catch(() => {
+                // Clear data if reload fails
+                this.workItem = undefined;
+                this.tasks = [];
+                this._onDidChangeTreeData.fire();
+            });
+        } else {
+            this._onDidChangeTreeData.fire();
+        }
     }
 
     async setWorkItem(workItemNumber: number): Promise<void> {

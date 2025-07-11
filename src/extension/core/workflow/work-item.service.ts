@@ -34,4 +34,11 @@ export interface IWorkItemService {
      * @returns A promise that resolves when the state is updated.
      */
     updateWorkItemState(workItemId: number, newState: string): Promise<void>;
+
+    /**
+     * Gets the available states for a work item type.
+     * @param workItemType The type of work item (e.g., 'Task', 'User Story', 'Bug').
+     * @returns A promise that resolves to an array of available state names.
+     */
+    getAvailableStates(workItemType: string): Promise<string[]>;
 }

@@ -202,6 +202,17 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
             return;
         }
 
+        // Get parent work item to inherit area path and iteration path
+        let parentAreaPath = "";
+        let parentIterationPath = "";
+        try {
+            const parentWorkItem = await workItemTrackingClient.getWorkItem(parentWorkItemId);
+            parentAreaPath = parentWorkItem.fields?.['System.AreaPath'] as string || "";
+            parentIterationPath = parentWorkItem.fields?.['System.IterationPath'] as string || "";
+        } catch (error) {
+            this.logger.log(LogLevel.Warning, `Could not retrieve parent work item ${parentWorkItemId} for area/iteration paths: ${(error as Error).message}`);
+        }
+
         const defaultTaskState = await this.devOpsService.getDefaultTaskState();
 
         const document = [
@@ -234,6 +245,24 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
                 }
             }
         ];
+
+        // Add area path if available from parent
+        if (parentAreaPath) {
+            document.push({
+                op: "add",
+                path: "/fields/System.AreaPath",
+                value: parentAreaPath
+            });
+        }
+
+        // Add iteration path if available from parent
+        if (parentIterationPath) {
+            document.push({
+                op: "add",
+                path: "/fields/System.IterationPath",
+                value: parentIterationPath
+            });
+        }
 
         try {
             const createdTask = await workItemTrackingClient.createWorkItem(
@@ -285,6 +314,39 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
             const errorMessage = (error as Error).message;
             this.logger.log(LogLevel.Error, `Failed to update work item #${workItemId} state to '${newState}': ${errorMessage}`);
             throw error;
+        }
+    }
+
+    public async getAvailableStates(workItemType: string): Promise<string[]> {
+        const workItemTrackingClient = await this.getWorkItemTrackingClient();
+        if (!workItemTrackingClient) {
+            return [];
+        }
+
+        const projectName = await this.devOpsService.getProjectName();
+        if (!projectName) {
+            this.logger.log(LogLevel.Error, "Azure DevOps project is not configured. Cannot get available states.");
+            return [];
+        }
+
+        try {
+            // Get work item type definition to find available states
+            const workItemTypeDefinition = await workItemTrackingClient.getWorkItemType(projectName, workItemType);
+            
+            // Get state field definition
+            const stateField = workItemTypeDefinition.fields?.find(field => field.referenceName === 'System.State');
+            
+            if (stateField && stateField.allowedValues) {
+                return stateField.allowedValues.map(value => value.toString());
+            }
+
+            // Fallback to common states if we can't get the specific ones
+            this.logger.log(LogLevel.Warning, `Could not retrieve available states for work item type '${workItemType}'. Using fallback states.`);
+            return ['New', 'Active', 'Resolved', 'Closed'];
+        } catch (error) {
+            this.logger.log(LogLevel.Error, `Failed to get available states for work item type '${workItemType}': ${(error as Error).message}`);
+            // Return common states as fallback
+            return ['New', 'Active', 'Resolved', 'Closed'];
         }
     }
 }
