@@ -31,7 +31,7 @@ export class CommandRegistry {
 	 */
 	public static registerCommands(context: vscode.ExtensionContext) {
 		// Create and register the overview tree view first
-		this.createOverviewTreeView();
+		this.createOverviewTreeView(context);
 
 		// Create and register the tasks tree view
 		const tasksTreeProvider = this.createTasksTreeView(context);
@@ -77,9 +77,14 @@ export class CommandRegistry {
 		return commands;
 	}
 
-	private static createOverviewTreeView(): OverviewTreeDataProvider {
+	private static createOverviewTreeView(context: vscode.ExtensionContext): OverviewTreeDataProvider {
+		// Create dependencies
+		const secretProvider = new NativeSecretProvider(context);
+		const configurationProvider = new NativeConfigurationProvider();
+		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
+
 		// Create the overview tree provider
-		const overviewTreeProvider = new OverviewTreeDataProvider();
+		const overviewTreeProvider = new OverviewTreeDataProvider(devOpsService);
 
 		// Register the tree view
 		vscode.window.createTreeView('overviewTreeView', {

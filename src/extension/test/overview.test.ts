@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { OverviewTreeDataProvider } from '../overview/overview-tree-data-provider';
 
 suite('Overview Test Suite', () => {
-    test('OverviewTreeDataProvider should return overview items', () => {
+    test('OverviewTreeDataProvider should return overview items without DevOps service', () => {
         const provider = new OverviewTreeDataProvider();
         const children = provider.getChildren();
         
