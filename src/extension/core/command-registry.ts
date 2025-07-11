@@ -3,7 +3,7 @@ import { DevOpsService } from '../azure/devops/devops-service';
 import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
 import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
 import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
-import { SetWorkItemCommand, RefreshTasksCommand } from '../azure/devops/tasks-tree-commands';
+import { SetWorkItemCommand, RefreshTasksCommand, AddTaskCommand, ChangeTaskStateCommand } from '../azure/devops/tasks-tree-commands';
 import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
 import { Command } from "./command";
 import { NativeCommunicationService } from './communication';
@@ -73,6 +73,8 @@ export class CommandRegistry {
 		// Create and register tree-specific commands
 		const setWorkItemCommand = new SetWorkItemCommand(secretProvider, configurationProvider, tasksTreeProvider);
 		const refreshTasksCommand = new RefreshTasksCommand(secretProvider, configurationProvider, tasksTreeProvider);
+		const addTaskCommand = new AddTaskCommand(secretProvider, configurationProvider, tasksTreeProvider, devOpsService);
+		const changeTaskStateCommand = new ChangeTaskStateCommand(secretProvider, configurationProvider, tasksTreeProvider, devOpsService);
 
 		const setWorkItemDisposable = vscode.commands.registerCommand(setWorkItemCommand.id, () => {
 			setWorkItemCommand.execute().catch((error) => {
@@ -86,6 +88,18 @@ export class CommandRegistry {
 			});
 		});
 
-		context.subscriptions.push(setWorkItemDisposable, refreshTasksDisposable);
+		const addTaskDisposable = vscode.commands.registerCommand(addTaskCommand.id, () => {
+			addTaskCommand.execute().catch((error) => {
+				this.logger.log(LogLevel.Error, `Error executing command ${addTaskCommand.id}: ${error.message}`);
+			});
+		});
+
+		const changeTaskStateDisposable = vscode.commands.registerCommand(changeTaskStateCommand.id, (taskItem) => {
+			changeTaskStateCommand.execute(taskItem).catch((error) => {
+				this.logger.log(LogLevel.Error, `Error executing command ${changeTaskStateCommand.id}: ${error.message}`);
+			});
+		});
+
+		context.subscriptions.push(setWorkItemDisposable, refreshTasksDisposable, addTaskDisposable, changeTaskStateDisposable);
 	}
 }

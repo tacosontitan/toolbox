@@ -51,15 +51,15 @@ export class TaskTreeItem extends vscode.TreeItem {
         this.description = `${state} • ${assignedTo}`;
         this.contextValue = 'task';
         
-        // Set icon based on task state
+        // Set icon based on task state - using colored dots as requested
         if (state === 'Done' || state === 'Closed') {
-            this.iconPath = new vscode.ThemeIcon('check', new vscode.ThemeColor('charts.green'));
+            this.iconPath = new vscode.ThemeIcon('circle-filled', new vscode.ThemeColor('charts.green'));
         } else if (state === 'Active' || state === 'In Progress') {
-            this.iconPath = new vscode.ThemeIcon('play', new vscode.ThemeColor('charts.blue'));
-        } else if (state === 'New' || state === 'To Do') {
+            this.iconPath = new vscode.ThemeIcon('circle-filled', new vscode.ThemeColor('charts.blue'));
+        } else if (state === 'New' || state === 'To Do' || state === 'Ready') {
             this.iconPath = new vscode.ThemeIcon('circle-outline', new vscode.ThemeColor('charts.gray'));
         } else {
-            this.iconPath = new vscode.ThemeIcon('question', new vscode.ThemeColor('charts.yellow'));
+            this.iconPath = new vscode.ThemeIcon('circle-filled', new vscode.ThemeColor('charts.yellow'));
         }
     }
 }
@@ -121,6 +121,10 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         }
 
         return [];
+    }
+
+    getCurrentWorkItemId(): number | undefined {
+        return this.workItemNumber;
     }
 
     private async loadWorkItemAndTasks(): Promise<void> {

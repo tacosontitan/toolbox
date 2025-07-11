@@ -59,12 +59,30 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "tacosontitan.toolbox.azure.devops.addTask",
+        "title": "Add Task",
+        "icon": "$(add)"
+      },
+      {
+        "command": "tacosontitan.toolbox.azure.devops.changeTaskState",
+        "title": "Change State"
+      },
+      {
         "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
         "title": "Hazel's Toolbox: Start Work Item"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "toolbox",
+          "title": "Toolbox",
+          "icon": "$(tools)"
+        }
+      ]
+    },
     "views": {
-      "explorer": [
+      "toolbox": [
         {
           "id": "tasksTreeView",
           "name": "Tasks",
@@ -83,6 +101,18 @@
           "command": "tacosontitan.toolbox.azure.devops.refreshTasks",
           "when": "view == tasksTreeView",
           "group": "navigation"
+        },
+        {
+          "command": "tacosontitan.toolbox.azure.devops.addTask",
+          "when": "view == tasksTreeView",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "tacosontitan.toolbox.azure.devops.changeTaskState",
+          "when": "view == tasksTreeView && viewItem == task",
+          "group": "inline"
         }
       ]
     }
