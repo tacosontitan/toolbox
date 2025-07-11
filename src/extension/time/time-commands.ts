@@ -10,7 +10,7 @@ export class ClockInCommand extends Command {
         private timeEntryService: TimeEntryService,
         private treeProvider: TimeTreeDataProvider
     ) {
-        super('tacosontitan.toolbox.time.clockIn');
+        super('time.clockIn');
     }
 
     async execute(): Promise<void> {
@@ -27,7 +27,7 @@ export class ClockOutCommand extends Command {
         private timeEntryService: TimeEntryService,
         private treeProvider: TimeTreeDataProvider
     ) {
-        super('tacosontitan.toolbox.time.clockOut');
+        super('time.clockOut');
     }
 
     async execute(): Promise<void> {
@@ -41,7 +41,7 @@ export class ClockOutCommand extends Command {
  */
 export class RefreshTimeCommand extends Command {
     constructor(private treeProvider: TimeTreeDataProvider) {
-        super('tacosontitan.toolbox.time.refresh');
+        super('time.refresh');
     }
 
     async execute(): Promise<void> {
@@ -54,7 +54,7 @@ export class RefreshTimeCommand extends Command {
  */
 export class LoadMoreDaysCommand extends Command {
     constructor(private treeProvider: TimeTreeDataProvider) {
-        super('tacosontitan.toolbox.time.loadMore');
+        super('time.loadMore');
     }
 
     async execute(): Promise<void> {
@@ -70,7 +70,7 @@ export class ClearTimeEntriesCommand extends Command {
         private timeEntryService: TimeEntryService,
         private treeProvider: TimeTreeDataProvider
     ) {
-        super('tacosontitan.toolbox.time.clearAll');
+        super('time.clearAll');
     }
 
     async execute(): Promise<void> {
