@@ -22,7 +22,7 @@ export class TaskTreeItem extends vscode.TreeItem {
         } else if (state === 'New' || state === 'To Do' || state === 'Ready') {
             this.iconPath = new vscode.ThemeIcon('circle-outline', new vscode.ThemeColor('charts.gray'));
         } else {
-            this.iconPath = new vscode.ThemeIcon('circle-filled', new vscode.ThemeColor('charts.yellow'));
+            this.iconPath = new vscode.ThemeIcon('circle-filled', new vscode.ThemeColor('charts.blue'));
         }
     }
 }
