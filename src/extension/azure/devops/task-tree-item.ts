@@ -12,7 +12,23 @@ export class TaskTreeItem extends vscode.TreeItem {
         
         this.tooltip = `State: ${state}\nAssigned To: ${assignedTo}\nRemaining Work: ${remainingWork}h\n\n${task.fields?.['System.Description'] || 'No description'}`;
         this.description = `${state} • ${assignedTo}`;
-        this.contextValue = 'task';
+        
+        // Set context value based on current state for context menu visibility
+        const contextValues = ['task'];
+        if (state !== 'New') {
+            contextValues.push('taskCanSetToNew');
+        }
+        if (state !== 'Active') {
+            contextValues.push('taskCanSetToActive');
+        }
+        if (state !== 'Resolved') {
+            contextValues.push('taskCanSetToResolved');
+        }
+        if (state !== 'Closed') {
+            contextValues.push('taskCanSetToClosed');
+        }
+        
+        this.contextValue = contextValues.join(',');
         
         // Set icon based on task state - using colored dots as requested
         if (state === 'Done' || state === 'Closed') {

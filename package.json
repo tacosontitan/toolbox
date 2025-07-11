@@ -73,6 +73,22 @@
         "title": "Hazel's Toolbox: Change State"
       },
       {
+        "command": "tacosontitan.toolbox.azure.devops.setTaskStateToNew",
+        "title": "Set to New"
+      },
+      {
+        "command": "tacosontitan.toolbox.azure.devops.setTaskStateToActive",
+        "title": "Set to Active"
+      },
+      {
+        "command": "tacosontitan.toolbox.azure.devops.setTaskStateToResolved",
+        "title": "Set to Resolved"
+      },
+      {
+        "command": "tacosontitan.toolbox.azure.devops.setTaskStateToClosed",
+        "title": "Set to Closed"
+      },
+      {
         "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
         "title": "Hazel's Toolbox: Start Work Item"
       }
@@ -115,9 +131,29 @@
       ],
       "view/item/context": [
         {
+          "command": "tacosontitan.toolbox.azure.devops.setTaskStateToNew",
+          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToNew/",
+          "group": "1_state"
+        },
+        {
+          "command": "tacosontitan.toolbox.azure.devops.setTaskStateToActive",
+          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToActive/",
+          "group": "1_state"
+        },
+        {
+          "command": "tacosontitan.toolbox.azure.devops.setTaskStateToResolved",
+          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToResolved/",
+          "group": "1_state"
+        },
+        {
+          "command": "tacosontitan.toolbox.azure.devops.setTaskStateToClosed",
+          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToClosed/",
+          "group": "1_state"
+        },
+        {
           "command": "tacosontitan.toolbox.azure.devops.changeTaskState",
           "when": "view == tasksTreeView && viewItem == task",
-          "group": "inline"
+          "group": "2_more"
         }
       ]
     }

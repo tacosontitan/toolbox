@@ -4,12 +4,19 @@ import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devop
 import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
 import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
 import { SetWorkItemCommand, RefreshTasksCommand, AddTaskCommand, ChangeTaskStateCommand } from '../azure/devops/tasks-tree-commands';
+import { 
+	SetTaskStateToNewCommand, 
+	SetTaskStateToActiveCommand, 
+	SetTaskStateToResolvedCommand, 
+	SetTaskStateToClosedCommand 
+} from '../azure/devops/set-task-state-command';
 import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
 import { Command } from "./command";
 import { NativeCommunicationService } from './communication';
-import { NativeConfigurationProvider, NativeSecretProvider } from './configuration';
+import { IConfigurationProvider, ISecretProvider, NativeConfigurationProvider, NativeSecretProvider } from './configuration';
 import { GitService } from './source-control/git.service';
 import { LogLevel, OutputLogger } from './telemetry';
+import { IWorkItemService } from './workflow';
 
 /**
  * Registry for all commands in the extension.
@@ -102,6 +109,7 @@ export class CommandRegistry {
 		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
 		const workItemService = new AzureDevOpsWorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
 		
+		// Register the original change task state command (with dialog)
 		const changeTaskStateCommand = new ChangeTaskStateCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService);
 		
 		const changeTaskStateDisposable = vscode.commands.registerCommand(changeTaskStateCommand.id, (taskItem) => {
@@ -111,5 +119,32 @@ export class CommandRegistry {
 		});
 		
 		context.subscriptions.push(changeTaskStateDisposable);
+
+		// Register individual state change commands
+		this.registerTaskStateCommands(context, tasksTreeProvider, secretProvider, configurationProvider, workItemService);
+	}
+
+	private static registerTaskStateCommands(
+		context: vscode.ExtensionContext, 
+		tasksTreeProvider: TasksTreeDataProvider,
+		secretProvider: ISecretProvider,
+		configurationProvider: IConfigurationProvider,
+		workItemService: IWorkItemService
+	) {
+		const commands = [
+			new SetTaskStateToNewCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService),
+			new SetTaskStateToActiveCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService),
+			new SetTaskStateToResolvedCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService),
+			new SetTaskStateToClosedCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService)
+		];
+
+		for (const command of commands) {
+			const disposable = vscode.commands.registerCommand(command.id, (taskItem: any) => {
+				command.execute(taskItem).catch((error: Error) => {
+					this.logger.log(LogLevel.Error, `Error executing command ${command.id}: ${error.message}`);
+				});
+			});
+			context.subscriptions.push(disposable);
+		}
 	}
 }
