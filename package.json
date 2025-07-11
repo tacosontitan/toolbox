@@ -201,7 +201,7 @@
         },
         {
           "command": "tacosontitan.toolbox.time.loadMore",
-          "when": "view == timeTreeView && viewItem == placeholder",
+          "when": "view == timeTreeView && viewItem == loadMore",
           "group": "inline"
         }
       ]
