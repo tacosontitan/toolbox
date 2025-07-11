@@ -16,18 +16,7 @@ export class SetWorkItemCommand extends DevOpsCommand {
     }
 
     async execute(...args: any[]): Promise<void> {
-        const workItemNumberResponse = await vscode.window.showInputBox({ 
-            prompt: 'Enter the work item number to view its tasks',
-            placeHolder: 'e.g., 12345'
-        });
-
-        const workItemNumber = parseInt(workItemNumberResponse ?? '-1');
-        if (isNaN(workItemNumber) || workItemNumber <= 0) {
-            vscode.window.showErrorMessage('Please enter a valid work item number.');
-            return;
-        }
-
-        await this.tasksTreeProvider.setWorkItem(workItemNumber);
-        vscode.window.showInformationMessage(`Tasks tree view updated for work item #${workItemNumber}`);
+        // This command is no longer supported with the new active work items view
+        vscode.window.showErrorMessage('Set Work Item is not supported. The Active Work Items view automatically shows all assigned work items.');
     }
 }

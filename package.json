@@ -64,19 +64,9 @@
         "title": "Hazel's Toolbox: Create Default Azure DevOps Tasks"
       },
       {
-        "command": "tacosontitan.toolbox.azure.devops.setWorkItem",
-        "title": "Hazel's Toolbox: Set Work Item",
-        "icon": "$(search)"
-      },
-      {
         "command": "tacosontitan.toolbox.azure.devops.refreshTasks",
         "title": "Hazel's Toolbox: Refresh",
         "icon": "$(refresh)"
-      },
-      {
-        "command": "tacosontitan.toolbox.azure.devops.addTask",
-        "title": "Hazel's Toolbox: Add Task",
-        "icon": "$(add)"
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.setTaskStateToNew",
@@ -112,7 +102,7 @@
       "toolbox": [
         {
           "id": "tasksTreeView",
-          "name": "Tasks",
+          "name": "Active Work Items",
           "when": "true"
         }
       ]
@@ -120,17 +110,7 @@
     "menus": {
       "view/title": [
         {
-          "command": "tacosontitan.toolbox.azure.devops.setWorkItem",
-          "when": "view == tasksTreeView",
-          "group": "navigation"
-        },
-        {
           "command": "tacosontitan.toolbox.azure.devops.refreshTasks",
-          "when": "view == tasksTreeView",
-          "group": "navigation"
-        },
-        {
-          "command": "tacosontitan.toolbox.azure.devops.addTask",
           "when": "view == tasksTreeView",
           "group": "navigation"
         }

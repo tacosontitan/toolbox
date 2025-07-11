@@ -6,7 +6,7 @@ import {
 	SetTaskStateToNewCommand,
 	SetTaskStateToResolvedCommand
 } from '../azure/devops/set-task-state-command';
-import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../azure/devops/tasks-tree-commands';
+import { RefreshTasksCommand } from '../azure/devops/tasks-tree-commands';
 import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
 import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
 import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
@@ -94,12 +94,9 @@ export class CommandRegistry {
 		const secretProvider = new NativeSecretProvider(context);
 		const configurationProvider = new NativeConfigurationProvider();
 		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		const workItemService = new AzureDevOpsWorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
 
 		return [
-			new SetWorkItemCommand(secretProvider, configurationProvider, tasksTreeProvider),
-			new RefreshTasksCommand(secretProvider, configurationProvider, tasksTreeProvider),
-			new AddTaskCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService)
+			new RefreshTasksCommand(secretProvider, configurationProvider, tasksTreeProvider)
 		];
 	}
 
