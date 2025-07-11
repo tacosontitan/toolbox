@@ -7,13 +7,15 @@ import { DevOpsService } from './devops-service';
 import { WorkItemTreeItem } from './work-item-tree-item';
 import { TaskTreeItem } from './task-tree-item';
 import { PlaceholderTreeItem } from './placeholder-tree-item';
+import { StateGroupTreeItem } from './state-group-tree-item';
 
-export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem> {
-    private _onDidChangeTreeData: vscode.EventEmitter<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | undefined | null | void> = new vscode.EventEmitter<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | undefined | null | void>();
-    readonly onDidChangeTreeData: vscode.Event<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
+export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem> {
+    private _onDidChangeTreeData: vscode.EventEmitter<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem | undefined | null | void> = new vscode.EventEmitter<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem | undefined | null | void>();
+    readonly onDidChangeTreeData: vscode.Event<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
     private activeWorkItems: WorkItem[] = [];
     private workItemTasks: Map<number, WorkItem[]> = new Map();
+    private stateGroupToWorkItem: Map<StateGroupTreeItem, number> = new Map();
 
     constructor(private devOpsService: DevOpsService) {
         // Load active work items on initialization
@@ -28,15 +30,16 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
             // Clear data if reload fails
             this.activeWorkItems = [];
             this.workItemTasks.clear();
+            this.stateGroupToWorkItem.clear();
             this._onDidChangeTreeData.fire();
         });
     }
 
-    getTreeItem(element: WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem): vscode.TreeItem {
+    getTreeItem(element: WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem): vscode.TreeItem {
         return element;
     }
 
-    async getChildren(element?: WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem): Promise<(WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem)[]> {
+    async getChildren(element?: WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem): Promise<(WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem)[]> {
         if (!element) {
             // Root level - show all active work items
             if (this.activeWorkItems.length === 0) {
@@ -46,13 +49,28 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         }
 
         if (element instanceof WorkItemTreeItem) {
-            // Show tasks under the work item
+            // Show tasks grouped by state under the work item
             const workItemId = element.workItem.id!;
             const tasks = this.workItemTasks.get(workItemId) || [];
             if (tasks.length === 0) {
                 return [new PlaceholderTreeItem("No tasks found", "This work item has no child tasks", 'info')];
             }
-            return tasks.map(task => new TaskTreeItem(task));
+            
+            // Group tasks by state
+            const stateGroups = await this.groupTasksByState(tasks, workItemId);
+            return stateGroups;
+        }
+
+        if (element instanceof StateGroupTreeItem) {
+            // Show tasks under the state group
+            const workItemId = this.stateGroupToWorkItem.get(element);
+            if (!workItemId) {
+                return [];
+            }
+            
+            const tasks = this.workItemTasks.get(workItemId) || [];
+            const filteredTasks = await this.filterTasksByStateGroup(tasks, element.stateName);
+            return filteredTasks.map(task => new TaskTreeItem(task));
         }
 
         return [];
@@ -93,6 +111,7 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
             } else {
                 this.activeWorkItems = [];
                 this.workItemTasks.clear();
+                this.stateGroupToWorkItem.clear();
             }
 
         } catch (error) {
@@ -106,6 +125,7 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
             }
             this.activeWorkItems = [];
             this.workItemTasks.clear();
+            this.stateGroupToWorkItem.clear();
         }
     }
 
@@ -129,5 +149,81 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
             // If we can't load tasks for a work item, just set empty array
             this.workItemTasks.set(workItemId, []);
         }
+    }
+
+    private async groupTasksByState(tasks: WorkItem[], workItemId: number): Promise<StateGroupTreeItem[]> {
+        const readyState = await this.devOpsService.getReadyTaskState();
+        const inProgressState = await this.devOpsService.getInProgressTaskState();
+        const doneState = await this.devOpsService.getDoneTaskState();
+
+        // Group tasks by their mapped state categories
+        const groups: { [key: string]: WorkItem[] } = {};
+        
+        for (const task of tasks) {
+            const taskState = task.fields?.['System.State'];
+            const mappedState = this.mapTaskStateToGroup(taskState, readyState, inProgressState, doneState);
+            
+            if (!groups[mappedState]) {
+                groups[mappedState] = [];
+            }
+            groups[mappedState].push(task);
+        }
+
+        // Create state group tree items in the requested order
+        const stateOrder = ['In Progress', 'Ready', 'Closed', 'Removed'];
+        const stateGroups: StateGroupTreeItem[] = [];
+
+        for (const stateName of stateOrder) {
+            const tasksInState = groups[stateName];
+            if (tasksInState && tasksInState.length > 0) {
+                // Skip "Removed" if configured to not show (we'll check this later if needed)
+                if (stateName === 'Removed') {
+                    // For now, we'll show it. Configuration to hide can be added later if needed
+                }
+                const stateGroup = new StateGroupTreeItem(stateName, tasksInState.length);
+                this.stateGroupToWorkItem.set(stateGroup, workItemId);
+                stateGroups.push(stateGroup);
+            }
+        }
+
+        return stateGroups;
+    }
+
+    private mapTaskStateToGroup(taskState: string, readyState: string, inProgressState: string, doneState: string): string {
+        if (!taskState) {
+            return 'Ready'; // Default for undefined states
+        }
+
+        // Map configured states to groups
+        if (taskState === inProgressState || taskState === 'Active' || taskState === 'Doing' || taskState === 'In Progress') {
+            return 'In Progress';
+        }
+        
+        if (taskState === readyState || taskState === 'New' || taskState === 'To Do' || taskState === 'Ready') {
+            return 'Ready';
+        }
+        
+        if (taskState === doneState || taskState === 'Done' || taskState === 'Completed' || taskState === 'Closed' || taskState === 'Resolved') {
+            return 'Closed';
+        }
+        
+        if (taskState === 'Removed') {
+            return 'Removed';
+        }
+
+        // Default mapping for unknown states
+        return 'Ready';
+    }
+
+    private async filterTasksByStateGroup(tasks: WorkItem[], stateName: string): Promise<WorkItem[]> {
+        const readyState = await this.devOpsService.getReadyTaskState();
+        const inProgressState = await this.devOpsService.getInProgressTaskState();
+        const doneState = await this.devOpsService.getDoneTaskState();
+
+        return tasks.filter(task => {
+            const taskState = task.fields?.['System.State'];
+            const mappedState = this.mapTaskStateToGroup(taskState, readyState, inProgressState, doneState);
+            return mappedState === stateName;
+        });
     }
 }

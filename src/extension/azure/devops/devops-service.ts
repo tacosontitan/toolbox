@@ -84,6 +84,21 @@ export class DevOpsService {
 		return defaultTaskState || "New";
 	}
 
+	public async getReadyTaskState(): Promise<string> {
+		const readyTaskState = await this.configurationProvider.get<string>("azure.devops.readyTaskState");
+		return readyTaskState || "To Do";
+	}
+
+	public async getInProgressTaskState(): Promise<string> {
+		const inProgressTaskState = await this.configurationProvider.get<string>("azure.devops.inProgressTaskState");
+		return inProgressTaskState || "Doing";
+	}
+
+	public async getDoneTaskState(): Promise<string> {
+		const doneTaskState = await this.configurationProvider.get<string>("azure.devops.doneTaskState");
+		return doneTaskState || "Done";
+	}
+
 	private async determineIfPersonalAccessTokenIsValid(token: string | null | undefined): Promise<boolean> {
 		try {
 			if (!token) {
