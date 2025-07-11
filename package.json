@@ -215,6 +215,11 @@
     "views": {
       "toolbox": [
         {
+          "id": "overviewTreeView",
+          "name": "Overview",
+          "when": "true"
+        },
+        {
           "id": "tasksTreeView",
           "name": "Active Work Items",
           "when": "true"
