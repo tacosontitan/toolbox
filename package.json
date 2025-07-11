@@ -215,8 +215,9 @@
     "views": {
       "toolbox": [
         {
-          "id": "overviewTreeView",
+          "id": "overviewWebView",
           "name": "Overview",
+          "type": "webview",
           "when": "true"
         },
         {

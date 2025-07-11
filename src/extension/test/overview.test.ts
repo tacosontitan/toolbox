@@ -1,24 +1,21 @@
 import * as assert from 'assert';
-import { OverviewTreeDataProvider } from '../overview/overview-tree-data-provider';
+import * as vscode from 'vscode';
+import { OverviewWebviewProvider } from '../overview/overview-webview-provider';
 
 suite('Overview Test Suite', () => {
-    test('OverviewTreeDataProvider should return overview items without DevOps service', () => {
-        const provider = new OverviewTreeDataProvider();
-        const children = provider.getChildren();
+    test('OverviewWebviewProvider should create without DevOps service', () => {
+        const extensionUri = vscode.Uri.file('/test');
+        const provider = new OverviewWebviewProvider(extensionUri);
         
-        assert.strictEqual(children.length, 1);
-        assert.ok(children[0].label.includes('hey there! today is'));
-        assert.ok(children[0].label.includes('day of'));
-        assert.ok(children[0].label.includes('and the word of the day is'));
+        assert.ok(provider);
+        assert.strictEqual(OverviewWebviewProvider.viewType, 'overviewWebView');
     });
 
-    test('Overview item should have greeting format', () => {
-        const provider = new OverviewTreeDataProvider();
-        const children = provider.getChildren();
-        const overviewText = children[0].label;
+    test('OverviewWebviewProvider should create with DevOps service', () => {
+        const extensionUri = vscode.Uri.file('/test');
+        const mockDevOpsService = {} as any; // Mock service for testing
+        const provider = new OverviewWebviewProvider(extensionUri, mockDevOpsService);
         
-        // Check that it follows the expected format
-        const regex = /hey there! today is \w+ \d+\w+, the \d+\w+ day of \d+, and the word of the day is \w+/;
-        assert.ok(regex.test(overviewText), `Overview text "${overviewText}" does not match expected format`);
+        assert.ok(provider);
     });
 });
