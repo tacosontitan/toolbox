@@ -40,6 +40,16 @@
           "type": "string",
           "default": "",
           "description": "What's your display name in Azure DevOps?"
+        },
+        "tacosontitan.toolbox.kanban.refreshInterval": {
+          "type": "number",
+          "default": 30,
+          "description": "How often (in seconds) should the kanban board refresh automatically?"
+        },
+        "tacosontitan.toolbox.kanban.showCompletedTasks": {
+          "type": "boolean",
+          "default": true,
+          "description": "Should completed tasks be shown in the Done column?"
         }
       }
     },
@@ -51,8 +61,22 @@
       {
         "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
         "title": "Hazel's Toolbox: Start Work Item"
+      },
+      {
+        "command": "tacosontitan.toolbox.azure.devops.openKanbanBoard",
+        "title": "Hazel's Toolbox: Open Kanban Board"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "tacosontitan.toolbox.kanbanBoard",
+          "name": "Kanban Board",
+          "when": "true"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
