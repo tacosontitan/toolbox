@@ -55,6 +55,18 @@
           "type": "string",
           "default": "Done",
           "description": "What's the state you'd like to map to 'done' for tasks in your Azure DevOps project?"
+        },
+        "tacosontitan.toolbox.time.retentionDays": {
+          "type": "number",
+          "default": 90,
+          "minimum": 1,
+          "maximum": 3650,
+          "description": "Number of days to retain time tracking data. Entries older than this will be automatically deleted."
+        },
+        "tacosontitan.toolbox.time.autoCleanup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically clean up time entries older than the retention period when the extension starts."
         }
       }
     },
@@ -120,6 +132,10 @@
       {
         "command": "tacosontitan.toolbox.time.clearAll",
         "title": "Hazel's Toolbox: Clear All Time Entries"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.cleanupOldEntries",
+        "title": "Hazel's Toolbox: Clean Up Old Time Entries"
       }
     ],
     "viewsContainers": {

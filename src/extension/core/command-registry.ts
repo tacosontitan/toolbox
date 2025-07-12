@@ -24,7 +24,8 @@ import {
 	ClockOutCommand, 
 	RefreshTimeCommand, 
 	LoadMoreDaysCommand,
-	ClearTimeEntriesCommand 
+	ClearTimeEntriesCommand,
+	CleanupOldEntriesCommand 
 } from '../time';
 
 /**
@@ -146,7 +147,8 @@ export class CommandRegistry {
 			new ClockInCommand(timeEntryService, timeTreeProvider),
 			new ClockOutCommand(timeEntryService, timeTreeProvider),
 			new RefreshTimeCommand(timeTreeProvider),
-			new ClearTimeEntriesCommand(timeEntryService, timeTreeProvider)
+			new ClearTimeEntriesCommand(timeEntryService, timeTreeProvider),
+			new CleanupOldEntriesCommand(timeEntryService, timeTreeProvider)
 		];
 	}
 
