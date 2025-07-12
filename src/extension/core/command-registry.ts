@@ -13,6 +13,7 @@ import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
 import { DevOpsService } from '../services/devops-service';
 import { WorkItemService } from '../services/work-item.service';
 import {
+	CleanupOldEntriesCommand,
 	ClearTimeEntriesCommand,
 	ClockInCommand,
 	ClockOutCommand,
@@ -166,7 +167,8 @@ export class CommandRegistry {
 			new ClockInCommand(timeEntryService, timeTreeProvider),
 			new ClockOutCommand(timeEntryService, timeTreeProvider),
 			new RefreshTimeCommand(timeTreeProvider),
-			new ClearTimeEntriesCommand(timeEntryService, timeTreeProvider)
+			new ClearTimeEntriesCommand(timeEntryService, timeTreeProvider),
+			new CleanupOldEntriesCommand(timeEntryService, timeTreeProvider)
 		];
 	}
 

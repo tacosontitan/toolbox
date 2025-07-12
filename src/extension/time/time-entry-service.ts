@@ -9,7 +9,10 @@ export class TimeEntryService {
     private static readonly DAYS_TO_LOAD_KEY = 'tacosontitan.toolbox.daysToLoad';
     private static readonly DEFAULT_DAYS_TO_SHOW = 10;
 
-    constructor(private context: vscode.ExtensionContext) {}
+    constructor(private context: vscode.ExtensionContext) {
+        // Auto-cleanup on startup if enabled
+        this.performAutoCleanupIfEnabled();
+    }
 
     /**
      * Records a clock in event
@@ -141,5 +144,50 @@ export class TimeEntryService {
         await this.context.globalState.update(TimeEntryService.TIME_ENTRIES_KEY, []);
         await this.resetDaysToLoad();
         vscode.window.showInformationMessage('All time entries cleared');
+    }
+
+    /**
+     * Performs automatic cleanup if enabled in settings
+     */
+    private async performAutoCleanupIfEnabled(): Promise<void> {
+        const config = vscode.workspace.getConfiguration('tacosontitan.toolbox.time');
+        const autoCleanup = config.get<boolean>('autoCleanup', true);
+        
+        if (autoCleanup) {
+            await this.cleanupOldEntries(false); // Silent cleanup on startup
+        }
+    }
+
+    /**
+     * Cleans up time entries older than the retention period
+     */
+    async cleanupOldEntries(showMessage: boolean = true): Promise<void> {
+        const config = vscode.workspace.getConfiguration('tacosontitan.toolbox.time');
+        const retentionDays = config.get<number>('retentionDays', 90);
+        
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
+        
+        const allEntries = await this.getAllTimeEntries();
+        const filteredEntries = allEntries.filter(entry => entry.timestamp >= cutoffDate);
+        
+        const removedCount = allEntries.length - filteredEntries.length;
+        
+        if (removedCount > 0) {
+            // Convert to plain objects for storage
+            const plainEntries = filteredEntries.map(e => ({
+                id: e.id,
+                type: e.type,
+                timestamp: e.timestamp.toISOString()
+            }));
+            
+            await this.context.globalState.update(TimeEntryService.TIME_ENTRIES_KEY, plainEntries);
+            
+            if (showMessage) {
+                vscode.window.showInformationMessage(`Cleaned up ${removedCount} old time entries (older than ${retentionDays} days)`);
+            }
+        } else if (showMessage) {
+            vscode.window.showInformationMessage(`No old entries to clean up (retention period: ${retentionDays} days)`);
+        }
     }
 }

@@ -10,5 +10,6 @@ export {
     ClockOutCommand,
     RefreshTimeCommand,
     LoadMoreDaysCommand,
-    ClearTimeEntriesCommand
+    ClearTimeEntriesCommand,
+    CleanupOldEntriesCommand
 } from './time-commands';
