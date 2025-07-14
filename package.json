@@ -101,7 +101,8 @@
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
-        "title": "Hazel's Toolbox: Start Work Item"
+        "title": "Hazel's Toolbox: Start Work Item",
+        "icon": "$(play)"
       }
     ],
     "viewsContainers": {
@@ -136,6 +137,11 @@
         },
         {
           "command": "tacosontitan.toolbox.azure.devops.addTask",
+          "when": "view == tasksTreeView",
+          "group": "navigation"
+        },
+        {
+          "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
           "when": "view == tasksTreeView",
           "group": "navigation"
         }
