@@ -96,4 +96,48 @@ suite('TasksTreeDataProvider Test Suite', () => {
         const transferItem = treeDataTransfer.get('application/vnd.code.tree.taskstreeview');
         assert.strictEqual(transferItem, undefined);
     });
+
+    test('mapTaskStateToGroup should correctly map task states', () => {
+        // This tests the state mapping logic used in reordering
+        const readyState = 'To Do';
+        const inProgressState = 'Doing';
+        const doneState = 'Done';
+
+        // Use a method to test the private mapTaskStateToGroup method indirectly
+        // by checking the behavior through the state grouping
+        const result1 = (provider as any).mapTaskStateToGroup('To Do', readyState, inProgressState, doneState);
+        assert.strictEqual(result1, 'Ready');
+
+        const result2 = (provider as any).mapTaskStateToGroup('Doing', readyState, inProgressState, doneState);
+        assert.strictEqual(result2, 'In Progress');
+
+        const result3 = (provider as any).mapTaskStateToGroup('Done', readyState, inProgressState, doneState);
+        assert.strictEqual(result3, 'Closed');
+
+        const result4 = (provider as any).mapTaskStateToGroup('Removed', readyState, inProgressState, doneState);
+        assert.strictEqual(result4, 'Removed');
+    });
+
+    test('calculateBasePriority should handle various scenarios', () => {
+        // Test with empty tasks
+        const emptyResult = (provider as any).calculateBasePriority([]);
+        assert.strictEqual(emptyResult, 1000);
+
+        // Test with tasks having priorities
+        const tasksWithPriorities: WorkItem[] = [
+            { id: 1, fields: { 'Microsoft.VSTS.Common.BacklogPriority': 100 } },
+            { id: 2, fields: { 'Microsoft.VSTS.Common.BacklogPriority': 200 } },
+            { id: 3, fields: { 'Microsoft.VSTS.Common.BacklogPriority': 300 } }
+        ];
+        const priorityResult = (provider as any).calculateBasePriority(tasksWithPriorities);
+        assert.strictEqual(priorityResult, 70); // 100 - (3 * 10) = 70
+
+        // Test with tasks without priorities
+        const tasksWithoutPriorities: WorkItem[] = [
+            { id: 1, fields: {} },
+            { id: 2, fields: {} }
+        ];
+        const noPriorityResult = (provider as any).calculateBasePriority(tasksWithoutPriorities);
+        assert.strictEqual(noPriorityResult, 1000);
+    });
 });
