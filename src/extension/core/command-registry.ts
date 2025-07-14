@@ -3,8 +3,8 @@ import { Command, ParametrizedCommand } from "./command";
 import { ServiceContainer } from './di/service-container';
 import { ICommandFactory } from './di/command-factory.interface';
 import { DefaultCommandFactory } from './di/default-command-factory';
-import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
-import { DevOpsService } from '../azure/devops/devops-service';
+import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-data-provider';
+import { IWorkItemDataService } from './workflow';
 import { ILogger, LogLevel } from './telemetry';
 
 /**
@@ -71,10 +71,10 @@ export class CommandRegistry {
 	 * Creates the tasks tree view and registers it with VS Code.
 	 */
 	private createTasksTreeView(context: vscode.ExtensionContext): TasksTreeDataProvider {
-		const devOpsService = this.serviceContainer.get<DevOpsService>('devOpsService');
+		const workItemDataService = this.serviceContainer.get<IWorkItemDataService>('workItemDataService');
 
 		// Create the tasks tree provider
-		const tasksTreeProvider = new TasksTreeDataProvider(devOpsService);
+		const tasksTreeProvider = new TasksTreeDataProvider(workItemDataService);
 
 		// Register the tree view
 		vscode.window.createTreeView('tasksTreeView', {

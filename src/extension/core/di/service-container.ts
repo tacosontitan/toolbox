@@ -3,7 +3,8 @@ import { ICommunicationService, NativeCommunicationService } from '../communicat
 import { IConfigurationProvider, ISecretProvider, NativeConfigurationProvider, NativeSecretProvider } from '../configuration';
 import { GitService } from '../source-control/git.service';
 import { ILogger, LogLevel, OutputLogger } from '../telemetry';
-import { IWorkItemService } from '../workflow';
+import { IWorkItemService, IWorkItemDataService } from '../workflow';
+import { AzureDevOpsWorkItemDataService } from '../workflow/azure-devops-work-item-data.service';
 import { DevOpsService } from '../../azure/devops/devops-service';
 import { AzureDevOpsWorkItemService } from '../../azure/devops/workflow/azure.devops.work-item.service';
 
@@ -48,6 +49,11 @@ export class ServiceContainer {
             const secretProvider = this.get<ISecretProvider>('secretProvider');
             const configurationProvider = this.get<IConfigurationProvider>('configurationProvider');
             return new DevOpsService(secretProvider, configurationProvider);
+        });
+
+        this.registerSingleton<IWorkItemDataService>('workItemDataService', () => {
+            const devOpsService = this.get<DevOpsService>('devOpsService');
+            return new AzureDevOpsWorkItemDataService(devOpsService);
         });
 
         this.registerSingleton<IWorkItemService>('workItemService', () => {

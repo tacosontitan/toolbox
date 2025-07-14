@@ -4,7 +4,7 @@ import * as assert from 'assert';
 // as well as import your extension to test it
 import * as vscode from 'vscode';
 import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-data-provider';
-import { DevOpsService } from '../azure/devops/devops-service';
+import { IWorkItemDataService } from '../core/workflow/work-item-data.service.interface';
 import { PlaceholderTreeItem } from '../azure/devops/placeholder-tree-item';
 
 suite('Extension Test Suite', () => {
@@ -16,15 +16,15 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('TasksTreeDataProvider shows placeholder when no work items', async () => {
-		// Create a mock DevOpsService that returns empty/invalid configuration
-		const mockDevOpsService = {
-			getPersonalAccessToken: async () => null,
-			getOrganizationUri: async () => null,
-			getProjectName: async () => null,
-			getUserDisplayName: async () => null
-		} as DevOpsService;
+		// Create a mock IWorkItemDataService that returns empty results
+		const mockDataService: IWorkItemDataService = {
+			loadActiveWorkItems: async () => [],
+			loadTasksForWorkItem: async () => [],
+			groupTasksByState: async () => [],
+			filterTasksByStateGroup: async () => []
+		};
 
-		const provider = new TasksTreeDataProvider(mockDevOpsService);
+		const provider = new TasksTreeDataProvider(mockDataService);
 		
 		// Since the provider loads data asynchronously in constructor, wait a bit
 		await new Promise(resolve => setTimeout(resolve, 100));
