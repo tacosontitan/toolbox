@@ -97,6 +97,24 @@
             "User Story"
           ],
           "description": "Work item types to include when loading active work items"
+        },
+        "tacosontitan.toolbox.meetings.participants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "Product Owner",
+            "Scrum Master",
+            "Tech Lead",
+            "Developer",
+            "QA Engineer",
+            "Business Analyst",
+            "Stakeholder",
+            "Designer",
+            "Architect"
+          ],
+          "description": "List of participants that can be selected for meeting notes"
         }
       }
     },
