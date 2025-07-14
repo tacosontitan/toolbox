@@ -55,6 +55,24 @@
           "type": "string",
           "default": "Done",
           "description": "What's the state you'd like to map to 'done' for tasks in your Azure DevOps project?"
+        },
+        "tacosontitan.toolbox.meetings.participants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "Product Owner",
+            "Scrum Master",
+            "Tech Lead",
+            "Developer",
+            "QA Engineer",
+            "Business Analyst",
+            "Stakeholder",
+            "Designer",
+            "Architect"
+          ],
+          "description": "List of participants that can be selected for meeting notes"
         }
       }
     },

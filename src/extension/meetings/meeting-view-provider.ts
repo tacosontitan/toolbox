@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { getMeetingTemplate, getMeetingTypes } from './meeting-templates';
+import { getConfiguredParticipants } from './participant-config';
 import { DevOpsService } from '../azure/devops/devops-service';
 
 export class MeetingViewProvider implements vscode.WebviewViewProvider {
@@ -32,11 +33,24 @@ export class MeetingViewProvider implements vscode.WebviewViewProvider {
             switch (data.type) {
                 case 'templateSelected':
                     {
-                        const template = getMeetingTemplate(data.meetingType);
+                        const template = getMeetingTemplate(data.meetingType, data.selectedParticipants || []);
                         webviewView.webview.postMessage({
                             type: 'updateTemplate',
                             template: template
                         });
+                        break;
+                    }
+                case 'participantsChanged':
+                    {
+                        // Regenerate template with new participants if a meeting type is selected
+                        const meetingTypeElement = data.meetingType;
+                        if (meetingTypeElement) {
+                            const template = getMeetingTemplate(meetingTypeElement, data.selectedParticipants || []);
+                            webviewView.webview.postMessage({
+                                type: 'updateTemplate',
+                                template: template
+                            });
+                        }
                         break;
                     }
                 case 'sendNotes':
@@ -103,6 +117,14 @@ export class MeetingViewProvider implements vscode.WebviewViewProvider {
         const meetingTypes = getMeetingTypes();
         const meetingOptionsHtml = meetingTypes.map(type => 
             `<option value="${type}">${type.charAt(0).toUpperCase() + type.slice(1)}</option>`
+        ).join('');
+
+        const participants = getConfiguredParticipants();
+        const participantsHtml = participants.map(participant => 
+            `<label class="participant-checkbox">
+                <input type="checkbox" value="${participant}" onchange="updateParticipants()">
+                ${participant}
+            </label>`
         ).join('');
 
         return `<!DOCTYPE html>
@@ -190,6 +212,28 @@ export class MeetingViewProvider implements vscode.WebviewViewProvider {
                     width: auto;
                     flex-shrink: 0;
                 }
+                
+                .participants-section {
+                    border: 1px solid var(--vscode-input-border);
+                    border-radius: 2px;
+                    padding: 10px;
+                    max-height: 150px;
+                    overflow-y: auto;
+                    background-color: var(--vscode-input-background);
+                }
+                
+                .participant-checkbox {
+                    display: block;
+                    margin-bottom: 8px;
+                    cursor: pointer;
+                    font-size: var(--vscode-font-size);
+                    color: var(--vscode-input-foreground);
+                }
+                
+                .participant-checkbox input[type="checkbox"] {
+                    margin-right: 8px;
+                    width: auto;
+                }
             </style>
         </head>
         <body>
@@ -199,6 +243,13 @@ export class MeetingViewProvider implements vscode.WebviewViewProvider {
                     <option value="">Select meeting type...</option>
                     ${meetingOptionsHtml}
                 </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Participants:</label>
+                <div class="participants-section">
+                    ${participantsHtml}
+                </div>
             </div>
             
             <div class="form-group">
@@ -218,14 +269,30 @@ export class MeetingViewProvider implements vscode.WebviewViewProvider {
                 const vscode = acquireVsCodeApi();
                 
                 document.getElementById('meetingType').addEventListener('change', function(e) {
-                    if (e.target.value) {
-                        vscode.postMessage({
-                            type: 'templateSelected',
-                            meetingType: e.target.value
-                        });
-                    }
+                    updateTemplate();
                     updateSendButton();
                 });
+                
+                function updateParticipants() {
+                    updateTemplate();
+                }
+                
+                function updateTemplate() {
+                    const meetingType = document.getElementById('meetingType').value;
+                    if (meetingType) {
+                        const selectedParticipants = getSelectedParticipants();
+                        vscode.postMessage({
+                            type: 'templateSelected',
+                            meetingType: meetingType,
+                            selectedParticipants: selectedParticipants
+                        });
+                    }
+                }
+                
+                function getSelectedParticipants() {
+                    const checkboxes = document.querySelectorAll('.participant-checkbox input[type="checkbox"]:checked');
+                    return Array.from(checkboxes).map(checkbox => checkbox.value);
+                }
                 
                 document.getElementById('meetingNotes').addEventListener('input', updateSendButton);
                 document.getElementById('workItemId').addEventListener('input', updateSendButton);
@@ -266,6 +333,9 @@ export class MeetingViewProvider implements vscode.WebviewViewProvider {
                             document.getElementById('meetingType').value = '';
                             document.getElementById('meetingNotes').value = '';
                             document.getElementById('workItemId').value = '';
+                            // Uncheck all participants
+                            const checkboxes = document.querySelectorAll('.participant-checkbox input[type="checkbox"]');
+                            checkboxes.forEach(checkbox => checkbox.checked = false);
                             updateSendButton();
                             break;
                     }

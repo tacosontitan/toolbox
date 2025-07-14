@@ -1,9 +1,19 @@
+import { generateParticipantsSection } from './participant-config';
+
 /**
  * Templates for different meeting types in the meeting view.
  */
 export interface MeetingTemplate {
     name: string;
     template: string;
+}
+
+/**
+ * Generate template with dynamic participants
+ */
+function generateTemplate(baseTemplate: string, selectedParticipants: string[] = []): string {
+    const participantsSection = generateParticipantsSection(selectedParticipants);
+    return baseTemplate.replace('{{PARTICIPANTS_SECTION}}', participantsSection);
 }
 
 export const MeetingTemplates: Record<string, MeetingTemplate> = {
@@ -13,9 +23,7 @@ export const MeetingTemplates: Record<string, MeetingTemplate> = {
 
 ## Date: ${new Date().toLocaleDateString()}
 
-## Attendees:
-- Product Owner: 
-- Team Members: 
+{{PARTICIPANTS_SECTION}}
 
 ## Agenda:
 1. Requirements Review
@@ -46,10 +54,7 @@ export const MeetingTemplates: Record<string, MeetingTemplate> = {
 
 ## Date: ${new Date().toLocaleDateString()}
 
-## Attendees:
-- QA Lead: 
-- Developers: 
-- Other: 
+{{PARTICIPANTS_SECTION}}
 
 ## Agenda:
 1. Test Strategy Review
@@ -86,9 +91,7 @@ export const MeetingTemplates: Record<string, MeetingTemplate> = {
 
 ## Date: ${new Date().toLocaleDateString()}
 
-## Attendees:
-- Stakeholders: 
-- Project Team: 
+{{PARTICIPANTS_SECTION}}
 
 ## Agenda:
 1. Project Status Update
@@ -129,9 +132,7 @@ export const MeetingTemplates: Record<string, MeetingTemplate> = {
 
 ## Date: ${new Date().toLocaleDateString()}
 
-## Attendees:
-- Reviewers: 
-- Author: 
+{{PARTICIPANTS_SECTION}}
 
 ## Review Focus:
 - Code Quality
@@ -169,9 +170,10 @@ export const MeetingTemplates: Record<string, MeetingTemplate> = {
     }
 };
 
-export function getMeetingTemplate(meetingType: string): string {
+export function getMeetingTemplate(meetingType: string, selectedParticipants: string[] = []): string {
     const template = MeetingTemplates[meetingType.toLowerCase()];
-    return template ? template.template : MeetingTemplates["stakeholders"].template;
+    const baseTemplate = template ? template.template : MeetingTemplates["stakeholders"].template;
+    return generateTemplate(baseTemplate, selectedParticipants);
 }
 
 export function getMeetingTypes(): string[] {
