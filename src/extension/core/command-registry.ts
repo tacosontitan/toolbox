@@ -1,54 +1,63 @@
 import * as vscode from 'vscode';
-import { DevOpsService } from '../azure/devops/devops-service';
-import {
-	SetTaskStateToActiveCommand,
-	SetTaskStateToClosedCommand,
-	SetTaskStateToNewCommand,
-	SetTaskStateToResolvedCommand
-} from '../azure/devops/set-task-state-command';
-import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../azure/devops/tasks-tree-commands';
+import { Command, ParametrizedCommand } from "./command";
+import { ServiceContainer } from './di/service-container';
+import { ICommandFactory } from './di/command-factory.interface';
+import { DefaultCommandFactory } from './di/default-command-factory';
 import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
-import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
-import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
-import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
-import { Command } from "./command";
-import { NativeCommunicationService } from './communication';
-import { IConfigurationProvider, ISecretProvider, NativeConfigurationProvider, NativeSecretProvider } from './configuration';
-import { GitService } from './source-control/git.service';
-import { LogLevel, OutputLogger } from './telemetry';
-import { IWorkItemService } from './workflow';
+import { DevOpsService } from '../azure/devops/devops-service';
+import { ILogger, LogLevel } from './telemetry';
 
 /**
  * Registry for all commands in the extension.
+ * Follows Single Responsibility Principle by focusing only on command registration.
  */
 export class CommandRegistry {
-	private static readonly logger = new OutputLogger("Hazel's Toolbox");
+	private readonly serviceContainer: ServiceContainer;
+	private readonly commandFactory: ICommandFactory;
+	private readonly logger: ILogger;
+
+	constructor(context: vscode.ExtensionContext) {
+		this.serviceContainer = ServiceContainer.getInstance(context);
+		this.commandFactory = new DefaultCommandFactory(this.serviceContainer);
+		this.logger = this.serviceContainer.get<ILogger>('logger');
+	}
 
 	/**
 	 * Registers all commands with the provided extension context.
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
 	public static registerCommands(context: vscode.ExtensionContext) {
+		const registry = new CommandRegistry(context);
+		registry.registerAllCommands(context);
+	}
+
+	/**
+	 * Registers all commands for the extension.
+	 */
+	private registerAllCommands(context: vscode.ExtensionContext): void {
 		// Create and register the tasks tree view first
 		const tasksTreeProvider = this.createTasksTreeView(context);
 
-		// Get regular commands
-		const commands = this.getCommandsToRegister(context);
+		// Register regular commands
+		const commands = this.commandFactory.createCommands();
 		for (const command of commands) {
 			this.registerCommand(command, context);
 		}
 
-		// Get and register tasks tree view commands
-		const treeCommands = this.getTasksTreeCommands(context, tasksTreeProvider);
+		// Register tasks tree view commands
+		const treeCommands = this.commandFactory.createTreeViewCommands(tasksTreeProvider);
 		for (const command of treeCommands) {
 			this.registerCommand(command, context);
 		}
 
-		// Special handling for the change task state command which takes a parameter
-		this.registerChangeTaskStateCommand(context, tasksTreeProvider);
+		// Register task state commands with special handling
+		this.registerTaskStateCommands(context, tasksTreeProvider);
 	}
 
-	private static registerCommand(command: Command, context: vscode.ExtensionContext) {
+	/**
+	 * Registers a single command with VS Code.
+	 */
+	private registerCommand(command: Command, context: vscode.ExtensionContext) {
 		const disposable = vscode.commands.registerCommand(command.id, () => {
 			command.execute().catch((error) => {
 				this.logger.log(LogLevel.Error, `Error executing command ${command.id}: ${error.message}`);
@@ -58,25 +67,11 @@ export class CommandRegistry {
 		context.subscriptions.push(disposable);
 	}
 
-	private static getCommandsToRegister(context: vscode.ExtensionContext): Command[] {
-		const communicationService = new NativeCommunicationService();
-		const secretProvider = new NativeSecretProvider(context);
-		const configurationProvider = new NativeConfigurationProvider();
-		const sourceControlService = new GitService();
-		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		const workItemService = new AzureDevOpsWorkItemService(this.logger, communicationService, devOpsService);
-		let commands = [
-			new CreateDefaultTasksCommand(secretProvider, configurationProvider, this.logger, workItemService, devOpsService),
-			new StartWorkItemCommand(secretProvider, configurationProvider, this.logger, communicationService, sourceControlService, workItemService)
-		];
-
-		return commands;
-	}
-
-	private static createTasksTreeView(context: vscode.ExtensionContext): TasksTreeDataProvider {
-		const secretProvider = new NativeSecretProvider(context);
-		const configurationProvider = new NativeConfigurationProvider();
-		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
+	/**
+	 * Creates the tasks tree view and registers it with VS Code.
+	 */
+	private createTasksTreeView(context: vscode.ExtensionContext): TasksTreeDataProvider {
+		const devOpsService = this.serviceContainer.get<DevOpsService>('devOpsService');
 
 		// Create the tasks tree provider
 		const tasksTreeProvider = new TasksTreeDataProvider(devOpsService);
@@ -90,48 +85,23 @@ export class CommandRegistry {
 		return tasksTreeProvider;
 	}
 
-	private static getTasksTreeCommands(context: vscode.ExtensionContext, tasksTreeProvider: TasksTreeDataProvider): Command[] {
-		const secretProvider = new NativeSecretProvider(context);
-		const configurationProvider = new NativeConfigurationProvider();
-		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		const workItemService = new AzureDevOpsWorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
-
-		return [
-			new SetWorkItemCommand(secretProvider, configurationProvider, tasksTreeProvider, devOpsService),
-			new RefreshTasksCommand(secretProvider, configurationProvider, tasksTreeProvider),
-			new AddTaskCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService)
-		];
-	}
-
-	private static registerChangeTaskStateCommand(context: vscode.ExtensionContext, tasksTreeProvider: TasksTreeDataProvider) {
-		const secretProvider = new NativeSecretProvider(context);
-		const configurationProvider = new NativeConfigurationProvider();
-		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		const workItemService = new AzureDevOpsWorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
-		this.registerTaskStateCommands(context, tasksTreeProvider, secretProvider, configurationProvider, workItemService);
-	}
-
-	private static registerTaskStateCommands(
-		context: vscode.ExtensionContext,
-		tasksTreeProvider: TasksTreeDataProvider,
-		secretProvider: ISecretProvider,
-		configurationProvider: IConfigurationProvider,
-		workItemService: IWorkItemService
-	) {
-		const commands = [
-			new SetTaskStateToNewCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService),
-			new SetTaskStateToActiveCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService),
-			new SetTaskStateToResolvedCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService),
-			new SetTaskStateToClosedCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService)
-		];
+	/**
+	 * Registers task state commands that require special parameter handling.
+	 */
+	private registerTaskStateCommands(context: vscode.ExtensionContext, tasksTreeProvider: TasksTreeDataProvider) {
+		const commands = this.commandFactory.createTaskStateCommands(tasksTreeProvider);
 
 		for (const command of commands) {
-			const disposable = vscode.commands.registerCommand(command.id, (taskItem: any) => {
-				command.execute(taskItem).catch((error: Error) => {
-					this.logger.log(LogLevel.Error, `Error executing command ${command.id}: ${error.message}`);
+			if (command instanceof ParametrizedCommand) {
+				const disposable = vscode.commands.registerCommand(command.id, (taskItem: any) => {
+					command.execute(taskItem).catch((error: Error) => {
+						this.logger.log(LogLevel.Error, `Error executing command ${command.id}: ${error.message}`);
+					});
 				});
-			});
-			context.subscriptions.push(disposable);
+				context.subscriptions.push(disposable);
+			} else {
+				this.registerCommand(command, context);
+			}
 		}
 	}
 }

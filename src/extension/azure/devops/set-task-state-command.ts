@@ -1,14 +1,27 @@
 import * as vscode from 'vscode';
 import { IConfigurationProvider, ISecretProvider } from "../../core/configuration";
-import { DevOpsCommand } from './devops-command';
+import { ParametrizedCommand } from '../../core/command';
 import { TasksTreeDataProvider } from './tasks-tree-data-provider';
 import { TaskTreeItem } from './task-tree-item';
 import { IWorkItemService } from '../../core/workflow';
 
 /**
+ * Base class for Azure DevOps commands that require parameters.
+ */
+export abstract class DevOpsParametrizedCommand<T = any> extends ParametrizedCommand<T> {
+    constructor(
+        id: string,
+        protected readonly secretProvider: ISecretProvider,
+        protected readonly configurationProvider: IConfigurationProvider
+    ) {
+        super(`azure.devops.${id}`);
+    }
+}
+
+/**
  * Base command to set task state to a specific value.
  */
-export abstract class SetTaskStateCommand extends DevOpsCommand {
+export abstract class SetTaskStateCommand extends DevOpsParametrizedCommand<TaskTreeItem> {
     constructor(
         commandSuffix: string,
         secretProvider: ISecretProvider,

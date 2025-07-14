@@ -19,7 +19,17 @@ export abstract class Command {
 
 	/**
 	 * Executes the command.
-	 * @param args The arguments to pass to the command.
 	 */
 	public abstract execute(): Promise<void>;
+}
+
+/**
+ * Represents a command that can accept parameters when executed.
+ */
+export abstract class ParametrizedCommand<T = any> extends Command {
+	/**
+	 * Executes the command with optional parameters.
+	 * @param args The arguments to pass to the command.
+	 */
+	public abstract execute(args?: T): Promise<void>;
 }
