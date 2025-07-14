@@ -3,7 +3,7 @@
   "displayName": "Hazel's Toolbox",
   "description": "Just a collection of tools created by and for Hazel to just do her job on a day-to-day basis.",
   "publisher": "tacosontitan",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -101,7 +101,8 @@
       },
       {
         "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
-        "title": "Hazel's Toolbox: Start Work Item"
+        "title": "Hazel's Toolbox: Start Work Item",
+        "icon": "$(play)"
       }
     ],
     "viewsContainers": {
@@ -136,6 +137,11 @@
         },
         {
           "command": "tacosontitan.toolbox.azure.devops.addTask",
+          "when": "view == tasksTreeView",
+          "group": "navigation"
+        },
+        {
+          "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
           "when": "view == tasksTreeView",
           "group": "navigation"
         }
