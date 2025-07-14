@@ -7,7 +7,7 @@ export class StateGroupTreeItem extends vscode.TreeItem {
     ) {
         super(`${stateName} (${taskCount})`, vscode.TreeItemCollapsibleState.Expanded);
         this.tooltip = `${taskCount} task(s) in ${stateName} state`;
-        this.contextValue = 'stateGroup';
+        this.contextValue = 'stateGroup,droppable';
         
         // Set icon based on state
         if (stateName === 'In Progress') {

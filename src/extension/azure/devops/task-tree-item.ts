@@ -14,7 +14,7 @@ export class TaskTreeItem extends vscode.TreeItem {
         this.description = `${state} • ${assignedTo}`;
         
         // Set context value based on current state for context menu visibility
-        const contextValues = ['task'];
+        const contextValues = ['task', 'draggable'];
         if (state !== 'New') {
             contextValues.push('taskCanSetToNew');
         }

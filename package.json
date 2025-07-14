@@ -119,7 +119,8 @@
         {
           "id": "tasksTreeView",
           "name": "Active Work Items",
-          "when": "true"
+          "when": "true",
+          "dragAndDropController": "tacosontitan.toolbox.azure.devops.taskReorder"
         }
       ]
     },

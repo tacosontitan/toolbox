@@ -7,7 +7,7 @@ import {
 	SetTaskStateToResolvedCommand
 } from '../azure/devops/set-task-state-command';
 import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../azure/devops/tasks-tree-commands';
-import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
+import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-data-provider';
 import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
 import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
 import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
@@ -81,10 +81,11 @@ export class CommandRegistry {
 		// Create the tasks tree provider
 		const tasksTreeProvider = new TasksTreeDataProvider(devOpsService);
 
-		// Register the tree view
+		// Register the tree view with drag and drop support
 		vscode.window.createTreeView('tasksTreeView', {
 			treeDataProvider: tasksTreeProvider,
-			showCollapseAll: true
+			showCollapseAll: true,
+			dragAndDropController: tasksTreeProvider
 		});
 
 		return tasksTreeProvider;
