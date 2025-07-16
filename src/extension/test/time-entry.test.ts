@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { TimeEntry, TimeEntryUtils } from '../todo/time/time-entry';
+import { TimeEntry, TimeEntryUtils } from '../domain/time/time-entry';
 
 suite('Time Entry Utils Tests', () => {
     test('Should format date correctly', () => {

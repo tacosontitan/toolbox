@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { TimeEntry, TimeEntryUtils } from './time-entry';
+import { TimeEntry, TimeEntryUtils } from '../../domain/time/time-entry';
 
 /**
  * Tree item representing a clock in or clock out event

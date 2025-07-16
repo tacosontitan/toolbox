@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { TimeTreeDataProvider } from '../../../application/providers/time-tree-data-provider';
+import { TimeEntryService } from '../../../application/time/time-entry-service';
 import { ClockInCommand } from '../../../todo/time';
-import { TimeEntryService } from '../../../todo/time/time-entry-service';
 import { BaseCommandFactory } from '../base-command-factory';
 
 /**

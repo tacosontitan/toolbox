@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { DayTimeEntry, TimeEntryUtils } from './time-entry';
+import { DayTimeEntry, TimeEntryUtils } from '../../domain/time/time-entry';
 
 /**
  * Tree item representing a single day's time entries

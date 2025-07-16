@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
 import { TimeTreeDataProvider } from '../../application/providers/time-tree-data-provider';
+import { TimeEntryService } from '../../application/time/time-entry-service';
 import { DevOpsService } from '../../infrastructure/azure/devops-service';
 import { WorkItemService } from '../../infrastructure/azure/work-item.service';
 import { NativeCommunicationService } from '../../infrastructure/vscode/communication-service.native';
 import { NativeConfigurationProvider } from '../../infrastructure/vscode/configuration-provider.native';
 import { NativeSecretProvider } from '../../infrastructure/vscode/secret-provider.native';
 import { TasksTreeDataProvider } from '../../todo/providers/tasks-tree-data-provider';
-import { TimeEntryService } from '../../todo/time/time-entry-service';
 import { GitService } from '../source-control/git.service';
 import { OutputLogger } from '../telemetry/output.logger';
 

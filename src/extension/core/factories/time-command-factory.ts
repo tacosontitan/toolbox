@@ -14,7 +14,7 @@ import {
 
 // Import service dependencies
 import { TimeTreeDataProvider } from '../../application/providers/time-tree-data-provider';
-import { TimeEntryService } from '../../todo/time/time-entry-service';
+import { TimeEntryService } from '../../application/time/time-entry-service';
 
 /**
  * Factory for creating time tracking related commands.

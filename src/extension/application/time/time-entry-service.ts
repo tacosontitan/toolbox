@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { TimeEntry, DayTimeEntry, TimeEntryUtils } from './time-entry';
+import { DayTimeEntry, TimeEntry, TimeEntryUtils } from '../../domain/time/time-entry';
 
 /**
  * Service for managing time entries using VS Code's global state
