@@ -1,16 +1,14 @@
 import { Command } from "../core/command";
 import { ICommunicationService } from "../core/communication";
-import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
+import { ConfigurationManager } from "../core/configuration";
 import { ISourceControlService } from "../core/source-control/source-control.service";
 import { ILogger, LogLevel } from "../core/telemetry";
 import { IWorkItemService, WorkItem } from "../core/workflow";
 
-export class StartWorkItemCommand
-    extends Command {
+export class StartWorkItemCommand extends Command {
 
     constructor(
-        private readonly secretProvider: ISecretProvider,
-        private readonly configurationProvider: IConfigurationProvider,
+        private readonly configurationManager: ConfigurationManager,
         private readonly logger: ILogger,
         private readonly communicationService: ICommunicationService,
         private readonly sourceControlService: ISourceControlService,

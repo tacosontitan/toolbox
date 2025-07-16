@@ -1,18 +1,16 @@
 import * as vscode from 'vscode';
 import { Command } from '../core/command';
-import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
+import { ConfigurationError, ConfigurationManager } from "../core/configuration";
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
-import { DevOpsService } from '../services/devops-service';
 
 /**
  * Command to search for work items.
+ * REFACTORED: Now uses ConfigurationManager for automatic validation!
  */
 export class SetWorkItemCommand extends Command {
     constructor(
-        private readonly secretProvider: ISecretProvider,
-        private readonly configurationProvider: IConfigurationProvider,
-        private tasksTreeProvider: TasksTreeDataProvider,
-        private devOpsService: DevOpsService
+        private readonly configurationManager: ConfigurationManager,
+        private tasksTreeProvider: TasksTreeDataProvider
     ) {
         super('searchWorkItem');
     }
@@ -32,17 +30,18 @@ export class SetWorkItemCommand extends Command {
         if (!isNaN(workItemNumber) && workItemNumber > 0) {
             // Open the work item in browser
             try {
-                const organizationUri = await this.devOpsService.getOrganizationUri();
-                const projectName = await this.devOpsService.getProjectName();
-
-                if (organizationUri && projectName) {
-                    const workItemUrl = `${organizationUri}/${encodeURIComponent(projectName)}/_workitems/edit/${workItemNumber}`;
-                    await vscode.env.openExternal(vscode.Uri.parse(workItemUrl));
-                } else {
-                    vscode.window.showErrorMessage('Azure DevOps configuration is incomplete. Cannot open work item.');
-                }
+                // 🎯 BEFORE: Manual validation with multiple DevOpsService calls
+                // 🎯 AFTER: One method call with automatic validation!
+                const config = await this.configurationManager.getAzureDevOpsConfiguration();
+                
+                const workItemUrl = `${config.organization}/${encodeURIComponent(config.project)}/_workitems/edit/${workItemNumber}`;
+                await vscode.env.openExternal(vscode.Uri.parse(workItemUrl));
+                
             } catch (error) {
-                vscode.window.showErrorMessage(`Failed to open work item: ${(error as Error).message}`);
+                // Configuration errors already handled with user-friendly messages
+                if (!(error instanceof ConfigurationError)) {
+                    vscode.window.showErrorMessage(`Failed to open work item: ${error instanceof Error ? error.message : String(error)}`);
+                }
             }
         } else {
             // For now, just show a message about text search not being implemented yet

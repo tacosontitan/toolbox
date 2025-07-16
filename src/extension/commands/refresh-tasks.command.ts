@@ -1,15 +1,15 @@
 import * as vscode from 'vscode';
 import { Command } from '../core/command';
-import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
+import { ConfigurationManager } from "../core/configuration";
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
 
 /**
  * Command to refresh the tasks tree view.
+ * REFACTORED: Simplified dependencies by using ConfigurationManager!
  */
 export class RefreshTasksCommand extends Command {
     constructor(
-        private readonly secretProvider: ISecretProvider,
-        private readonly configurationProvider: IConfigurationProvider,
+        private readonly configurationManager: ConfigurationManager,
         private tasksTreeProvider: TasksTreeDataProvider
     ) {
         super('refreshTasks');

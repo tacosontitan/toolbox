@@ -1,18 +1,18 @@
 import * as vscode from 'vscode';
 import { Command } from '../core/command';
-import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
+import { ConfigurationManager } from "../core/configuration";
 import { TaskTreeItem } from '../core/task-tree-item';
 import { IWorkItemService } from '../core/workflow';
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
 
 /**
  * Base command to set task state to a specific value.
+ * REFACTORED: Now uses ConfigurationManager for simplified dependencies!
  */
 export abstract class SetTaskStateCommand extends Command {
     constructor(
         commandSuffix: string,
-        protected readonly secretProvider: ISecretProvider,
-        protected readonly configurationProvider: IConfigurationProvider,
+        protected readonly configurationManager: ConfigurationManager,
         protected tasksTreeProvider: TasksTreeDataProvider,
         protected workItemService: IWorkItemService,
         protected targetState: string
@@ -41,12 +41,11 @@ export abstract class SetTaskStateCommand extends Command {
  */
 export class SetTaskStateToNewCommand extends SetTaskStateCommand {
     constructor(
-        secretProvider: ISecretProvider,
-        configurationProvider: IConfigurationProvider,
+        configurationManager: ConfigurationManager,
         tasksTreeProvider: TasksTreeDataProvider,
         workItemService: IWorkItemService
     ) {
-        super('New', secretProvider, configurationProvider, tasksTreeProvider, workItemService, 'New');
+        super('New', configurationManager, tasksTreeProvider, workItemService, 'New');
     }
 }
 
@@ -55,12 +54,11 @@ export class SetTaskStateToNewCommand extends SetTaskStateCommand {
  */
 export class SetTaskStateToActiveCommand extends SetTaskStateCommand {
     constructor(
-        secretProvider: ISecretProvider,
-        configurationProvider: IConfigurationProvider,
+        configurationManager: ConfigurationManager,
         tasksTreeProvider: TasksTreeDataProvider,
         workItemService: IWorkItemService
     ) {
-        super('Active', secretProvider, configurationProvider, tasksTreeProvider, workItemService, 'Active');
+        super('Active', configurationManager, tasksTreeProvider, workItemService, 'Active');
     }
 }
 
@@ -69,12 +67,11 @@ export class SetTaskStateToActiveCommand extends SetTaskStateCommand {
  */
 export class SetTaskStateToResolvedCommand extends SetTaskStateCommand {
     constructor(
-        secretProvider: ISecretProvider,
-        configurationProvider: IConfigurationProvider,
+        configurationManager: ConfigurationManager,
         tasksTreeProvider: TasksTreeDataProvider,
         workItemService: IWorkItemService
     ) {
-        super('Resolved', secretProvider, configurationProvider, tasksTreeProvider, workItemService, 'Resolved');
+        super('Resolved', configurationManager, tasksTreeProvider, workItemService, 'Resolved');
     }
 }
 
@@ -83,11 +80,10 @@ export class SetTaskStateToResolvedCommand extends SetTaskStateCommand {
  */
 export class SetTaskStateToClosedCommand extends SetTaskStateCommand {
     constructor(
-        secretProvider: ISecretProvider,
-        configurationProvider: IConfigurationProvider,
+        configurationManager: ConfigurationManager,
         tasksTreeProvider: TasksTreeDataProvider,
         workItemService: IWorkItemService
     ) {
-        super('Closed', secretProvider, configurationProvider, tasksTreeProvider, workItemService, 'Closed');
+        super('Closed', configurationManager, tasksTreeProvider, workItemService, 'Closed');
     }
 }
