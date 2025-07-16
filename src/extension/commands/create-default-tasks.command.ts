@@ -6,10 +6,10 @@ import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 import { DefaultTasks } from "../azure/devops/workflow/default-tasks";
 import { PreDefinedTaskJsonPatchDocumentMapper } from '../azure/devops/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
 import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
-import { DevOpsCommand } from '../core/devops-command';
 import { ILogger, LogLevel } from "../core/telemetry";
 import { IWorkItemService } from "../core/workflow";
 import { DevOpsService } from "../services/devops-service";
+import { DevOpsCommand } from './devops-command';
 
 /**
  * Represents a {@link DevOpsCommand} that creates pre-defined tasks representing the typical workflow of a work item in Azure DevOps.

@@ -1,9 +1,9 @@
 import { ICommunicationService } from "../core/communication";
 import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
-import { DevOpsCommand } from "../core/devops-command";
 import { ISourceControlService } from "../core/source-control/source-control.service";
 import { ILogger, LogLevel } from "../core/telemetry";
 import { IWorkItemService, WorkItem } from "../core/workflow";
+import { DevOpsCommand } from "./devops-command";
 
 export class StartWorkItemCommand
     extends DevOpsCommand {

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
-import { DevOpsCommand } from '../core/devops-command';
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
+import { DevOpsCommand } from './devops-command';
 
 /**
  * Command to refresh the tasks tree view.

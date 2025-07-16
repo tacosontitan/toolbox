@@ -1,5 +1,5 @@
 import { AzureCommand } from "../azure-command";
-import { IConfigurationProvider, ISecretProvider } from './configuration';
+import { IConfigurationProvider, ISecretProvider } from '../core/configuration';
 
 /**
  * Represents an {@link AzureCommand} focused on supporting Azure DevOps operations.

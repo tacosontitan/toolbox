@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
-import { DevOpsCommand } from '../core/devops-command';
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
 import { DevOpsService } from '../services/devops-service';
+import { DevOpsCommand } from './devops-command';
 
 /**
  * Command to search for work items.

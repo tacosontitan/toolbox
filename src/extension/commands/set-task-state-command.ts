@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import { TaskTreeItem } from '../azure/devops/task-tree-item';
 import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
-import { DevOpsCommand } from '../core/devops-command';
 import { IWorkItemService } from '../core/workflow';
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
+import { DevOpsCommand } from './devops-command';
 
 /**
  * Base command to set task state to a specific value.
