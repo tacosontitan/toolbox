@@ -81,11 +81,10 @@ export class CommandRegistry {
 		// Create the tasks tree provider
 		const tasksTreeProvider = new TasksTreeDataProvider(devOpsService);
 
-		// Register the tree view with drag and drop support
+		// Register the tree view
 		vscode.window.createTreeView('tasksTreeView', {
 			treeDataProvider: tasksTreeProvider,
-			showCollapseAll: true,
-			dragAndDropController: tasksTreeProvider
+			showCollapseAll: true
 		});
 
 		return tasksTreeProvider;

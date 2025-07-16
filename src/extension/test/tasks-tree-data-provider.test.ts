@@ -54,51 +54,8 @@ suite('TasksTreeDataProvider Test Suite', () => {
         provider = new TasksTreeDataProvider(mockDevOpsService);
     });
 
-    test('Drag and drop properties should be configured correctly', () => {
-        assert.deepStrictEqual(provider.dropMimeTypes, ['application/vnd.code.tree.taskstreeview']);
-        assert.deepStrictEqual(provider.dragMimeTypes, ['application/vnd.code.tree.taskstreeview']);
-    });
-
-    test('handleDrag should only allow task items to be dragged', async () => {
-        // Arrange
-        const mockTask: WorkItem = {
-            id: 123,
-            fields: {
-                'System.Title': 'Test Task',
-                'System.State': 'To Do'
-            }
-        };
-
-        const taskItem = new TaskTreeItem(mockTask);
-        const stateGroup = new StateGroupTreeItem('To Do', 1);
-        const treeDataTransfer = new vscode.DataTransfer();
-
-        // Act - try to drag mixed items
-        await provider.handleDrag([taskItem, stateGroup], treeDataTransfer, {} as vscode.CancellationToken);
-
-        // Assert - only task items should be in the transfer
-        const transferItem = treeDataTransfer.get('application/vnd.code.tree.taskstreeview');
-        assert.ok(transferItem);
-        const tasks = transferItem.value as TaskTreeItem[];
-        assert.strictEqual(tasks.length, 1);
-        assert.strictEqual(tasks[0].task.id, 123);
-    });
-
-    test('handleDrag should not set transfer data for non-task items', async () => {
-        // Arrange
-        const stateGroup = new StateGroupTreeItem('To Do', 1);
-        const treeDataTransfer = new vscode.DataTransfer();
-
-        // Act
-        await provider.handleDrag([stateGroup], treeDataTransfer, {} as vscode.CancellationToken);
-
-        // Assert
-        const transferItem = treeDataTransfer.get('application/vnd.code.tree.taskstreeview');
-        assert.strictEqual(transferItem, undefined);
-    });
-
     test('mapTaskStateToGroup should correctly map task states', () => {
-        // This tests the state mapping logic used in reordering
+        // This tests the state mapping logic
         const readyState = 'To Do';
         const inProgressState = 'Doing';
         const doneState = 'Done';
@@ -116,28 +73,5 @@ suite('TasksTreeDataProvider Test Suite', () => {
 
         const result4 = (provider as any).mapTaskStateToGroup('Removed', readyState, inProgressState, doneState);
         assert.strictEqual(result4, 'Removed');
-    });
-
-    test('calculateBasePriority should handle various scenarios', () => {
-        // Test with empty tasks
-        const emptyResult = (provider as any).calculateBasePriority([]);
-        assert.strictEqual(emptyResult, 1000);
-
-        // Test with tasks having priorities
-        const tasksWithPriorities: WorkItem[] = [
-            { id: 1, fields: { 'Microsoft.VSTS.Common.BacklogPriority': 100 } },
-            { id: 2, fields: { 'Microsoft.VSTS.Common.BacklogPriority': 200 } },
-            { id: 3, fields: { 'Microsoft.VSTS.Common.BacklogPriority': 300 } }
-        ];
-        const priorityResult = (provider as any).calculateBasePriority(tasksWithPriorities);
-        assert.strictEqual(priorityResult, 70); // 100 - (3 * 10) = 70
-
-        // Test with tasks without priorities
-        const tasksWithoutPriorities: WorkItem[] = [
-            { id: 1, fields: {} },
-            { id: 2, fields: {} }
-        ];
-        const noPriorityResult = (provider as any).calculateBasePriority(tasksWithoutPriorities);
-        assert.strictEqual(noPriorityResult, 1000);
     });
 });
