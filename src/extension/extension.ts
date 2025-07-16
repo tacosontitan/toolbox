@@ -8,5 +8,6 @@ import * as toolbox from './setup';
 export function activate(context: vscode.ExtensionContext) {
 	toolbox.initialize(context);
 	toolbox.registerServices(context);
+	toolbox.registerViews(context);
 	toolbox.registerCommands(context);
 }
