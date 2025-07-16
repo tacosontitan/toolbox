@@ -4,9 +4,9 @@ import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 import { WorkItem } from 'azure-devops-node-api/interfaces/WorkItemTrackingInterfaces';
 import * as vscode from 'vscode';
 import { PlaceholderTreeItem } from '../../core/placeholder-tree-item';
-import { StateGroupTreeItem } from '../../core/state-group-tree-item';
-import { TaskTreeItem } from '../../core/task-tree-item';
-import { WorkItemTreeItem } from '../../core/work-item-tree-item';
+import { StateGroupTreeItem } from '../../presentation/workflow/state-group-tree-item';
+import { TaskTreeItem } from '../../presentation/workflow/task-tree-item';
+import { WorkItemTreeItem } from '../../presentation/workflow/work-item-tree-item';
 import { DevOpsService } from '../services/devops-service';
 
 export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem> {

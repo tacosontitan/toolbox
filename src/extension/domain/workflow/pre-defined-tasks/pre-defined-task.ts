@@ -1,4 +1,4 @@
-import { Task } from "../../../core/task";
+import { Task } from "../task";
 import { WorkItemType } from "../work-item-type";
 
 /**
