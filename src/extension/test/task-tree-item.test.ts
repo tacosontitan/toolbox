@@ -1,7 +1,7 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { TaskTreeItem } from '../azure/devops/task-tree-item';
 import { WorkItem } from 'azure-devops-node-api/interfaces/WorkItemTrackingInterfaces';
+import * as vscode from 'vscode';
+import { TaskTreeItem } from '../core/task-tree-item';
 
 suite('TaskTreeItem Test Suite', () => {
     test('Task with Removed state should have red icon', () => {

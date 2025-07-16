@@ -1,16 +1,16 @@
 import * as vscode from 'vscode';
-import { DevOpsService } from '../azure/devops/devops-service';
+import { CreateDefaultTasksCommand } from '../commands/create-default-tasks.command';
 import {
-	SetTaskStateToActiveCommand,
-	SetTaskStateToClosedCommand,
-	SetTaskStateToNewCommand,
-	SetTaskStateToResolvedCommand
-} from '../azure/devops/set-task-state-command';
-import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../azure/devops/tasks-tree-commands';
-import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-provider';
-import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
-import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
-import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
+    SetTaskStateToActiveCommand,
+    SetTaskStateToClosedCommand,
+    SetTaskStateToNewCommand,
+    SetTaskStateToResolvedCommand
+} from '../commands/set-task-state.command';
+import { StartWorkItemCommand } from '../commands/start-work-item.command';
+import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../commands/tasks-tree-commands';
+import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
+import { DevOpsService } from '../services/devops-service';
+import { WorkItemService } from '../services/work-item.service';
 import { Command } from "./command";
 import { NativeCommunicationService } from './communication';
 import { IConfigurationProvider, ISecretProvider, NativeConfigurationProvider, NativeSecretProvider } from './configuration';
@@ -64,7 +64,7 @@ export class CommandRegistry {
 		const configurationProvider = new NativeConfigurationProvider();
 		const sourceControlService = new GitService();
 		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		const workItemService = new AzureDevOpsWorkItemService(this.logger, communicationService, devOpsService);
+		const workItemService = new WorkItemService(this.logger, communicationService, devOpsService);
 		let commands = [
 			new CreateDefaultTasksCommand(secretProvider, configurationProvider, this.logger, workItemService, devOpsService),
 			new StartWorkItemCommand(secretProvider, configurationProvider, this.logger, communicationService, sourceControlService, workItemService)
@@ -94,7 +94,7 @@ export class CommandRegistry {
 		const secretProvider = new NativeSecretProvider(context);
 		const configurationProvider = new NativeConfigurationProvider();
 		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		const workItemService = new AzureDevOpsWorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
+		const workItemService = new WorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
 
 		return [
 			new SetWorkItemCommand(secretProvider, configurationProvider, tasksTreeProvider, devOpsService),
@@ -107,7 +107,7 @@ export class CommandRegistry {
 		const secretProvider = new NativeSecretProvider(context);
 		const configurationProvider = new NativeConfigurationProvider();
 		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		const workItemService = new AzureDevOpsWorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
+		const workItemService = new WorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
 		this.registerTaskStateCommands(context, tasksTreeProvider, secretProvider, configurationProvider, workItemService);
 	}
 

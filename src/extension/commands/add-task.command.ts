@@ -1,20 +1,20 @@
 import * as vscode from 'vscode';
-import { IConfigurationProvider, ISecretProvider } from "../../core/configuration";
-import { DevOpsCommand } from './devops-command';
-import { TasksTreeDataProvider } from './tasks-tree-data-provider';
-import { IWorkItemService } from '../../core/workflow';
+import { Command } from '../core/command';
+import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
+import { IWorkItemService } from '../core/workflow';
+import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
 
 /**
  * Command to add a new task to the current work item.
  */
-export class AddTaskCommand extends DevOpsCommand {
+export class AddTaskCommand extends Command {
     constructor(
-        secretProvider: ISecretProvider,
-        configurationProvider: IConfigurationProvider,
+        private readonly secretProvider: ISecretProvider,
+        private readonly configurationProvider: IConfigurationProvider,
         private tasksTreeProvider: TasksTreeDataProvider,
         private workItemService: IWorkItemService
     ) {
-        super('addTask', secretProvider, configurationProvider);
+        super('addTask');
     }
 
     async execute(...args: any[]): Promise<void> {

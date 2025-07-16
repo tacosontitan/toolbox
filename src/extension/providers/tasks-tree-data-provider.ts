@@ -1,13 +1,13 @@
-import * as vscode from 'vscode';
 import * as devops from "azure-devops-node-api";
 import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 import { WorkItem } from 'azure-devops-node-api/interfaces/WorkItemTrackingInterfaces';
-import { DevOpsService } from './devops-service';
-import { WorkItemTreeItem } from './work-item-tree-item';
-import { TaskTreeItem } from './task-tree-item';
-import { PlaceholderTreeItem } from './placeholder-tree-item';
-import { StateGroupTreeItem } from './state-group-tree-item';
+import * as vscode from 'vscode';
+import { PlaceholderTreeItem } from '../core/placeholder-tree-item';
+import { StateGroupTreeItem } from '../core/state-group-tree-item';
+import { TaskTreeItem } from '../core/task-tree-item';
+import { WorkItemTreeItem } from '../core/work-item-tree-item';
+import { DevOpsService } from '../services/devops-service';
 
 export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem | undefined | null | void> = new vscode.EventEmitter<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem | undefined | null | void>();
@@ -43,7 +43,7 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         if (!element) {
             // Root level - show all active work items
             if (this.activeWorkItems.length === 0) {
-                return [new PlaceholderTreeItem("No active work items", "No bugs or user stories assigned to you in non-closed state", 'info')];
+                return [new PlaceholderTreeItem("No active work items", "No active work items assigned to you", 'info')];
             }
             return this.activeWorkItems.map(workItem => new WorkItemTreeItem(workItem, vscode.TreeItemCollapsibleState.Expanded));
         }
@@ -55,7 +55,7 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
             if (tasks.length === 0) {
                 return [new PlaceholderTreeItem("No tasks found", "This work item has no child tasks", 'info')];
             }
-            
+
             // Group tasks by state
             const stateGroups = await this.groupTasksByState(tasks, workItemId);
             return stateGroups;
@@ -67,7 +67,7 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
             if (!workItemId) {
                 return [];
             }
-            
+
             const tasks = this.workItemTasks.get(workItemId) || [];
             const filteredTasks = await this.filterTasksByStateGroup(tasks, element.stateName);
             return filteredTasks.map(task => new TaskTreeItem(task));
@@ -92,17 +92,25 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
             const connection = new WebApi(organizationUri, authenticationHandler);
             const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
 
-            // Get all active work items (bugs and user stories) assigned to the user
+            // Get excluded work item states from configuration
+            const excludedStates = await this.devOpsService.getExcludedWorkItemStates();
+            const stateFilters = excludedStates.map(state => `[System.State] <> '${state}'`).join(' AND ');
+
+            // Get active work item types from configuration
+            const activeWorkItemTypes = await this.devOpsService.getActiveWorkItemTypes();
+            const workItemTypeFilters = activeWorkItemTypes.map(type => `[System.WorkItemType] = '${type}'`).join(' OR ');
+
+            // Get all active work items assigned to the user
             const wiql = {
-                query: `SELECT [System.Id] FROM WorkItems WHERE [System.AssignedTo] CONTAINS '${userDisplayName}' AND ([System.WorkItemType] = 'Bug' OR [System.WorkItemType] = 'User Story') AND [System.State] <> 'Closed' AND [System.State] <> 'Removed' AND [System.State] <> 'Spiked' ORDER BY [System.Id]`
+                query: `SELECT [System.Id] FROM WorkItems WHERE [System.AssignedTo] CONTAINS '${userDisplayName}' AND (${workItemTypeFilters}) AND ${stateFilters} ORDER BY [System.Id]`
             };
 
             const queryResult = await workItemTrackingClient.queryByWiql(wiql);
-            
+
             if (queryResult.workItems && queryResult.workItems.length > 0) {
                 const workItemIds = queryResult.workItems.map(wi => wi.id!);
                 this.activeWorkItems = await workItemTrackingClient.getWorkItems(workItemIds, undefined, undefined, undefined, undefined, projectName);
-                
+
                 // Load tasks for each work item
                 this.workItemTasks.clear();
                 for (const workItem of this.activeWorkItems) {
@@ -131,13 +139,13 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
 
     private async loadTasksForWorkItem(workItemId: number, workItemTrackingClient: WorkItemTrackingApi, projectName: string): Promise<void> {
         try {
-            // Get child tasks using a WIQL query
+            // Get child tasks using a WIQL query, ordered by backlog priority to maintain backlog order
             const wiql = {
-                query: `SELECT [System.Id] FROM WorkItems WHERE [System.Parent] = ${workItemId} AND [System.WorkItemType] = 'Task' ORDER BY [System.Id]`
+                query: `SELECT [System.Id] FROM WorkItems WHERE [System.Parent] = ${workItemId} AND [System.WorkItemType] = 'Task' ORDER BY [Microsoft.VSTS.Common.BacklogPriority] ASC, [System.Id] ASC`
             };
 
             const queryResult = await workItemTrackingClient.queryByWiql(wiql);
-            
+
             if (queryResult.workItems && queryResult.workItems.length > 0) {
                 const taskIds = queryResult.workItems.map(wi => wi.id!);
                 const tasks = await workItemTrackingClient.getWorkItems(taskIds, undefined, undefined, undefined, undefined, projectName);
@@ -155,20 +163,20 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         const readyState = await this.devOpsService.getReadyTaskState();
         const inProgressState = await this.devOpsService.getInProgressTaskState();
         const doneState = await this.devOpsService.getDoneTaskState();
-        const showRemovedTasks = await this.devOpsService.getShowRemovedTasks();
+        const showRemovedTasks = await this.devOpsService.getShowInactiveTasks();
 
         // Filter out removed tasks if configured to not show them
-        const filteredTasks = showRemovedTasks 
-            ? tasks 
+        const filteredTasks = showRemovedTasks
+            ? tasks
             : tasks.filter(task => task.fields?.['System.State'] !== 'Removed');
 
         // Group tasks by their mapped state categories
         const groups: { [key: string]: WorkItem[] } = {};
-        
+
         for (const task of filteredTasks) {
             const taskState = task.fields?.['System.State'];
             const mappedState = this.mapTaskStateToGroup(taskState, readyState, inProgressState, doneState);
-            
+
             if (!groups[mappedState]) {
                 groups[mappedState] = [];
             }
@@ -204,15 +212,15 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         if (taskState === inProgressState || taskState === 'Active' || taskState === 'Doing' || taskState === 'In Progress') {
             return 'In Progress';
         }
-        
+
         if (taskState === readyState || taskState === 'New' || taskState === 'To Do' || taskState === 'Ready') {
             return 'Ready';
         }
-        
+
         if (taskState === doneState || taskState === 'Done' || taskState === 'Completed' || taskState === 'Closed' || taskState === 'Resolved') {
             return 'Closed';
         }
-        
+
         if (taskState === 'Removed') {
             return 'Removed';
         }
@@ -225,16 +233,16 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
         const readyState = await this.devOpsService.getReadyTaskState();
         const inProgressState = await this.devOpsService.getInProgressTaskState();
         const doneState = await this.devOpsService.getDoneTaskState();
-        const showRemovedTasks = await this.devOpsService.getShowRemovedTasks();
+        const showRemovedTasks = await this.devOpsService.getShowInactiveTasks();
 
         return tasks.filter(task => {
             const taskState = task.fields?.['System.State'];
-            
+
             // Filter out removed tasks if configured to not show them
             if (!showRemovedTasks && taskState === 'Removed') {
                 return false;
             }
-            
+
             const mappedState = this.mapTaskStateToGroup(taskState, readyState, inProgressState, doneState);
             return mappedState === stateName;
         });
@@ -242,5 +250,155 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
 
     getActiveWorkItems(): WorkItem[] {
         return this.activeWorkItems;
+    }
+
+    // Drag and Drop implementation
+    async handleDrag(source: (WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem)[], treeDataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): Promise<void> {
+        // Only allow dragging tasks
+        const tasks = source.filter(item => item instanceof TaskTreeItem) as TaskTreeItem[];
+        if (tasks.length === 0) {
+            return;
+        }
+
+        treeDataTransfer.set('application/vnd.code.tree.taskstreeview', new vscode.DataTransferItem(tasks));
+    }
+
+    async handleDrop(target: WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem | undefined, treeDataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): Promise<void> {
+        const transferItem = treeDataTransfer.get('application/vnd.code.tree.taskstreeview');
+        if (!transferItem) {
+            return;
+        }
+
+        const tasks = transferItem.value as TaskTreeItem[];
+        if (!tasks || tasks.length === 0) {
+            return;
+        }
+
+        // Find the target state group
+        let targetStateGroup: StateGroupTreeItem | undefined;
+        let targetWorkItemId: number | undefined;
+        let insertIndex: number | undefined;
+
+        if (target instanceof StateGroupTreeItem) {
+            targetStateGroup = target;
+            targetWorkItemId = this.stateGroupToWorkItem.get(target);
+            // Insert at the end of the state group
+            insertIndex = undefined;
+        } else if (target instanceof TaskTreeItem) {
+            // Find the parent state group and work item for the target task
+            for (const [stateGroup, workItemId] of this.stateGroupToWorkItem.entries()) {
+                const workItemTasks = this.workItemTasks.get(workItemId) || [];
+                const targetTaskIndex = workItemTasks.findIndex(task => task.id === target.task.id);
+                if (targetTaskIndex !== -1) {
+                    targetStateGroup = stateGroup;
+                    targetWorkItemId = workItemId;
+                    insertIndex = targetTaskIndex;
+                    break;
+                }
+            }
+        }
+
+        if (!targetStateGroup || !targetWorkItemId) {
+            vscode.window.showErrorMessage('Invalid drop target. Tasks can only be dropped on state groups or other tasks.');
+            return;
+        }
+
+        try {
+            // Update task order in Azure DevOps
+            await this.reorderTasksInBacklog(tasks, targetWorkItemId, targetStateGroup.stateName, insertIndex);
+
+            // Refresh the tree view to reflect changes
+            this.refresh();
+
+            vscode.window.showInformationMessage(`Reordered ${tasks.length} task(s) in the backlog.`);
+        } catch (error) {
+            vscode.window.showErrorMessage(`Failed to reorder tasks: ${(error as Error).message}`);
+        }
+    }
+
+    private async reorderTasksInBacklog(tasksToReorder: TaskTreeItem[], targetWorkItemId: number, targetStateName: string, insertIndex?: number): Promise<void> {
+        const personalAccessToken = await this.devOpsService.getPersonalAccessToken();
+        const organizationUri = await this.devOpsService.getOrganizationUri();
+        const projectName = await this.devOpsService.getProjectName();
+
+        if (!personalAccessToken || !organizationUri || !projectName) {
+            throw new Error('Azure DevOps configuration is incomplete. Please check your settings.');
+        }
+
+        const authenticationHandler = devops.getPersonalAccessTokenHandler(personalAccessToken);
+        const connection = new WebApi(organizationUri, authenticationHandler);
+        const workItemTrackingClient: WorkItemTrackingApi = await connection.getWorkItemTrackingApi();
+
+        // Get current tasks for the target work item
+        const currentTasks = this.workItemTasks.get(targetWorkItemId) || [];
+
+        // Filter tasks by the target state to work within the same state group
+        const readyState = await this.devOpsService.getReadyTaskState();
+        const inProgressState = await this.devOpsService.getInProgressTaskState();
+        const doneState = await this.devOpsService.getDoneTaskState();
+
+        const tasksInTargetState = currentTasks.filter(task => {
+            const taskState = task.fields?.['System.State'];
+            const mappedState = this.mapTaskStateToGroup(taskState, readyState, inProgressState, doneState);
+            return mappedState === targetStateName;
+        });
+
+        // Calculate new backlog priorities
+        const updates: { taskId: number, newPriority: number }[] = [];
+
+        // Remove the tasks being reordered from their current positions
+        const remainingTasks = tasksInTargetState.filter(task =>
+            !tasksToReorder.some(reorderTask => reorderTask.task.id === task.id)
+        );
+
+        // Determine insert position
+        const targetIndex = insertIndex !== undefined ? insertIndex : remainingTasks.length;
+
+        // Create new order with reordered tasks inserted at target position
+        const newOrder = [
+            ...remainingTasks.slice(0, targetIndex),
+            ...tasksToReorder.map(item => item.task),
+            ...remainingTasks.slice(targetIndex)
+        ];
+
+        // Calculate priorities - use the pattern from existing priorities or create new ones
+        const basePriority = this.calculateBasePriority(tasksInTargetState);
+
+        for (let i = 0; i < newOrder.length; i++) {
+            const task = newOrder[i];
+            const newPriority = basePriority + (i * 10); // Space priorities by 10 to allow future insertions
+            updates.push({ taskId: task.id!, newPriority });
+        }
+
+        // Update each task's backlog priority
+        for (const update of updates) {
+            const patchDocument = [
+                {
+                    op: 'replace',
+                    path: '/fields/Microsoft.VSTS.Common.BacklogPriority',
+                    value: update.newPriority
+                }
+            ];
+
+            await workItemTrackingClient.updateWorkItem(undefined, patchDocument, update.taskId, projectName);
+        }
+    }
+
+    private calculateBasePriority(existingTasks: WorkItem[]): number {
+        if (existingTasks.length === 0) {
+            return 1000; // Start with 1000 if no tasks exist
+        }
+
+        // Find the minimum priority and subtract to create space
+        const priorities = existingTasks
+            .map(task => task.fields?.['Microsoft.VSTS.Common.BacklogPriority'] as number)
+            .filter(priority => priority !== undefined && priority !== null);
+
+        if (priorities.length === 0) {
+            return 1000; // Default if no priorities are set
+        }
+
+        const minPriority = Math.min(...priorities);
+        return Math.max(minPriority - (existingTasks.length * 10), 1); // Ensure positive priority
     }
 }

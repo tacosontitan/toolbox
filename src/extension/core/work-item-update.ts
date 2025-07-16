@@ -1,5 +1,5 @@
 import { JsonPatchDocument, JsonPatchOperation, Operation } from "azure-devops-node-api/interfaces/common/VSSInterfaces";
-import { WorkItem } from "../../../core/workflow";
+import { WorkItem } from "./workflow";
 
 export class WorkItemUpdate {
     private operations: JsonPatchOperation[] = [];

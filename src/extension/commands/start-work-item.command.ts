@@ -1,22 +1,22 @@
-import { ICommunicationService } from "../../../core/communication";
-import { IConfigurationProvider, ISecretProvider } from "../../../core/configuration";
-import { ISourceControlService } from "../../../core/source-control/source-control.service";
-import { ILogger, LogLevel } from "../../../core/telemetry";
-import { IWorkItemService, WorkItem } from "../../../core/workflow";
-import { DevOpsCommand } from "../devops-command";
+import { Command } from "../core/command";
+import { ICommunicationService } from "../core/communication";
+import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
+import { ISourceControlService } from "../core/source-control/source-control.service";
+import { ILogger, LogLevel } from "../core/telemetry";
+import { IWorkItemService, WorkItem } from "../core/workflow";
 
 export class StartWorkItemCommand
-    extends DevOpsCommand {
+    extends Command {
 
     constructor(
-        secretProvider: ISecretProvider,
-        configurationProvider: IConfigurationProvider,
+        private readonly secretProvider: ISecretProvider,
+        private readonly configurationProvider: IConfigurationProvider,
         private readonly logger: ILogger,
         private readonly communicationService: ICommunicationService,
         private readonly sourceControlService: ISourceControlService,
         private readonly workItemService: IWorkItemService
     ) {
-        super('startWorkItem', secretProvider, configurationProvider);
+        super('startWorkItem');
     }
 
     /** @inheritdoc */

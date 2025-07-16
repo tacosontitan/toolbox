@@ -3,7 +3,7 @@
   "displayName": "Hazel's Toolbox",
   "description": "Just a collection of tools created by and for Hazel to just do her job on a day-to-day basis.",
   "publisher": "tacosontitan",
-  "version": "1.0.37",
+  "version": "1.0.38",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -21,86 +21,123 @@
       "title": "Hazel's Toolbox",
       "type": "object",
       "properties": {
-        "tacosontitan.toolbox.azure.devops.useClassicUri": {
+        "tacosontitan.toolbox.useClassicUri": {
           "type": "boolean",
           "default": false,
           "description": "Does your organization use the classic URI format for Azure DevOps?"
         },
-        "tacosontitan.toolbox.azure.devops.organization": {
+        "tacosontitan.toolbox.organization": {
           "type": "string",
           "default": "",
           "description": "What's the name of your Azure DevOps organization?"
         },
-        "tacosontitan.toolbox.azure.devops.project": {
+        "tacosontitan.toolbox.project": {
           "type": "string",
           "default": "",
           "description": "What's the project you're working with in Azure DevOps?"
         },
-        "tacosontitan.toolbox.azure.devops.userDisplayName": {
+        "tacosontitan.toolbox.userDisplayName": {
           "type": "string",
           "default": "",
           "description": "What's your display name in Azure DevOps?"
         },
-        "tacosontitan.toolbox.azure.devops.readyTaskState": {
+        "tacosontitan.toolbox.readyTaskState": {
           "type": "string",
           "default": "To Do",
           "description": "What's the state you'd like to map to 'ready' for tasks in your Azure DevOps project?"
         },
-        "tacosontitan.toolbox.azure.devops.inProgressTaskState": {
+        "tacosontitan.toolbox.inProgressTaskState": {
           "type": "string",
           "default": "Doing",
           "description": "What's the state you'd like to map to 'in progress' for tasks in your Azure DevOps project?"
         },
-        "tacosontitan.toolbox.azure.devops.doneTaskState": {
+        "tacosontitan.toolbox.doneTaskState": {
           "type": "string",
           "default": "Done",
           "description": "What's the state you'd like to map to 'done' for tasks in your Azure DevOps project?"
         },
-        "tacosontitan.toolbox.azure.devops.showRemovedTasks": {
+        "tacosontitan.toolbox.showInactiveTasks": {
           "type": "boolean",
           "default": false,
-          "description": "Should tasks in a 'removed' state be displayed in the task view?"
+          "description": "Should tasks in an 'inactive' state be displayed in the task view?"
+        },
+        "tacosontitan.toolbox.inactiveWorkItemStates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "Removed",
+            "Spiked",
+            "Inactive"
+          ],
+          "description": "States that represent the idea that a work item is inactive in Azure DevOps."
+        },
+        "tacosontitan.toolbox.completeWorkItemStates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "Done",
+            "Closed",
+            "Resolved",
+            "Passed",
+            "Complete"
+          ],
+          "description": "States that represent the idea that a work item is complete in Azure DevOps."
+        },
+        "tacosontitan.toolbox.activeWorkItemTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "Bug",
+            "User Story"
+          ],
+          "description": "Work item types to include when loading active work items"
         }
       }
     },
     "commands": [
       {
-        "command": "tacosontitan.toolbox.azure.devops.createDefaultTasks",
-        "title": "Hazel's Toolbox: Create Default Azure DevOps Tasks"
+        "command": "tacosontitan.toolbox.createDefaultTasks",
+        "title": "Hazel's Toolbox: Create Default Tasks"
       },
       {
-        "command": "tacosontitan.toolbox.azure.devops.searchWorkItem",
+        "command": "tacosontitan.toolbox.searchWorkItem",
         "title": "Hazel's Toolbox: Search Work Item",
         "icon": "$(search)"
       },
       {
-        "command": "tacosontitan.toolbox.azure.devops.refreshTasks",
+        "command": "tacosontitan.toolbox.refreshTasks",
         "title": "Hazel's Toolbox: Refresh",
         "icon": "$(refresh)"
       },
       {
-        "command": "tacosontitan.toolbox.azure.devops.addTask",
+        "command": "tacosontitan.toolbox.addTask",
         "title": "Hazel's Toolbox: Add Task",
         "icon": "$(add)"
       },
       {
-        "command": "tacosontitan.toolbox.azure.devops.setTaskStateToNew",
+        "command": "tacosontitan.toolbox.setTaskStateToNew",
         "title": "Hazel's Toolbox: Set Task to New"
       },
       {
-        "command": "tacosontitan.toolbox.azure.devops.setTaskStateToActive",
+        "command": "tacosontitan.toolbox.setTaskStateToActive",
         "title": "Hazel's Toolbox: Set Task to Active"
       },
       {
-        "command": "tacosontitan.toolbox.azure.devops.setTaskStateToResolved",
+        "command": "tacosontitan.toolbox.setTaskStateToResolved",
         "title": "Hazel's Toolbox: Set Task to Resolved"
       },
       {
-        "command": "tacosontitan.toolbox.azure.devops.setTaskStateToClosed",
+        "command": "tacosontitan.toolbox.setTaskStateToClosed",
         "title": "Hazel's Toolbox: Set Task to Closed"
       },
       {
-        "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
+        "command": "tacosontitan.toolbox.startWorkItem",
         "title": "Hazel's Toolbox: Start Work Item",
         "icon": "$(play)"
       }
@@ -126,44 +163,44 @@
     "menus": {
       "view/title": [
         {
-          "command": "tacosontitan.toolbox.azure.devops.searchWorkItem",
+          "command": "tacosontitan.toolbox.searchWorkItem",
           "when": "view == tasksTreeView",
           "group": "navigation"
         },
         {
-          "command": "tacosontitan.toolbox.azure.devops.refreshTasks",
+          "command": "tacosontitan.toolbox.refreshTasks",
           "when": "view == tasksTreeView",
           "group": "navigation"
         },
         {
-          "command": "tacosontitan.toolbox.azure.devops.addTask",
+          "command": "tacosontitan.toolbox.addTask",
           "when": "view == tasksTreeView",
           "group": "navigation"
         },
         {
-          "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
+          "command": "tacosontitan.toolbox.startWorkItem",
           "when": "view == tasksTreeView",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "tacosontitan.toolbox.azure.devops.setTaskStateToNew",
+          "command": "tacosontitan.toolbox.setTaskStateToNew",
           "when": "view == tasksTreeView && viewItem =~ /taskCanSetToNew/",
           "group": "1_state"
         },
         {
-          "command": "tacosontitan.toolbox.azure.devops.setTaskStateToActive",
+          "command": "tacosontitan.toolbox.setTaskStateToActive",
           "when": "view == tasksTreeView && viewItem =~ /taskCanSetToActive/",
           "group": "1_state"
         },
         {
-          "command": "tacosontitan.toolbox.azure.devops.setTaskStateToResolved",
+          "command": "tacosontitan.toolbox.setTaskStateToResolved",
           "when": "view == tasksTreeView && viewItem =~ /taskCanSetToResolved/",
           "group": "1_state"
         },
         {
-          "command": "tacosontitan.toolbox.azure.devops.setTaskStateToClosed",
+          "command": "tacosontitan.toolbox.setTaskStateToClosed",
           "when": "view == tasksTreeView && viewItem =~ /taskCanSetToClosed/",
           "group": "1_state"
         }
