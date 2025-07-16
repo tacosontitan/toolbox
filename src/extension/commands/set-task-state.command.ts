@@ -1,23 +1,23 @@
 import * as vscode from 'vscode';
-import { TaskTreeItem } from '../azure/devops/task-tree-item';
+import { Command } from '../core/command';
 import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
+import { TaskTreeItem } from '../core/task-tree-item';
 import { IWorkItemService } from '../core/workflow';
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
-import { DevOpsCommand } from './devops-command';
 
 /**
  * Base command to set task state to a specific value.
  */
-export abstract class SetTaskStateCommand extends DevOpsCommand {
+export abstract class SetTaskStateCommand extends Command {
     constructor(
         commandSuffix: string,
-        secretProvider: ISecretProvider,
-        configurationProvider: IConfigurationProvider,
+        protected readonly secretProvider: ISecretProvider,
+        protected readonly configurationProvider: IConfigurationProvider,
         protected tasksTreeProvider: TasksTreeDataProvider,
         protected workItemService: IWorkItemService,
         protected targetState: string
     ) {
-        super(`setTaskStateTo${commandSuffix}`, secretProvider, configurationProvider);
+        super(`setTaskStateTo${commandSuffix}`);
     }
 
     async execute(taskItem?: TaskTreeItem): Promise<void> {

@@ -15,7 +15,7 @@ export class DevOpsService {
 	 * @remarks If the PAT is not configured, an error message is displayed to the user, and null is returned.
 	 */
 	public async getPersonalAccessToken(): Promise<string | null> {
-		const personalAccessTokenSecretId = "tacosontitan.toolbox.azure.devops.personalAccessToken";
+		const personalAccessTokenSecretId = "tacosontitan.toolbox.personalAccessToken";
 		let personalAccessToken = await this.secretProvider.get<string>(personalAccessTokenSecretId);
 		let tokenIsValid = await this.determineIfPersonalAccessTokenIsValid(personalAccessToken);
 		if (personalAccessToken && tokenIsValid) {
@@ -41,7 +41,7 @@ export class DevOpsService {
 	 * @returns The Azure DevOps project name if configured; otherwise, null.
 	 */
 	public async getProjectName(): Promise<string | null> {
-		const projectName = await this.configurationProvider.get<string>("azure.devops.project");
+		const projectName = await this.configurationProvider.get<string>("project");
 		if (!projectName) {
 			window.showErrorMessage("Azure DevOps project is not configured. Commands that require it will not work.");
 			return null;
@@ -55,13 +55,13 @@ export class DevOpsService {
 	 * @returns The Azure DevOps organization URL if configured; otherwise, null.
 	 */
 	public async getOrganizationUri(): Promise<string | null> {
-		const organization = await this.configurationProvider.get<string>("azure.devops.organization");
+		const organization = await this.configurationProvider.get<string>("organization");
 		if (!organization) {
 			window.showErrorMessage("Azure DevOps organization is not configured. Commands that require it will not work.");
 			return null;
 		}
 
-		const useClassicUri = await this.configurationProvider.get<boolean>("azure.devops.useClassicUri");
+		const useClassicUri = await this.configurationProvider.get<boolean>("useClassicUri");
 		if (useClassicUri) {
 			return `https://${organization}.visualstudio.com`;
 		}
@@ -70,7 +70,7 @@ export class DevOpsService {
 	}
 
 	public async getUserDisplayName(): Promise<string | null> {
-		const userDisplayName = await this.configurationProvider.get<string>("azure.devops.userDisplayName");
+		const userDisplayName = await this.configurationProvider.get<string>("userDisplayName");
 		if (!userDisplayName) {
 			window.showErrorMessage("User display name for Azure DevOps is not configured. Commands that require it will not work.");
 			return null;
@@ -80,37 +80,37 @@ export class DevOpsService {
 	}
 
 	public async getDefaultTaskState(): Promise<string> {
-		const defaultTaskState = await this.configurationProvider.get<string>("azure.devops.defaultTaskState");
+		const defaultTaskState = await this.configurationProvider.get<string>("defaultTaskState");
 		return defaultTaskState || "New";
 	}
 
 	public async getReadyTaskState(): Promise<string> {
-		const readyTaskState = await this.configurationProvider.get<string>("azure.devops.readyTaskState");
+		const readyTaskState = await this.configurationProvider.get<string>("readyTaskState");
 		return readyTaskState || "To Do";
 	}
 
 	public async getInProgressTaskState(): Promise<string> {
-		const inProgressTaskState = await this.configurationProvider.get<string>("azure.devops.inProgressTaskState");
+		const inProgressTaskState = await this.configurationProvider.get<string>("inProgressTaskState");
 		return inProgressTaskState || "Doing";
 	}
 
 	public async getDoneTaskState(): Promise<string> {
-		const doneTaskState = await this.configurationProvider.get<string>("azure.devops.doneTaskState");
+		const doneTaskState = await this.configurationProvider.get<string>("doneTaskState");
 		return doneTaskState || "Done";
 	}
 
 	public async getShowInactiveTasks(): Promise<boolean> {
-		const showRemovedTasks = await this.configurationProvider.get<boolean>("azure.devops.showInactiveTasks");
+		const showRemovedTasks = await this.configurationProvider.get<boolean>("showInactiveTasks");
 		return showRemovedTasks || false;
 	}
 
 	public async getExcludedWorkItemStates(): Promise<string[]> {
-		const excludedStates = await this.configurationProvider.get<string[]>("azure.devops.excludedWorkItemStates");
+		const excludedStates = await this.configurationProvider.get<string[]>("excludedWorkItemStates");
 		return excludedStates || ["Closed", "Removed", "Spiked"];
 	}
 
 	public async getActiveWorkItemTypes(): Promise<string[]> {
-		const activeWorkItemTypes = await this.configurationProvider.get<string[]>("azure.devops.activeWorkItemTypes");
+		const activeWorkItemTypes = await this.configurationProvider.get<string[]>("activeWorkItemTypes");
 		return activeWorkItemTypes || ["Bug", "User Story"];
 	}
 

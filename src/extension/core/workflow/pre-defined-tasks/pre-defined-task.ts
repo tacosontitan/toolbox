@@ -1,5 +1,5 @@
-import { WorkItemType } from "../../../../core/workflow/work-item-type";
 import { Task } from "../../task";
+import { WorkItemType } from "../work-item-type";
 
 /**
  * Represents a {@link Task} that is predefined as part of a workflow.

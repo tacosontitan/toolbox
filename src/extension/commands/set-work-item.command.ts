@@ -1,24 +1,24 @@
 import * as vscode from 'vscode';
+import { Command } from '../core/command';
 import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
 import { DevOpsService } from '../services/devops-service';
-import { DevOpsCommand } from './devops-command';
 
 /**
  * Command to search for work items.
  */
-export class SetWorkItemCommand extends DevOpsCommand {
+export class SetWorkItemCommand extends Command {
     constructor(
-        secretProvider: ISecretProvider,
-        configurationProvider: IConfigurationProvider,
+        private readonly secretProvider: ISecretProvider,
+        private readonly configurationProvider: IConfigurationProvider,
         private tasksTreeProvider: TasksTreeDataProvider,
         private devOpsService: DevOpsService
     ) {
-        super('searchWorkItem', secretProvider, configurationProvider);
+        super('searchWorkItem');
     }
 
     async execute(...args: any[]): Promise<void> {
-        const searchTerm = await vscode.window.showInputBox({ 
+        const searchTerm = await vscode.window.showInputBox({
             prompt: 'Enter work item number or search term',
             placeHolder: 'e.g., 12345 or "user authentication"'
         });
@@ -34,7 +34,7 @@ export class SetWorkItemCommand extends DevOpsCommand {
             try {
                 const organizationUri = await this.devOpsService.getOrganizationUri();
                 const projectName = await this.devOpsService.getProjectName();
-                
+
                 if (organizationUri && projectName) {
                     const workItemUrl = `${organizationUri}/${encodeURIComponent(projectName)}/_workitems/edit/${workItemNumber}`;
                     await vscode.env.openExternal(vscode.Uri.parse(workItemUrl));

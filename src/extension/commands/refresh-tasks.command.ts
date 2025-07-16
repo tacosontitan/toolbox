@@ -1,18 +1,18 @@
 import * as vscode from 'vscode';
+import { Command } from '../core/command';
 import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
-import { DevOpsCommand } from './devops-command';
 
 /**
  * Command to refresh the tasks tree view.
  */
-export class RefreshTasksCommand extends DevOpsCommand {
+export class RefreshTasksCommand extends Command {
     constructor(
-        secretProvider: ISecretProvider,
-        configurationProvider: IConfigurationProvider,
+        private readonly secretProvider: ISecretProvider,
+        private readonly configurationProvider: IConfigurationProvider,
         private tasksTreeProvider: TasksTreeDataProvider
     ) {
-        super('refreshTasks', secretProvider, configurationProvider);
+        super('refreshTasks');
     }
 
     async execute(...args: any[]): Promise<void> {

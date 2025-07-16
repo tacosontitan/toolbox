@@ -1,5 +1,5 @@
 import { JsonPatchDocument, JsonPatchOperation, Operation } from "azure-devops-node-api/interfaces/common/VSSInterfaces";
-import { Mapper } from "../../../../core/mapper";
+import { Mapper } from "../../mapper";
 import { PreDefinedTask } from "./pre-defined-task";
 
 export class PreDefinedTaskJsonPatchDocumentMapper
