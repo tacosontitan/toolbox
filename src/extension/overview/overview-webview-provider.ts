@@ -1,8 +1,8 @@
-import * as vscode from 'vscode';
 import * as devops from "azure-devops-node-api";
 import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
-import { DevOpsService } from '../azure/devops/devops-service';
+import * as vscode from 'vscode';
+import { DevOpsService } from '../services/devops-service';
 
 export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'overviewWebView';
@@ -283,14 +283,14 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         ];
-        
+
         const month = monthNames[date.getMonth()];
         const day = date.getDate();
         const year = date.getFullYear();
         const dayOfYear = this.getDayOfYear(date);
-        
+
         const dayWithSuffix = this.getDayWithSuffix(day);
-        
+
         return `${month} ${dayWithSuffix}, the ${dayOfYear} day of ${year}`;
     }
 
@@ -311,7 +311,7 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
         const diff = (date.getTime() - start.getTime()) + ((start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000);
         const oneDay = 1000 * 60 * 60 * 24;
         const dayOfYear = Math.floor(diff / oneDay);
-        
+
         return this.getNumberWithSuffix(dayOfYear);
     }
 
@@ -330,11 +330,11 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
     private getWordOfTheDay(): string {
         // Simple word of the day based on date for consistency
         const words = [
-            "volcano", "serenity", "adventure", "harmony", "discovery", "creativity", "wonder", 
-            "journey", "inspiration", "tranquility", "exploration", "imagination", "courage", 
+            "volcano", "serenity", "adventure", "harmony", "discovery", "creativity", "wonder",
+            "journey", "inspiration", "tranquility", "exploration", "imagination", "courage",
             "wisdom", "beauty", "mystery", "freedom", "passion", "growth", "balance"
         ];
-        
+
         const today = new Date();
         const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
         return words[dayOfYear % words.length];
@@ -377,33 +377,33 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
             };
 
             const queryResult = await workItemTrackingClient.queryByWiql(wiql, { project: projectName });
-            
+
             if (!queryResult.workItems || queryResult.workItems.length === 0) {
                 return null;
             }
 
             const workItemIds = queryResult.workItems.map((wi: any) => wi.id!);
             const workItems = await workItemTrackingClient.getWorkItems(
-                workItemIds, 
+                workItemIds,
                 ['System.Id', 'System.WorkItemType', 'System.ActivatedDate', 'Microsoft.VSTS.Common.ClosedDate'],
-                undefined, 
-                undefined, 
-                undefined, 
+                undefined,
+                undefined,
+                undefined,
                 projectName
             );
 
             const cycleTimes: number[] = [];
-            
+
             for (const workItem of workItems) {
                 const activatedDate = workItem.fields?.['System.ActivatedDate'];
                 const closedDate = workItem.fields?.['Microsoft.VSTS.Common.ClosedDate'];
-                
+
                 if (activatedDate && closedDate) {
                     const activated = new Date(activatedDate);
                     const closed = new Date(closedDate);
                     const cycleTimeMs = closed.getTime() - activated.getTime();
                     const cycleTimeDays = cycleTimeMs / (1000 * 60 * 60 * 24);
-                    
+
                     if (cycleTimeDays > 0) {
                         cycleTimes.push(cycleTimeDays);
                     }
@@ -416,7 +416,7 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
 
             const averageCycleTime = cycleTimes.reduce((sum, time) => sum + time, 0) / cycleTimes.length;
             const formattedAverage = averageCycleTime.toFixed(1);
-            
+
             return {
                 average: formattedAverage,
                 count: cycleTimes.length
@@ -516,9 +516,9 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
             };
 
             const queryResult = await workItemTrackingClient.queryByWiql(wiql, { project: projectName });
-            
+
             const count = queryResult.workItems ? queryResult.workItems.length : 0;
-            
+
             return {
                 count: count,
                 days: days
@@ -567,7 +567,7 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
             };
 
             const queryResult = await workItemTrackingClient.queryByWiql(wiql, { project: projectName });
-            
+
             if (!queryResult.workItems || queryResult.workItems.length === 0) {
                 return null;
             }
@@ -575,11 +575,11 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
             // Get the oldest work item (first in the ascending order)
             const workItemIds = [queryResult.workItems[0].id!];
             const workItems = await workItemTrackingClient.getWorkItems(
-                workItemIds, 
+                workItemIds,
                 ['System.Id', 'System.WorkItemType', 'Microsoft.VSTS.Common.ClosedDate'],
-                undefined, 
-                undefined, 
-                undefined, 
+                undefined,
+                undefined,
+                undefined,
                 projectName
             );
 
@@ -595,7 +595,7 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
             const closed = new Date(closedDate);
             const now = new Date();
             const daysAgo = Math.floor((now.getTime() - closed.getTime()) / (1000 * 60 * 60 * 24));
-            
+
             return {
                 daysAgo: daysAgo,
                 days: days

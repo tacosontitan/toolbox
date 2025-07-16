@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
+import { DevOpsService } from '../services/devops-service';
 import { getMeetingTemplate, getMeetingTypes } from './meeting-templates';
 import { getConfiguredParticipants } from './participant-config';
-import { DevOpsService } from '../azure/devops/devops-service';
 
 export class MeetingViewProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'meetingView';
@@ -72,9 +72,9 @@ export class MeetingViewProvider implements vscode.WebviewViewProvider {
 
             // Add the meeting notes as a comment to the work item
             await this.addCommentToWorkItem(id, notes);
-            
+
             vscode.window.showInformationMessage(`Meeting notes successfully added to work item #${id}`);
-            
+
             // Clear the form
             if (this._view) {
                 this._view.webview.postMessage({
@@ -115,12 +115,12 @@ export class MeetingViewProvider implements vscode.WebviewViewProvider {
 
     private _getHtmlForWebview(webview: vscode.Webview) {
         const meetingTypes = getMeetingTypes();
-        const meetingOptionsHtml = meetingTypes.map(type => 
+        const meetingOptionsHtml = meetingTypes.map(type =>
             `<option value="${type}">${type.charAt(0).toUpperCase() + type.slice(1)}</option>`
         ).join('');
 
         const participants = getConfiguredParticipants();
-        const participantsHtml = participants.map(participant => 
+        const participantsHtml = participants.map(participant =>
             `<label class="participant-checkbox">
                 <input type="checkbox" value="${participant}" onchange="updateParticipants()">
                 ${participant}
