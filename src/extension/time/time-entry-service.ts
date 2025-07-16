@@ -100,9 +100,9 @@ export class TimeEntryService {
      * Gets all time entries from storage
      */
     private async getAllTimeEntries(): Promise<TimeEntry[]> {
-        const stored = this.context.globalState.get<any[]>(TimeEntryService.TIME_ENTRIES_KEY, []);
+        const stored = this.context.globalState.get<TimeEntry[]>(TimeEntryService.TIME_ENTRIES_KEY, []);
         
-        // Convert stored data back to TimeEntry objects with proper Date objects
+        // Ensure all timestamps are converted to Date objects
         return stored.map(item => ({
             id: item.id,
             type: item.type,
