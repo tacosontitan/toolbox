@@ -13,8 +13,8 @@ import {
 } from '../../todo/time';
 
 // Import service dependencies
+import { TimeTreeDataProvider } from '../../presentation/providers/time-tree-data-provider';
 import { TimeEntryService } from '../../todo/time/time-entry-service';
-import { TimeTreeDataProvider } from '../../todo/time/time-tree-data-provider';
 
 /**
  * Factory for creating time tracking related commands.

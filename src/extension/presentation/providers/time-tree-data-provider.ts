@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { TimeEntryService } from './time-entry-service';
-import { DayTreeItem } from './day-tree-item';
-import { ClockEventTreeItem } from './clock-event-tree-item';
-import { PlaceholderTreeItem } from './placeholder-tree-item';
+import { ClockEventTreeItem } from '../../todo/time/clock-event-tree-item';
+import { DayTreeItem } from '../../todo/time/day-tree-item';
+import { PlaceholderTreeItem } from '../../todo/time/placeholder-tree-item';
+import { TimeEntryService } from '../../todo/time/time-entry-service';
 
 export class TimeTreeDataProvider implements vscode.TreeDataProvider<DayTreeItem | ClockEventTreeItem | PlaceholderTreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<DayTreeItem | ClockEventTreeItem | PlaceholderTreeItem | undefined | null | void> = new vscode.EventEmitter<DayTreeItem | ClockEventTreeItem | PlaceholderTreeItem | undefined | null | void>();

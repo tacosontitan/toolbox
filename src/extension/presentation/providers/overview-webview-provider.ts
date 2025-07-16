@@ -2,7 +2,7 @@ import * as devops from "azure-devops-node-api";
 import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 import * as vscode from 'vscode';
-import { DevOpsService } from '../services/devops-service';
+import { DevOpsService } from '../../todo/services/devops-service';
 
 export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'overviewWebView';
