@@ -1,7 +1,7 @@
 import * as devops from "azure-devops-node-api";
 import { window } from "vscode";
 
-import { IConfigurationProvider, ISecretProvider } from "../../core/configuration";
+import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
 
 export class DevOpsService {
     constructor(

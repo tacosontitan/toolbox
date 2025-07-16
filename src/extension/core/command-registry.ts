@@ -1,16 +1,16 @@
 import * as vscode from 'vscode';
-import { DevOpsService } from '../azure/devops/devops-service';
+import { CreateDefaultTasksCommand } from '../commands/create-default-tasks.command';
 import {
 	SetTaskStateToActiveCommand,
 	SetTaskStateToClosedCommand,
 	SetTaskStateToNewCommand,
 	SetTaskStateToResolvedCommand
-} from '../azure/devops/set-task-state-command';
-import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../azure/devops/tasks-tree-commands';
-import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-data-provider';
-import { AzureDevOpsWorkItemService } from '../azure/devops/workflow/azure.devops.work-item.service';
-import { CreateDefaultTasksCommand } from '../azure/devops/workflow/create-default-tasks.command';
-import { StartWorkItemCommand } from '../azure/devops/workflow/start-work-item.command';
+} from '../commands/set-task-state-command';
+import { StartWorkItemCommand } from '../commands/start-work-item.command';
+import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../commands/tasks-tree-commands';
+import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
+import { AzureDevOpsWorkItemService } from '../services/azure.devops.work-item.service';
+import { DevOpsService } from '../services/devops-service';
 import { Command } from "./command";
 import { NativeCommunicationService } from './communication';
 import { IConfigurationProvider, ISecretProvider, NativeConfigurationProvider, NativeSecretProvider } from './configuration';

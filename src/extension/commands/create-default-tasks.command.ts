@@ -3,13 +3,13 @@ import * as vscode from 'vscode';
 
 import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
-import { IConfigurationProvider, ISecretProvider } from "../../../core/configuration";
-import { ILogger, LogLevel } from "../../../core/telemetry";
-import { IWorkItemService } from "../../../core/workflow";
-import { DevOpsCommand } from '../devops-command';
-import { DevOpsService } from "../devops-service";
-import { DefaultTasks } from "./default-tasks";
-import { PreDefinedTaskJsonPatchDocumentMapper } from './pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
+import { DefaultTasks } from "../azure/devops/workflow/default-tasks";
+import { PreDefinedTaskJsonPatchDocumentMapper } from '../azure/devops/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
+import { IConfigurationProvider, ISecretProvider } from "../core/configuration";
+import { DevOpsCommand } from '../core/devops-command';
+import { ILogger, LogLevel } from "../core/telemetry";
+import { IWorkItemService } from "../core/workflow";
+import { DevOpsService } from "../services/devops-service";
 
 /**
  * Represents a {@link DevOpsCommand} that creates pre-defined tasks representing the typical workflow of a work item in Azure DevOps.

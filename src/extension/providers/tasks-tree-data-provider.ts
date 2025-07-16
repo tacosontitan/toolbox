@@ -3,11 +3,11 @@ import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 import { WorkItem } from 'azure-devops-node-api/interfaces/WorkItemTrackingInterfaces';
 import * as vscode from 'vscode';
-import { DevOpsService } from './devops-service';
-import { PlaceholderTreeItem } from './placeholder-tree-item';
-import { StateGroupTreeItem } from './state-group-tree-item';
-import { TaskTreeItem } from './task-tree-item';
-import { WorkItemTreeItem } from './work-item-tree-item';
+import { PlaceholderTreeItem } from '../azure/devops/placeholder-tree-item';
+import { StateGroupTreeItem } from '../azure/devops/state-group-tree-item';
+import { TaskTreeItem } from '../azure/devops/task-tree-item';
+import { WorkItemTreeItem } from '../azure/devops/work-item-tree-item';
+import { DevOpsService } from '../services/devops-service';
 
 export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem | undefined | null | void> = new vscode.EventEmitter<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem | undefined | null | void>();

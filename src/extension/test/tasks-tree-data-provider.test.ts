@@ -1,10 +1,6 @@
 import * as assert from 'assert';
-import { WorkItem } from 'azure-devops-node-api/interfaces/WorkItemTrackingInterfaces';
-import * as vscode from 'vscode';
-import { DevOpsService } from '../azure/devops/devops-service';
-import { StateGroupTreeItem } from '../azure/devops/state-group-tree-item';
-import { TaskTreeItem } from '../azure/devops/task-tree-item';
-import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-data-provider';
+import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
+import { DevOpsService } from '../services/devops-service';
 
 // Mock the DevOpsService
 class MockDevOpsService extends DevOpsService {

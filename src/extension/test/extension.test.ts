@@ -3,9 +3,9 @@ import * as assert from 'assert';
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vscode from 'vscode';
-import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-data-provider';
-import { DevOpsService } from '../azure/devops/devops-service';
 import { PlaceholderTreeItem } from '../azure/devops/placeholder-tree-item';
+import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
+import { DevOpsService } from '../services/devops-service';
 
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');

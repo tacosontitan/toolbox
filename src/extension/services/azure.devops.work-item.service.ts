@@ -4,12 +4,12 @@ import { window } from "vscode";
 import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 
-import { ICommunicationService } from "../../../core/communication";
-import { ILogger, LogLevel } from "../../../core/telemetry";
-import { IWorkItemService, WorkItem, WorkItemState, WorkItemType } from "../../../core/workflow";
-import { DevOpsService } from "../devops-service";
-import { DefaultTasks } from "./default-tasks";
-import { PreDefinedTaskJsonPatchDocumentMapper } from "./pre-defined-tasks/pre-defined-task-json-patch-document-mapper";
+import { DevOpsService } from "../azure/devops/devops-service";
+import { DefaultTasks } from "../azure/devops/workflow/default-tasks";
+import { PreDefinedTaskJsonPatchDocumentMapper } from "../azure/devops/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper";
+import { ICommunicationService } from "../core/communication";
+import { ILogger, LogLevel } from "../core/telemetry";
+import { IWorkItemService, WorkItem, WorkItemState, WorkItemType } from "../core/workflow";
 
 export class AzureDevOpsWorkItemService implements IWorkItemService {
     constructor(
