@@ -2,23 +2,23 @@ import * as vscode from 'vscode';
 import { Command } from '../command';
 
 // Import Azure DevOps related commands
-import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../../commands/tasks-tree-commands';
-import { CreateDefaultTasksCommand } from '../../commands/workflow/create-default-tasks.command';
+import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../../todo/commands/tasks-tree-commands';
+import { CreateDefaultTasksCommand } from '../../todo/commands/workflow/create-default-tasks.command';
 import {
     SetTaskStateToActiveCommand,
     SetTaskStateToClosedCommand,
     SetTaskStateToNewCommand,
     SetTaskStateToResolvedCommand
-} from '../../commands/workflow/set-task-state.command';
-import { StartWorkItemCommand } from '../../commands/workflow/start-work-item.command';
+} from '../../todo/commands/workflow/set-task-state.command';
+import { StartWorkItemCommand } from '../../todo/commands/workflow/start-work-item.command';
 
 // Import service dependencies
 import { NativeCommunicationService } from '../../infrastructure/vscode/communication-service.native';
 import { NativeConfigurationProvider } from '../../infrastructure/vscode/configuration-provider.native';
 import { NativeSecretProvider } from '../../infrastructure/vscode/secret-provider.native';
-import { TasksTreeDataProvider } from '../../providers/tasks-tree-data-provider';
-import { DevOpsService } from '../../services/devops-service';
-import { WorkItemService } from '../../services/work-item.service';
+import { TasksTreeDataProvider } from '../../todo/providers/tasks-tree-data-provider';
+import { DevOpsService } from '../../todo/services/devops-service';
+import { WorkItemService } from '../../todo/services/work-item.service';
 import { ConfigurationManager } from '../configuration';
 import { GitService } from '../source-control/git.service';
 import { OutputLogger } from '../telemetry/output.logger';

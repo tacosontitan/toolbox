@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { TimeEntry } from '../time';
-import { TimeEntryService } from '../time/time-entry-service';
+import { TimeEntry } from '../todo/time';
+import { TimeEntryService } from '../todo/time/time-entry-service';
 
 suite('Data Retention Test Suite', () => {
     let mockContext: vscode.ExtensionContext;

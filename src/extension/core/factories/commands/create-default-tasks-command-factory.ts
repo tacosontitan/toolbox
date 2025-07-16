@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { CreateDefaultTasksCommand } from '../../../commands/workflow/create-default-tasks.command';
-import { WorkItemService } from '../../../services/work-item.service';
+import { CreateDefaultTasksCommand } from '../../../todo/commands/workflow/create-default-tasks.command';
+import { WorkItemService } from '../../../todo/services/work-item.service';
 import { ConfigurationManager } from '../../configuration/configuration-manager';
 import { OutputLogger } from '../../telemetry/output.logger';
 import { BaseCommandFactory } from '../base-command-factory';

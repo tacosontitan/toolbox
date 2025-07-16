@@ -1,19 +1,19 @@
-import { Command } from "../../core";
+import { Command } from "../../../core";
 import { TimeEntryService, TimeTreeDataProvider } from "../../time";
 
 /**
- * Command to clear all time entries (for testing/debugging)
+ * Command to clock in
  */
-export class ClearTimeEntriesCommand extends Command {
+export class ClockInCommand extends Command {
     constructor(
         private timeEntryService: TimeEntryService,
         private treeProvider: TimeTreeDataProvider
     ) {
-        super('time.clearAll');
+        super('time.clockIn');
     }
 
     async execute(): Promise<void> {
-        await this.timeEntryService.clearAllEntries();
+        await this.timeEntryService.clockIn();
         this.treeProvider.refresh();
     }
 }

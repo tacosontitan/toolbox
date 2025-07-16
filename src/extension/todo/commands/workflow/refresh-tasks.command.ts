@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { Command } from '../../core/command';
-import { ConfigurationManager } from "../../core/configuration";
+import { Command } from '../../../core/command';
+import { ConfigurationManager } from "../../../core/configuration";
 import { TasksTreeDataProvider } from '../../providers/tasks-tree-data-provider';
 
 /**

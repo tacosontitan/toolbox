@@ -3,12 +3,12 @@ import * as vscode from 'vscode';
 
 import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
-import { Command } from '../../core/command';
-import { AzureDevOpsConfiguration, ConfigurationError, ConfigurationManager } from "../../core/configuration";
-import { DefaultTasks } from "../../core/default-tasks";
-import { ILogger, LogLevel } from "../../core/telemetry";
+import { Command } from '../../../core/command';
+import { AzureDevOpsConfiguration, ConfigurationError, ConfigurationManager } from "../../../core/configuration";
+import { DefaultTasks } from "../../../core/default-tasks";
+import { ILogger, LogLevel } from "../../../core/telemetry";
+import { PreDefinedTaskJsonPatchDocumentMapper } from '../../../domain/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
 import { IWorkItemService } from "../../core/workflow";
-import { PreDefinedTaskJsonPatchDocumentMapper } from '../../domain/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
 
 /**
  * Represents a {@link Command} that creates pre-defined tasks representing the typical workflow of a work item.

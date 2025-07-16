@@ -1,6 +1,6 @@
 import * as azdev from 'azure-devops-node-api';
 import * as vscode from 'vscode';
-import { DevOpsService } from '../services/devops-service';
+import { DevOpsService } from '../todo/services/devops-service';
 import { getMeetingTemplate, getMeetingTypes } from './meeting-templates';
 import { getConfiguredParticipants } from './participant-config';
 

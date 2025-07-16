@@ -1,4 +1,4 @@
-import { Command } from "../../core";
+import { Command } from "../../../core";
 import { TimeTreeDataProvider } from "../../time";
 
 /**

@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { OverviewWebviewProvider } from '../overview/overview-webview-provider';
+import { OverviewWebviewProvider } from '../todo/overview/overview-webview-provider';
 
 suite('Overview Test Suite', () => {
     test('OverviewWebviewProvider should create without DevOps service', () => {

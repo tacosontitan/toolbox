@@ -4,8 +4,8 @@ import * as assert from 'assert';
 // as well as import your extension to test it
 import * as vscode from 'vscode';
 import { PlaceholderTreeItem } from '../core/placeholder-tree-item';
-import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
-import { DevOpsService } from '../services/devops-service';
+import { TasksTreeDataProvider } from '../todo/providers/tasks-tree-data-provider';
+import { DevOpsService } from '../todo/services/devops-service';
 
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');

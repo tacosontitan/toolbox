@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { StartWorkItemCommand } from '../../../commands/workflow/start-work-item.command';
 import { NativeCommunicationService } from '../../../infrastructure/vscode/communication-service.native';
-import { WorkItemService } from '../../../services/work-item.service';
+import { StartWorkItemCommand } from '../../../todo/commands/workflow/start-work-item.command';
+import { WorkItemService } from '../../../todo/services/work-item.service';
 import { ConfigurationManager } from '../../configuration/configuration-manager';
 import { GitService } from '../../source-control/git.service';
 import { OutputLogger } from '../../telemetry/output.logger';

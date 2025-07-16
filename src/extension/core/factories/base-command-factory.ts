@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { TasksTreeDataProvider } from '../../providers/tasks-tree-data-provider';
-import { TimeTreeDataProvider } from '../../time/time-tree-data-provider';
+import { TasksTreeDataProvider } from '../../todo/providers/tasks-tree-data-provider';
+import { TimeTreeDataProvider } from '../../todo/time/time-tree-data-provider';
 import { Command } from '../command';
 import { ServiceLocator } from '../services/service-locator';
 import { ICommandFactory } from './command-factory.interface';
