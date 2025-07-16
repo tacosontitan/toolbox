@@ -99,9 +99,19 @@ export class DevOpsService {
 		return doneTaskState || "Done";
 	}
 
-	public async getShowRemovedTasks(): Promise<boolean> {
-		const showRemovedTasks = await this.configurationProvider.get<boolean>("azure.devops.showRemovedTasks");
+	public async getShowInactiveTasks(): Promise<boolean> {
+		const showRemovedTasks = await this.configurationProvider.get<boolean>("azure.devops.showInactiveTasks");
 		return showRemovedTasks || false;
+	}
+
+	public async getExcludedWorkItemStates(): Promise<string[]> {
+		const excludedStates = await this.configurationProvider.get<string[]>("azure.devops.excludedWorkItemStates");
+		return excludedStates || ["Closed", "Removed", "Spiked"];
+	}
+
+	public async getActiveWorkItemTypes(): Promise<string[]> {
+		const activeWorkItemTypes = await this.configurationProvider.get<string[]>("azure.devops.activeWorkItemTypes");
+		return activeWorkItemTypes || ["Bug", "User Story"];
 	}
 
 	private async determineIfPersonalAccessTokenIsValid(token: string | null | undefined): Promise<boolean> {

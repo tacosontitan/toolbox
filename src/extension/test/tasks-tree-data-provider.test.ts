@@ -1,10 +1,10 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-data-provider';
-import { DevOpsService } from '../azure/devops/devops-service';
-import { TaskTreeItem } from '../azure/devops/task-tree-item';
-import { StateGroupTreeItem } from '../azure/devops/state-group-tree-item';
 import { WorkItem } from 'azure-devops-node-api/interfaces/WorkItemTrackingInterfaces';
+import * as vscode from 'vscode';
+import { DevOpsService } from '../azure/devops/devops-service';
+import { StateGroupTreeItem } from '../azure/devops/state-group-tree-item';
+import { TaskTreeItem } from '../azure/devops/task-tree-item';
+import { TasksTreeDataProvider } from '../azure/devops/tasks-tree-data-provider';
 
 // Mock the DevOpsService
 class MockDevOpsService extends DevOpsService {
@@ -40,7 +40,7 @@ class MockDevOpsService extends DevOpsService {
         return 'Done';
     }
 
-    async getShowRemovedTasks(): Promise<boolean> {
+    async getShowInactiveTasks(): Promise<boolean> {
         return false;
     }
 }

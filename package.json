@@ -56,10 +56,34 @@
           "default": "Done",
           "description": "What's the state you'd like to map to 'done' for tasks in your Azure DevOps project?"
         },
-        "tacosontitan.toolbox.azure.devops.showRemovedTasks": {
+        "tacosontitan.toolbox.azure.devops.showInactiveTasks": {
           "type": "boolean",
           "default": false,
-          "description": "Should tasks in a 'removed' state be displayed in the task view?"
+          "description": "Should tasks in an 'inactive' state be displayed in the task view?"
+        },
+        "tacosontitan.toolbox.azure.devops.inactiveWorkItemStates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": ["Removed", "Spiked", "Inactive"],
+          "description": "States that represent the idea that a work item is inactive in Azure DevOps."
+        },
+        "tacosontitan.toolbox.azure.devops.completeWorkItemStates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": ["Done", "Closed", "Resolved", "Passed", "Complete"],
+          "description": "States that represent the idea that a work item is complete in Azure DevOps."
+        },
+        "tacosontitan.toolbox.azure.devops.activeWorkItemTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": ["Bug", "User Story"],
+          "description": "Work item types to include when loading active work items"
         }
       }
     },
