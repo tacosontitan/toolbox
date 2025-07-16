@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import { CreateDefaultTasksCommand } from '../commands/create-default-tasks.command';
 import {
-	SetTaskStateToActiveCommand,
-	SetTaskStateToClosedCommand,
-	SetTaskStateToNewCommand,
-	SetTaskStateToResolvedCommand
-} from '../commands/set-task-state-command';
+    SetTaskStateToActiveCommand,
+    SetTaskStateToClosedCommand,
+    SetTaskStateToNewCommand,
+    SetTaskStateToResolvedCommand
+} from '../commands/set-task-state.command';
 import { StartWorkItemCommand } from '../commands/start-work-item.command';
 import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../commands/tasks-tree-commands';
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
