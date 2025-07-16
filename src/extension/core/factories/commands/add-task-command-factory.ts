@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
+import { WorkItemService } from '../../../infrastructure/azure/work-item.service';
 import { AddTaskCommand } from '../../../todo/commands/workflow/add-task.command';
 import { TasksTreeDataProvider } from '../../../todo/providers/tasks-tree-data-provider';
-import { WorkItemService } from '../../../todo/services/work-item.service';
 import { ConfigurationManager } from '../../configuration';
 import { BaseCommandFactory } from '../base-command-factory';
 

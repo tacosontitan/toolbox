@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import { OverviewWebviewProvider } from '../application/providers/overview-webview-provider';
 import { TimeTreeDataProvider } from '../application/providers/time-tree-data-provider';
+import { DevOpsService } from '../infrastructure/azure/devops-service';
 import { NativeConfigurationProvider } from '../infrastructure/vscode/configuration-provider.native';
 import { NativeSecretProvider } from '../infrastructure/vscode/secret-provider.native';
 import { MeetingViewProvider } from '../meetings/meeting-view-provider';
 import { TasksTreeDataProvider } from '../todo/providers/tasks-tree-data-provider';
-import { DevOpsService } from '../todo/services/devops-service';
 import { TimeEntryService } from '../todo/time/time-entry-service';
 import { CommandFactoryBootstrap } from './factories/command-factory-registry';
 

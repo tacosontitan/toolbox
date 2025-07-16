@@ -1,12 +1,12 @@
 import { ExtensionContext } from "vscode";
 import { ICommunicationService, IConfigurationProvider, ILogger, ISecretProvider, OutputLogger, ServiceLocator } from "../core";
 import { ISourceControlService } from "../core/source-control/source-control.service";
+import { DevOpsService } from "../infrastructure/azure/devops-service";
+import { WorkItemService } from "../infrastructure/azure/work-item.service";
 import { GitService } from "../infrastructure/git/git.source-control.service";
 import { NativeCommunicationService } from "../infrastructure/vscode/communication-service.native";
 import { NativeConfigurationProvider } from "../infrastructure/vscode/configuration-provider.native";
 import { NativeSecretProvider } from "../infrastructure/vscode/secret-provider.native";
-import { DevOpsService } from "../todo/services/devops-service";
-import { WorkItemService } from "../todo/services/work-item.service";
 import { TimeEntryService } from "../todo/time";
 
 export function registerServices(context: ExtensionContext) {

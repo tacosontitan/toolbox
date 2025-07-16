@@ -6,7 +6,7 @@ import { ILogger } from '../telemetry';
 import { LogLevel } from '../telemetry/log-level';
 
 // Import concrete types for specific implementations (when needed)
-import { DevOpsService } from '../../todo/services/devops-service';
+import { DevOpsService } from '../../infrastructure/azure/devops-service';
 import { OutputLogger } from '../telemetry';
 
 /**
