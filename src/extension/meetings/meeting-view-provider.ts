@@ -96,7 +96,6 @@ export class MeetingViewProvider implements vscode.WebviewViewProvider {
             throw new Error('Azure DevOps configuration is incomplete');
         }
 
-        const devops = require('azure-devops-node-api');
         const authHandler = devops.getPersonalAccessTokenHandler(pat);
         const connection = new devops.WebApi(organizationUri, authHandler);
         const workItemTrackingApi = await connection.getWorkItemTrackingApi();
