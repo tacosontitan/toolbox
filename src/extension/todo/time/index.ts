@@ -1,5 +1,5 @@
 // Re-export all time-related classes and interfaces
-export { TimeTreeDataProvider } from '../../presentation/providers/time-tree-data-provider';
+export { TimeTreeDataProvider } from '../../application/providers/time-tree-data-provider';
 export {
     CleanupOldEntriesCommand, ClearTimeEntriesCommand, ClockInCommand,
     ClockOutCommand, LoadMoreDaysCommand, RefreshTimeCommand

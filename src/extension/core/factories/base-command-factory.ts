@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { TimeTreeDataProvider } from '../../presentation/providers/time-tree-data-provider';
+import { TimeTreeDataProvider } from '../../application/providers/time-tree-data-provider';
 import { TasksTreeDataProvider } from '../../todo/providers/tasks-tree-data-provider';
 import { Command } from '../command';
 import { ServiceLocator } from '../services/service-locator';

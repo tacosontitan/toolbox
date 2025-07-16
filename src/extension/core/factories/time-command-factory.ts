@@ -13,7 +13,7 @@ import {
 } from '../../todo/time';
 
 // Import service dependencies
-import { TimeTreeDataProvider } from '../../presentation/providers/time-tree-data-provider';
+import { TimeTreeDataProvider } from '../../application/providers/time-tree-data-provider';
 import { TimeEntryService } from '../../todo/time/time-entry-service';
 
 /**

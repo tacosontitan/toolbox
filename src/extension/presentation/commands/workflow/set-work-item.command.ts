@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
+import { TasksTreeDataProvider } from '../../../application/providers/tasks-tree-data-provider';
 import { Command } from '../../../core/command';
 import { ConfigurationError, ConfigurationManager } from "../../../core/configuration";
-import { TasksTreeDataProvider } from '../../providers/tasks-tree-data-provider';
 
 /**
  * Command to search for work items.
