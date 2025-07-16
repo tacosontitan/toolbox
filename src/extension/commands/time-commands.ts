@@ -1,6 +1,6 @@
 import { Command } from '../core/command';
-import { TimeEntryService } from './time-entry-service';
-import { TimeTreeDataProvider } from './time-tree-data-provider';
+import { TimeEntryService } from '../time/time-entry-service';
+import { TimeTreeDataProvider } from '../time/time-tree-data-provider';
 
 /**
  * Command to clock in
