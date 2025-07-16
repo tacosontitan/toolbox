@@ -3,7 +3,7 @@
   "displayName": "Hazel's Toolbox",
   "description": "Just a collection of tools created by and for Hazel to just do her job on a day-to-day basis.",
   "publisher": "tacosontitan",
-  "version": "1.0.37",
+  "version": "1.0.38",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -66,7 +66,11 @@
           "items": {
             "type": "string"
           },
-          "default": ["Removed", "Spiked", "Inactive"],
+          "default": [
+            "Removed",
+            "Spiked",
+            "Inactive"
+          ],
           "description": "States that represent the idea that a work item is inactive in Azure DevOps."
         },
         "tacosontitan.toolbox.completeWorkItemStates": {
@@ -74,7 +78,13 @@
           "items": {
             "type": "string"
           },
-          "default": ["Done", "Closed", "Resolved", "Passed", "Complete"],
+          "default": [
+            "Done",
+            "Closed",
+            "Resolved",
+            "Passed",
+            "Complete"
+          ],
           "description": "States that represent the idea that a work item is complete in Azure DevOps."
         },
         "tacosontitan.toolbox.activeWorkItemTypes": {
@@ -82,7 +92,10 @@
           "items": {
             "type": "string"
           },
-          "default": ["Bug", "User Story"],
+          "default": [
+            "Bug",
+            "User Story"
+          ],
           "description": "Work item types to include when loading active work items"
         }
       }
