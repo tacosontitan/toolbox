@@ -64,14 +64,14 @@ suite('Data Retention Test Suite', () => {
             await timeEntryService.cleanupOldEntries(false);
 
             // Get remaining entries
-            const remainingEntries = mockContext.globalState.get('tacosontitan.toolbox.timeEntries', []);
+            const remainingEntries = mockContext.globalState.get<TimeEntry[]>('tacosontitan.toolbox.timeEntries', []);
 
             // Should have removed the 2 old entries and kept the 2 recent ones
             assert.strictEqual(remainingEntries.length, 2, 'Should keep only recent entries');
             
             // Verify that only recent entries remain
             for (const entry of remainingEntries) {
-                const entryDate = new Date((entry as any).timestamp);
+                const entryDate = new Date(entry.timestamp);
                 const daysDiff = (now.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24);
                 assert.ok(daysDiff < 30, 'Remaining entries should be within retention period');
             }
