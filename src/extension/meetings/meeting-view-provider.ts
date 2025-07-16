@@ -1,3 +1,4 @@
+import * as azdev from 'azure-devops-node-api';
 import * as vscode from 'vscode';
 import { DevOpsService } from '../services/devops-service';
 import { getMeetingTemplate, getMeetingTypes } from './meeting-templates';
@@ -95,9 +96,8 @@ export class MeetingViewProvider implements vscode.WebviewViewProvider {
         if (!pat || !organizationUri || !projectName) {
             throw new Error('Azure DevOps configuration is incomplete');
         }
-
-        const authHandler = devops.getPersonalAccessTokenHandler(pat);
-        const connection = new devops.WebApi(organizationUri, authHandler);
+        const authHandler = azdev.getPersonalAccessTokenHandler(pat);
+        const connection = new azdev.WebApi(organizationUri, authHandler);
         const workItemTrackingApi = await connection.getWorkItemTrackingApi();
 
         // Add comment using work item update patch operation

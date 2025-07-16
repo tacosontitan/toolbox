@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
+import { TimeEntry } from '../time';
 import { TimeEntryService } from '../time/time-entry-service';
 
 suite('Data Retention Test Suite', () => {
@@ -68,7 +69,7 @@ suite('Data Retention Test Suite', () => {
 
             // Should have removed the 2 old entries and kept the 2 recent ones
             assert.strictEqual(remainingEntries.length, 2, 'Should keep only recent entries');
-            
+
             // Verify that only recent entries remain
             for (const entry of remainingEntries) {
                 const entryDate = new Date(entry.timestamp);

@@ -13,6 +13,7 @@ export class OverviewWebviewProvider implements vscode.WebviewViewProvider {
     private recentCompletionsLoaded = false;
     private oldestWorkItemData: { daysAgo: number; days: number } | null = null;
     private oldestWorkItemLoaded = false;
+    static MILLISECONDS_PER_DAY: number = 1000 * 60 * 60 * 24;
 
     constructor(
         private readonly _extensionUri: vscode.Uri,
