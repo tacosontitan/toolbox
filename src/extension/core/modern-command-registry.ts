@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
+import { NativeConfigurationProvider } from '../infrastructure/vscode/configuration-provider.native';
+import { NativeSecretProvider } from '../infrastructure/vscode/secret-provider.native';
 import { MeetingViewProvider } from '../meetings/meeting-view-provider';
 import { OverviewWebviewProvider } from '../overview/overview-webview-provider';
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
 import { DevOpsService } from '../services/devops-service';
 import { TimeEntryService } from '../time/time-entry-service';
 import { TimeTreeDataProvider } from '../time/time-tree-data-provider';
-import { NativeConfigurationProvider } from './configuration/configuration-provider.native';
-import { NativeSecretProvider } from './configuration/secret-provider.native';
 import { CommandFactoryBootstrap } from './factories/command-factory-registry';
 
 /**

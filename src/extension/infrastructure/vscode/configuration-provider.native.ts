@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { IConfigurationProvider } from "./configuration-provider.interface";
+import { IConfigurationProvider } from "../../core/configuration/configuration-provider.interface";
 
 /**
  * Facilitates interactions with the native VS Code configuration system.

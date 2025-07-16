@@ -1,5 +1,5 @@
 // Export the modern command registry for external use
-export * from './modern-command-registry';
+export * from './command-registry';
 
 // Export factories
 export * from './factories';

@@ -1,105 +1,40 @@
 import * as vscode from 'vscode';
-import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../commands/tasks-tree-commands';
-import { CreateDefaultTasksCommand } from '../commands/workflow/create-default-tasks.command';
-import {
-    SetTaskStateToActiveCommand,
-    SetTaskStateToClosedCommand,
-    SetTaskStateToNewCommand,
-    SetTaskStateToResolvedCommand
-} from '../commands/workflow/set-task-state.command';
-import { StartWorkItemCommand } from '../commands/workflow/start-work-item.command';
+import { NativeConfigurationProvider } from '../infrastructure/vscode/configuration-provider.native';
+import { NativeSecretProvider } from '../infrastructure/vscode/secret-provider.native';
 import { MeetingViewProvider } from '../meetings/meeting-view-provider';
 import { OverviewWebviewProvider } from '../overview/overview-webview-provider';
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
 import { DevOpsService } from '../services/devops-service';
-import { WorkItemService } from '../services/work-item.service';
-import {
-    CleanupOldEntriesCommand,
-    ClearTimeEntriesCommand,
-    ClockInCommand,
-    ClockOutCommand,
-    LoadMoreDaysCommand,
-    RefreshTimeCommand,
-    TimeEntryService,
-    TimeTreeDataProvider
-} from '../time';
-import { Command } from "./command";
-import { NativeCommunicationService } from './communication';
-import { IConfigurationProvider, ISecretProvider, NativeConfigurationProvider, NativeSecretProvider } from './configuration';
-import { GitService } from './source-control/git.service';
-import { LogLevel, OutputLogger } from './telemetry';
-import { IWorkItemService } from './workflow';
+import { TimeEntryService } from '../time/time-entry-service';
+import { TimeTreeDataProvider } from '../time/time-tree-data-provider';
+import { CommandFactoryBootstrap } from './factories/command-factory-registry';
 
 /**
- * Registry for all commands in the extension.
+ * Command registry that uses the 1:1 command-to-factory pattern.
+ * This provides perfect scalability and follows the C# pattern exactly.
  */
 export class CommandRegistry {
-	private static readonly logger = new OutputLogger("Hazel's Toolbox");
-
 	/**
-	 * Registers all commands with the provided extension context.
+	 * Registers all commands and views with the provided extension context.
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
-	public static registerCommands(context: vscode.ExtensionContext) {
-		// Create and register the overview webview first
+	public static registerAll(context: vscode.ExtensionContext): void {
+		// Create and register webviews and tree views first
 		this.createOverviewWebview(context);
-
-		// Create and register the tasks tree view
 		const tasksTreeProvider = this.createTasksTreeView(context);
-
-		// Create and register the meeting view
 		this.createMeetingView(context);
-		// Create and register the time tree view
 		const timeTreeProvider = this.createTimeTreeView(context);
 
-		// Get regular commands
-		const commands = this.getCommandsToRegister(context);
-		for (const command of commands) {
-			this.registerCommand(command, context);
-		}
+		// Initialize the 1:1 command factory system
+		CommandFactoryBootstrap.initialize(context, tasksTreeProvider, timeTreeProvider);
 
-		// Get and register tasks tree view commands
-		const treeCommands = this.getTasksTreeCommands(context, tasksTreeProvider);
-		for (const command of treeCommands) {
-			this.registerCommand(command, context);
-		}
+		// Register all commands using individual factories
+		CommandFactoryBootstrap.registerCommands(context);
 
-		// Get and register time tree view commands
-		const timeCommands = this.getTimeTreeCommands(context, timeTreeProvider);
-		for (const command of timeCommands) {
-			this.registerCommand(command, context);
-		}
-
-		// Special handling for the change task state command which takes a parameter
-		this.registerChangeTaskStateCommand(context, tasksTreeProvider);
-
-		// Special handling for load more days command
-		this.registerLoadMoreDaysCommand(context, timeTreeProvider);
-	}
-
-	private static registerCommand(command: Command, context: vscode.ExtensionContext) {
-		const disposable = vscode.commands.registerCommand(command.id, () => {
-			command.execute().catch((error) => {
-				this.logger.log(LogLevel.Error, `Error executing command ${command.id}: ${error.message}`);
-			});
-		});
-
-		context.subscriptions.push(disposable);
-	}
-
-	private static getCommandsToRegister(context: vscode.ExtensionContext): Command[] {
-		const communicationService = new NativeCommunicationService();
-		const secretProvider = new NativeSecretProvider(context);
-		const configurationProvider = new NativeConfigurationProvider();
-		const sourceControlService = new GitService();
-		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		const workItemService = new WorkItemService(this.logger, communicationService, devOpsService);
-		let commands = [
-			new CreateDefaultTasksCommand(secretProvider, configurationProvider, this.logger, workItemService, devOpsService),
-			new StartWorkItemCommand(secretProvider, configurationProvider, this.logger, communicationService, sourceControlService, workItemService)
-		];
-
-		return commands;
+		// Register cleanup on deactivation
+		context.subscriptions.push(new vscode.Disposable(() => {
+			CommandFactoryBootstrap.dispose();
+		}));
 	}
 
 	private static createOverviewWebview(context: vscode.ExtensionContext): OverviewWebviewProvider {
@@ -136,7 +71,7 @@ export class CommandRegistry {
 		return tasksTreeProvider;
 	}
 
-	private static createMeetingView(context: vscode.ExtensionContext) {
+	private static createMeetingView(context: vscode.ExtensionContext): void {
 		const secretProvider = new NativeSecretProvider(context);
 		const configurationProvider = new NativeConfigurationProvider();
 		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
@@ -153,19 +88,6 @@ export class CommandRegistry {
 		);
 	}
 
-	private static getTasksTreeCommands(context: vscode.ExtensionContext, tasksTreeProvider: TasksTreeDataProvider): Command[] {
-		const secretProvider = new NativeSecretProvider(context);
-		const configurationProvider = new NativeConfigurationProvider();
-		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		const workItemService = new WorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
-
-		return [
-			new SetWorkItemCommand(secretProvider, configurationProvider, tasksTreeProvider, devOpsService),
-			new RefreshTasksCommand(secretProvider, configurationProvider, tasksTreeProvider),
-			new AddTaskCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService)
-		];
-	}
-
 	private static createTimeTreeView(context: vscode.ExtensionContext): TimeTreeDataProvider {
 		const timeEntryService = new TimeEntryService(context);
 
@@ -179,59 +101,5 @@ export class CommandRegistry {
 		});
 
 		return timeTreeProvider;
-	}
-
-	private static getTimeTreeCommands(context: vscode.ExtensionContext, timeTreeProvider: TimeTreeDataProvider): Command[] {
-		const timeEntryService = new TimeEntryService(context);
-
-		return [
-			new ClockInCommand(timeEntryService, timeTreeProvider),
-			new ClockOutCommand(timeEntryService, timeTreeProvider),
-			new RefreshTimeCommand(timeTreeProvider),
-			new ClearTimeEntriesCommand(timeEntryService, timeTreeProvider),
-			new CleanupOldEntriesCommand(timeEntryService, timeTreeProvider)
-		];
-	}
-
-	private static registerChangeTaskStateCommand(context: vscode.ExtensionContext, tasksTreeProvider: TasksTreeDataProvider) {
-		const secretProvider = new NativeSecretProvider(context);
-		const configurationProvider = new NativeConfigurationProvider();
-		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
-		const workItemService = new WorkItemService(this.logger, new NativeCommunicationService(), devOpsService);
-		this.registerTaskStateCommands(context, tasksTreeProvider, secretProvider, configurationProvider, workItemService);
-	}
-
-	private static registerLoadMoreDaysCommand(context: vscode.ExtensionContext, timeTreeProvider: TimeTreeDataProvider) {
-		const loadMoreCommand = new LoadMoreDaysCommand(timeTreeProvider);
-		const disposable = vscode.commands.registerCommand(loadMoreCommand.id, () => {
-			loadMoreCommand.execute().catch((error: Error) => {
-				this.logger.log(LogLevel.Error, `Error executing command ${loadMoreCommand.id}: ${error.message}`);
-			});
-		});
-		context.subscriptions.push(disposable);
-	}
-
-	private static registerTaskStateCommands(
-		context: vscode.ExtensionContext,
-		tasksTreeProvider: TasksTreeDataProvider,
-		secretProvider: ISecretProvider,
-		configurationProvider: IConfigurationProvider,
-		workItemService: IWorkItemService
-	) {
-		const commands = [
-			new SetTaskStateToNewCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService),
-			new SetTaskStateToActiveCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService),
-			new SetTaskStateToResolvedCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService),
-			new SetTaskStateToClosedCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService)
-		];
-
-		for (const command of commands) {
-			const disposable = vscode.commands.registerCommand(command.id, (taskItem: any) => {
-				command.execute(taskItem).catch((error: Error) => {
-					this.logger.log(LogLevel.Error, `Error executing command ${command.id}: ${error.message}`);
-				});
-			});
-			context.subscriptions.push(disposable);
-		}
 	}
 }

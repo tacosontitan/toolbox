@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { ISecretProvider } from "./secret-provider.interface";
+import { ISecretProvider } from "../../core/configuration/secret-provider.interface";
 
 /**
  * Facilitates secure storage and retrieval of secrets using the native VS Code secrets API.

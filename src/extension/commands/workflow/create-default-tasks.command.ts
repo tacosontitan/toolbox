@@ -8,7 +8,7 @@ import { AzureDevOpsConfiguration, ConfigurationError, ConfigurationManager } fr
 import { DefaultTasks } from "../../core/default-tasks";
 import { ILogger, LogLevel } from "../../core/telemetry";
 import { IWorkItemService } from "../../core/workflow";
-import { PreDefinedTaskJsonPatchDocumentMapper } from '../../core/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
+import { PreDefinedTaskJsonPatchDocumentMapper } from '../../domain/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
 
 /**
  * Represents a {@link Command} that creates pre-defined tasks representing the typical workflow of a work item.

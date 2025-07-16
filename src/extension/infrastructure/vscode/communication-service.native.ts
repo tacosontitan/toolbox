@@ -1,5 +1,5 @@
 import { window } from "vscode";
-import { ICommunicationService } from "./communication-service.interface";
+import { ICommunicationService } from "../../core/communication/communication-service.interface";
 
 export class NativeCommunicationService implements ICommunicationService {
     public async prompt<TResult>(message: string): Promise<TResult> {

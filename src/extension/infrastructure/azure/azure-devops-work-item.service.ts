@@ -11,7 +11,7 @@ import { IWorkItemService, WorkItem, WorkItemState, WorkItemType } from "../core
 import { PreDefinedTaskJsonPatchDocumentMapper } from "../domain/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper";
 import { DevOpsService } from "../services/devops-service";
 
-export class WorkItemService implements IWorkItemService {
+export class AzureDevOpsWorkItemService implements IWorkItemService {
     constructor(
         private readonly logger: ILogger,
         private readonly communicationService: ICommunicationService,
