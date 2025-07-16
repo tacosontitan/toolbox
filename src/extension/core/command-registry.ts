@@ -1,27 +1,27 @@
 import * as vscode from 'vscode';
-import { CreateDefaultTasksCommand } from '../commands/create-default-tasks.command';
-import {
-	SetTaskStateToActiveCommand,
-	SetTaskStateToClosedCommand,
-	SetTaskStateToNewCommand,
-	SetTaskStateToResolvedCommand
-} from '../commands/set-task-state.command';
-import { StartWorkItemCommand } from '../commands/start-work-item.command';
 import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../commands/tasks-tree-commands';
+import { CreateDefaultTasksCommand } from '../commands/workflow/create-default-tasks.command';
+import {
+    SetTaskStateToActiveCommand,
+    SetTaskStateToClosedCommand,
+    SetTaskStateToNewCommand,
+    SetTaskStateToResolvedCommand
+} from '../commands/workflow/set-task-state.command';
+import { StartWorkItemCommand } from '../commands/workflow/start-work-item.command';
 import { MeetingViewProvider } from '../meetings/meeting-view-provider';
 import { OverviewWebviewProvider } from '../overview/overview-webview-provider';
 import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
 import { DevOpsService } from '../services/devops-service';
 import { WorkItemService } from '../services/work-item.service';
 import {
-	CleanupOldEntriesCommand,
-	ClearTimeEntriesCommand,
-	ClockInCommand,
-	ClockOutCommand,
-	LoadMoreDaysCommand,
-	RefreshTimeCommand,
-	TimeEntryService,
-	TimeTreeDataProvider
+    CleanupOldEntriesCommand,
+    ClearTimeEntriesCommand,
+    ClockInCommand,
+    ClockOutCommand,
+    LoadMoreDaysCommand,
+    RefreshTimeCommand,
+    TimeEntryService,
+    TimeTreeDataProvider
 } from '../time';
 import { Command } from "./command";
 import { NativeCommunicationService } from './communication';

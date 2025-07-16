@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import { Command } from '../core/command';
-import { ConfigurationManager } from "../core/configuration";
-import { TaskTreeItem } from '../core/task-tree-item';
-import { IWorkItemService } from '../core/workflow';
-import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
+import { Command } from '../../core/command';
+import { ConfigurationManager } from "../../core/configuration";
+import { TaskTreeItem } from '../../core/task-tree-item';
+import { IWorkItemService } from '../../core/workflow';
+import { TasksTreeDataProvider } from '../../providers/tasks-tree-data-provider';
 
 /**
  * Base command to set task state to a specific value.

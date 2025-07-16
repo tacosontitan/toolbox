@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { StartWorkItemCommand } from '../../../commands/start-work-item.command';
+import { StartWorkItemCommand } from '../../../commands/workflow/start-work-item.command';
 import { WorkItemService } from '../../../services/work-item.service';
 import { NativeCommunicationService } from '../../communication/communication-service.native';
 import { ConfigurationManager } from '../../configuration/configuration-manager';

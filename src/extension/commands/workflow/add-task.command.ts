@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { Command } from '../core/command';
-import { ConfigurationManager } from "../core/configuration";
-import { IWorkItemService } from '../core/workflow';
-import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
+import { Command } from '../../core/command';
+import { ConfigurationManager } from "../../core/configuration";
+import { IWorkItemService } from '../../core/workflow';
+import { TasksTreeDataProvider } from '../../providers/tasks-tree-data-provider';
 
 /**
  * Command to add a new task to the current work item.

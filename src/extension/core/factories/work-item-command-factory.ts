@@ -2,15 +2,15 @@ import * as vscode from 'vscode';
 import { Command } from '../command';
 
 // Import Azure DevOps related commands
-import { CreateDefaultTasksCommand } from '../../commands/create-default-tasks.command';
+import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../../commands/tasks-tree-commands';
+import { CreateDefaultTasksCommand } from '../../commands/workflow/create-default-tasks.command';
 import {
     SetTaskStateToActiveCommand,
     SetTaskStateToClosedCommand,
     SetTaskStateToNewCommand,
     SetTaskStateToResolvedCommand
-} from '../../commands/set-task-state.command';
-import { StartWorkItemCommand } from '../../commands/start-work-item.command';
-import { AddTaskCommand, RefreshTasksCommand, SetWorkItemCommand } from '../../commands/tasks-tree-commands';
+} from '../../commands/workflow/set-task-state.command';
+import { StartWorkItemCommand } from '../../commands/workflow/start-work-item.command';
 
 // Import service dependencies
 import { TasksTreeDataProvider } from '../../providers/tasks-tree-data-provider';
