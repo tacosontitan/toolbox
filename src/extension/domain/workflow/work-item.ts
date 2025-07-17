@@ -57,6 +57,7 @@ export class WorkItem {
     public additionalFields: { [key: string]: any } = {};
 
     /**
+     * @constructor
      * @param title The title of the work item.
      * @param description The description of the work item.
      * @param remainingWork The number of hours the work item is estimated to take.
@@ -72,5 +73,13 @@ export class WorkItem {
         this.description = description;
         this.remainingWork = remainingWork;
         this.activity = activity;
+    }
+
+    /**
+     * Starts the work item.
+     * @param startingState The state to set when starting the work item.
+     */
+    public start(startingState: string): void {
+        this.state = new WorkItemState(startingState);
     }
 }

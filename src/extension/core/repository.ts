@@ -3,17 +3,11 @@
  */
 export interface IRepository<T> {
     /**
-     * Gets all items from the repository.
-     * @returns A promise that resolves to an array of items.
-     */
-    get(): Promise<T[]>;
-
-    /**
      * Gets an item by its ID.
      * @param id The ID of the item to retrieve.
      * @returns A promise that resolves to the item if found, or undefined if not found.
      */
-    get(id: number): Promise<T | undefined>;
+    getById(id: number): Promise<T | undefined>;
 
     /**
      * Creates a new item in the repository.

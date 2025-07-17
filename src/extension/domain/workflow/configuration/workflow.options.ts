@@ -28,4 +28,9 @@ export interface WorkflowOptions {
 	 * The state used to indicate that a task has been completed.
 	 */
     taskDoneState: string;
+
+	/**
+	 * The state used to indicate that a work item has been started.
+	 */
+    workItemStartedState: string;
 }

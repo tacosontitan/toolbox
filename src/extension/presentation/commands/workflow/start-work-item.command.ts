@@ -1,50 +1,39 @@
 import { Command } from "../../../core/command";
 import { ICommunicationService } from "../../../core/communication";
-import { IConfigurationProvider } from "../../../core/configuration";
-import { ISourceControlService } from "../../../core/source-control/source-control.service";
 import { ILogger, LogLevel } from "../../../core/telemetry";
-import { IWorkItemService, WorkItem } from "../../../domain/workflow";
+import { IWorkflowService } from "../../../domain/workflow/workflow.service.interface";
 
+/**
+ * Starts a work item on behalf of the user.
+ */
 export class StartWorkItemCommand extends Command {
 
+    /**
+     * @constructor
+     * @param logger The service used to capture errors and diagnostic messaging.
+     * @param communicationService The service used to communicate with the user directly.
+     * @param workflowService The service used to manage workflow operations.
+     */
     constructor(
-        private readonly configurationProvider: IConfigurationProvider,
         private readonly logger: ILogger,
         private readonly communicationService: ICommunicationService,
-        private readonly sourceControlService: ISourceControlService,
-        private readonly workItemService: IWorkItemService
+        private readonly workflowService: IWorkflowService
     ) {
         super('workflow.startWorkItem');
     }
 
     /** @inheritdoc */
     public async execute(): Promise<void> {
-        const workItemNumber = await this.communicationService.prompt<number>(`Enter the work item number:`);
-        if (!workItemNumber) {
-            this.logger.log(LogLevel.Warning, "No work item number provided.");
-            return;
-        }
-
-        const workItem: WorkItem | null = await this.workItemService.start(workItemNumber);
-        if (!workItem) {
-            this.logger.log(LogLevel.Error, `Unable to start work item #${workItemNumber}.`);
-            return;
-        }
-
-        //await this.createTopicBranch(workItem);
-    }
-
-    private async createTopicBranch(workItem: WorkItem): Promise<void> {
         try {
-            const branchName = `feature/${workItem.id}-${workItem.title.replace(/\s+/g, '-').toLowerCase()}`;
-            await this.sourceControlService.createBranchFromMain(branchName);
-            this.logger.log(LogLevel.Information, `Branch '${branchName}' created and published successfully.`);
-        } catch (error) {
-            if (error instanceof Error) {
-                this.logger.log(LogLevel.Error, `Error during branch creation: ${error.message}`);
-            } else {
-                this.logger.log(LogLevel.Error, "An unknown error occurred during branch creation.");
+            const workItemNumber = await this.communicationService.prompt<number>(`🔍 What is the number of the work item you'd like to start?`);
+            if (!workItemNumber) {
+                this.logger.log(LogLevel.Warning, "No work item number provided.");
+                return;
             }
+
+            await this.workflowService.start(workItemNumber);
+        } catch (error) {
+            this.logger.logError("Failed to start work item.", error);
         }
     }
 }
