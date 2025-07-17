@@ -10,7 +10,7 @@ export class CleanupOldEntriesCommand extends Command {
         private timeEntryService: TimeEntryService,
         private treeProvider: TimeTreeDataProvider
     ) {
-        super('time.cleanupOldEntries');
+        super('time.purge');
     }
 
     async execute(): Promise<void> {

@@ -10,7 +10,7 @@ export class ClearTimeEntriesCommand extends Command {
         private timeEntryService: TimeEntryService,
         private treeProvider: TimeTreeDataProvider
     ) {
-        super('time.clearAll');
+        super('time.clear');
     }
 
     async execute(): Promise<void> {

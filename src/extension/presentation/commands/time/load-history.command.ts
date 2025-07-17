@@ -6,7 +6,7 @@ import { Command } from "../../../core";
  */
 export class LoadMoreDaysCommand extends Command {
     constructor(private treeProvider: TimeTreeDataProvider) {
-        super('time.loadMore');
+        super('time.loadHistory');
     }
 
     async execute(): Promise<void> {
