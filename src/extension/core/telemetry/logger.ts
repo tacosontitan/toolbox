@@ -12,6 +12,13 @@ export abstract class ILogger {
     abstract log(level: LogLevel, message: string): void;
 
     /**
+     * Logs an error message with the specified error details.
+     * @param message The error message to log.
+     * @param error The error object containing details about the error.
+     */
+    abstract logError(message: string, error: any): void;
+
+    /**
      * Opens the logs for the user to view.
      */
     abstract open(): void;
