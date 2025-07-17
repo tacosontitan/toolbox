@@ -2,31 +2,23 @@ import * as devops from "azure-devops-node-api";
 import { WebApi } from "azure-devops-node-api";
 import { WorkItemTrackingApi } from "azure-devops-node-api/WorkItemTrackingApi";
 import { IRepository } from "../../core/repository";
-import { WorkItem, WorkItemState, WorkItemType } from "../../domain/workflow";
+import { WorkItem } from "../../domain/workflow";
 import { DevOpsService } from "./devops-service";
+import { WorkItemMapper } from "./mappings/work-item.mapper";
 
 /** @inheritdoc */
 export class AzureDevOpsWorkItemRepository implements IRepository<WorkItem> {
     constructor(
-        private readonly devOpsService: DevOpsService
+        private readonly devOpsService: DevOpsService,
+        private readonly workItemMapper: WorkItemMapper
     ) { }
 
     /** @inheritdoc */
     async getById(id: number): Promise<WorkItem | undefined>
     {
         const workItemTrackingClient = await this.getWorkItemTrackingClient();
-        const parentWorkItem = await workItemTrackingClient.getWorkItem(id);
-        const title = parentWorkItem.fields?.['System.Title'] as string;
-        const description = parentWorkItem.fields?.['System.Description'] as string || "";
-        const remainingWork = parentWorkItem.fields?.['Microsoft.VSTS.Scheduling.RemainingWork'] as number || 0;
-        const activity = parentWorkItem.fields?.['Microsoft.VSTS.Common.Activity'] as string || "";
-        const result = new WorkItem(title, description, remainingWork, activity);
-        result.id = id;
-        result.type = new WorkItemType(parentWorkItem.fields?.['System.WorkItemType'] as string);
-        result.state = new WorkItemState(parentWorkItem.fields?.['System.State'] as string);
-        result.areaPath = parentWorkItem.fields?.['System.AreaPath'] as string;
-        result.iterationPath = parentWorkItem.fields?.['System.IterationPath'] as string;
-        return result;
+        const workItem = await workItemTrackingClient.getWorkItem(id);
+        return this.workItemMapper.map(workItem);
     }
 
     /** @inheritdoc */
