@@ -12,7 +12,7 @@ import { PreDefinedTaskJsonPatchDocumentMapper } from '../../../domain/workflow/
 
 /**
  * Represents a {@link Command} that creates pre-defined tasks representing the typical workflow of a work item.
- * 
+ *
  * REFACTORED: Now uses IConfigurationProvider for automatic validation and error handling!
  */
 export class CreateDefaultTasksCommand extends Command {
@@ -25,7 +25,7 @@ export class CreateDefaultTasksCommand extends Command {
 		private readonly logger: ILogger,
 		private readonly workItemService: IWorkItemService
 	) {
-		super('createDefaultTasks');
+		super('workflow.createDefaultTasks');
 	}
 
 	/** @inheritdoc */
@@ -33,25 +33,25 @@ export class CreateDefaultTasksCommand extends Command {
 		try {
 			// 🎯 SIMPLIFIED: Use vscode.workspace.getConfiguration directly for now
 			const config = vscode.workspace.getConfiguration('tacosontitan.toolbox');
-			
+
 			// Check if basic required config is available
 			const pat = config.get<string>('personalAccessToken');
 			const org = config.get<string>('organization');
 			const project = config.get<string>('project');
-			
+
 			if (!pat || !org || !project) {
 				vscode.window.showErrorMessage('Azure DevOps configuration is incomplete. Please check your settings.');
 				return;
 			}
-			
+
 			// If we reach this point, all required config is valid and available! ✅
-			await this.createDefaultTasksForWorkItem({ 
-				personalAccessToken: pat, 
-				organization: org, 
+			await this.createDefaultTasksForWorkItem({
+				personalAccessToken: pat,
+				organization: org,
 				project: project,
 				userDisplayName: config.get<string>('userDisplayName') || 'Unknown User'
 			}, args);
-			
+
 		} catch (error) {
 			// Configuration errors are already handled with user-friendly messages
 			// Only handle unexpected business logic errors here
@@ -71,19 +71,19 @@ export class CreateDefaultTasksCommand extends Command {
 		if (args && args.length > 0 && args[0] && args[0].id) {
 			workItemNumber = args[0].id;
 		} else {
-			const workItemNumberResponse = await vscode.window.showInputBox({ 
+			const workItemNumberResponse = await vscode.window.showInputBox({
 				prompt: 'Enter the work item number for which you want to create default tasks.',
 				validateInput: (value) => {
 					const num = parseInt(value);
 					return isNaN(num) || num <= 0 ? 'Please enter a valid work item number' : null;
 				}
 			});
-			
+
 			if (!workItemNumberResponse) {
 				this.logger.log(LogLevel.Warning, 'Work item number not provided. Task creation cancelled.');
 				return;
 			}
-			
+
 			workItemNumber = parseInt(workItemNumberResponse);
 		}
 
@@ -109,10 +109,10 @@ export class CreateDefaultTasksCommand extends Command {
 			async (progress) => {
 				this.logger.log(LogLevel.Debug, `Creating default tasks for work item #${workItemNumber} in project '${config.project}'.`);
 				const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(
-					config.userDisplayName, 
-					config.organization, 
-					workItemNumber, 
-					workItem.areaPath || "", 
+					config.userDisplayName,
+					config.organization,
+					workItemNumber,
+					workItem.areaPath || "",
 					workItem.iterationPath || ""
 				);
 				let completed = 0;

@@ -14,7 +14,7 @@ export class AddTaskCommand extends Command {
         private tasksTreeProvider: TasksTreeDataProvider,
         private workItemService: IWorkItemService
     ) {
-        super('addTask');
+        super('workflow.addTaskToWorkItem');
     }
 
     async execute(...args: any[]): Promise<void> {

@@ -14,7 +14,7 @@ export class StartWorkItemCommand extends Command {
         private readonly sourceControlService: ISourceControlService,
         private readonly workItemService: IWorkItemService
     ) {
-        super('startWorkItem');
+        super('workflow.startWorkItem');
     }
 
     /** @inheritdoc */

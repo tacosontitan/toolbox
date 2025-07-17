@@ -12,7 +12,7 @@ export class RefreshTasksCommand extends Command {
         private readonly configurationProvider: IConfigurationProvider,
         private tasksTreeProvider: TasksTreeDataProvider
     ) {
-        super('refreshTasks');
+        super('workflow.refreshTasks');
     }
 
     async execute(...args: any[]): Promise<void> {
