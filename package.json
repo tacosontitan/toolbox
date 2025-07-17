@@ -59,17 +59,12 @@
     "menus": {
       "view/title": [
         {
-          "command": "tacosontitan.toolbox.searchWorkItem",
-          "when": "view == tasksTreeView",
-          "group": "navigation"
-        },
-        {
           "command": "tacosontitan.toolbox.workflow.refreshTasks",
           "when": "view == tasksTreeView",
           "group": "navigation"
         },
         {
-          "command": "tacosontitan.toolbox.workflow.addTask",
+          "command": "tacosontitan.toolbox.workflow.addTaskToWorkItem",
           "when": "view == tasksTreeView",
           "group": "navigation"
         },
