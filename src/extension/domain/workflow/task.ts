@@ -1,32 +1,10 @@
+import { WorkItem } from "./work-item";
+import { WorkItemType } from "./work-item-type";
+
 /**
  * Represents a task in Azure DevOps.
  */
-export class Task {
-	/**
-	 * The unique identifier of the task.
-	 */
-	public id: number | undefined;
-
-	/**
-	 * The name of the task.
-	 */
-	public name: string;
-
-	/**
-	 * The description of the task.
-	 */
-	public description: string;
-
-	/**
-	 * The number of hours the task is estimated to take.
-	 */
-	public remainingWork: number;
-
-	/**
-	 * The activity associated with the task.
-	 */
-	public activity: string;
-
+export class Task extends WorkItem {
 	/**
 	 * Creates a new task instance with the specified details.
 	 * @param name The name of the task.
@@ -40,9 +18,6 @@ export class Task {
 		remainingWork: number,
 		activity: string
 	) {
-		this.name = name;
-		this.description = description;
-		this.remainingWork = remainingWork;
-		this.activity = activity;
+		super(name, description, remainingWork, activity, WorkItemType.Task);
 	}
 }

@@ -29,7 +29,11 @@ export class WorkflowService implements IWorkflowService {
 
         const workflowOptions: WorkflowOptions = await this.workflowConfiguration.get();
         workItem.start(workflowOptions.workItemStartedState);
+
         await this.workItemRepository.update(workItem);
+        for (const child of workItem.children) {
+            await this.workItemRepository.create(child);
+        }
 
         this.logger.log(LogLevel.Information, `Work item ${workItemId} has been started.`);
     }

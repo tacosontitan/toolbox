@@ -19,6 +19,11 @@ export class WorkItemType {
 	/**
 	 * Represents the "task" work item type.
 	 */
+	public static Task = new WorkItemType('Task');
+
+	/**
+	 * Represents the "bug" work item type.
+	 */
 	public static Bug = new WorkItemType('Bug');
 
 	/**
