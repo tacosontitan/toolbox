@@ -17,6 +17,189 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+        "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "toolbox",
+          "title": "Hazel's Toolbox",
+          "icon": "💃"
+        }
+      ]
+    },
+    "views": {
+      "toolbox": [
+        {
+          "id": "overviewWebView",
+          "name": "Overview",
+          "type": "webview",
+          "when": "true",
+          "icon": "$(dashboard)"
+        },
+        {
+          "id": "tasksTreeView",
+          "name": "Active Work Items",
+          "when": "true",
+          "icon": "$(list)"
+        },
+        {
+          "id": "meetingView",
+          "name": "Meeting Notes",
+          "when": "true",
+          "type": "webview",
+          "icon": "$(note)"
+        },
+        {
+          "id": "timeTreeView",
+          "name": "Time Tracking",
+          "when": "true",
+          "icon": "$(clock)"
+        }
+      ]
+    },
+        "menus": {
+      "view/title": [
+        {
+          "command": "tacosontitan.toolbox.searchWorkItem",
+          "when": "view == tasksTreeView",
+          "group": "navigation"
+        },
+        {
+          "command": "tacosontitan.toolbox.workflow.refreshTasks",
+          "when": "view == tasksTreeView",
+          "group": "navigation"
+        },
+        {
+          "command": "tacosontitan.toolbox.workflow.addTask",
+          "when": "view == tasksTreeView",
+          "group": "navigation"
+        },
+        {
+          "command": "tacosontitan.toolbox.workflow.startWorkItem",
+          "when": "view == tasksTreeView",
+          "group": "navigation"
+        },
+        {
+          "command": "tacosontitan.toolbox.time.clockIn",
+          "when": "view == timeTreeView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "tacosontitan.toolbox.time.clockOut",
+          "when": "view == timeTreeView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "tacosontitan.toolbox.time.refresh",
+          "when": "view == timeTreeView",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "tacosontitan.toolbox.workflow.setTaskStateToNew",
+          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToNew/",
+          "group": "1_state"
+        },
+        {
+          "command": "tacosontitan.toolbox.workflow.setTaskStateToActive",
+          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToActive/",
+          "group": "1_state"
+        },
+        {
+          "command": "tacosontitan.toolbox.workflow.setTaskStateToResolved",
+          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToResolved/",
+          "group": "1_state"
+        },
+        {
+          "command": "tacosontitan.toolbox.workflow.setTaskStateToClosed",
+          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToClosed/",
+          "group": "1_state"
+        },
+        {
+          "command": "tacosontitan.toolbox.time.loadHistory",
+          "when": "view == timeTreeView && viewItem == loadMore",
+          "group": "inline"
+        }
+      ]
+    },
+        "commands": [
+      {
+        "command": "tacosontitan.toolbox.workflow.createDefaultTasks",
+        "category": "Hazel's Toolbox 💻 Workflow",
+        "title": "Create Default Tasks"
+      },
+      {
+        "command": "tacosontitan.toolbox.workflow.refreshTasks",
+        "category": "Hazel's Toolbox 💻 Workflow",
+        "title": "Refresh Active Work Items",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "tacosontitan.toolbox.workflow.addTaskToWorkItem",
+        "category": "Hazel's Toolbox 💻 Workflow",
+        "title": "Add Task to Work Item",
+        "icon": "$(add)"
+      },
+      {
+        "command": "tacosontitan.toolbox.workflow.setTaskStateToNew",
+        "category": "Hazel's Toolbox 💻 Workflow",
+        "title": "Set Task to New"
+      },
+      {
+        "command": "tacosontitan.toolbox.workflow.setTaskStateToActive",
+        "category": "Hazel's Toolbox 💻 Workflow",
+        "title": "Set Task to Active"
+      },
+      {
+        "command": "tacosontitan.toolbox.workflow.setTaskStateToResolved",
+        "category": "Hazel's Toolbox 💻 Workflow",
+        "title": "Set Task to Resolved"
+      },
+      {
+        "command": "tacosontitan.toolbox.workflow.setTaskStateToClosed",
+        "category": "Hazel's Toolbox 💻 Workflow",
+        "title": "Set Task to Closed"
+      },
+      {
+        "command": "tacosontitan.toolbox.workflow.startWorkItem",
+        "category": "Hazel's Toolbox 💻 Workflow",
+        "title": "Start Work Item",
+        "icon": "$(play)"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.clockIn",
+        "category": "Hazel's Toolbox ⏰ Time Tracking",
+        "title": "Clock In",
+        "icon": "$(play)"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.clockOut",
+        "category": "Hazel's Toolbox ⏰ Time Tracking",
+        "title": "Clock Out",
+        "icon": "$(stop)"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.refresh",
+        "category": "Hazel's Toolbox ⏰ Time Tracking",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.loadHistory",
+        "category": "Hazel's Toolbox ⏰ Time Tracking",
+        "title": "Load History"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.clear",
+        "category": "Hazel's Toolbox ⏰ Time Tracking",
+        "title": "Clear"
+      },
+      {
+        "command": "tacosontitan.toolbox.time.purge",
+        "category": "Hazel's Toolbox ⏰ Time Tracking",
+        "title": "Purge Old Entries"
+      }
+    ],
     "configuration": {
       "title": "Hazel's Toolbox",
       "type": "object",
@@ -134,180 +317,6 @@
           "description": "Number of days to look back for recent work item completions in the Overview"
         }
       }
-    },
-    "commands": [
-      {
-        "command": "tacosontitan.toolbox.createDefaultTasks",
-        "title": "Hazel's Toolbox: Create Default Tasks"
-      },
-      {
-        "command": "tacosontitan.toolbox.searchWorkItem",
-        "title": "Hazel's Toolbox: Search Work Item",
-        "icon": "$(search)"
-      },
-      {
-        "command": "tacosontitan.toolbox.refreshTasks",
-        "title": "Hazel's Toolbox: Refresh",
-        "icon": "$(refresh)"
-      },
-      {
-        "command": "tacosontitan.toolbox.addTask",
-        "title": "Hazel's Toolbox: Add Task",
-        "icon": "$(add)"
-      },
-      {
-        "command": "tacosontitan.toolbox.setTaskStateToNew",
-        "title": "Hazel's Toolbox: Set Task to New"
-      },
-      {
-        "command": "tacosontitan.toolbox.setTaskStateToActive",
-        "title": "Hazel's Toolbox: Set Task to Active"
-      },
-      {
-        "command": "tacosontitan.toolbox.setTaskStateToResolved",
-        "title": "Hazel's Toolbox: Set Task to Resolved"
-      },
-      {
-        "command": "tacosontitan.toolbox.setTaskStateToClosed",
-        "title": "Hazel's Toolbox: Set Task to Closed"
-      },
-      {
-        "command": "tacosontitan.toolbox.startWorkItem",
-        "title": "Hazel's Toolbox: Start Work Item",
-        "icon": "$(play)"
-      },
-      {
-        "command": "tacosontitan.toolbox.azure.devops.startWorkItem",
-        "title": "Hazel's Toolbox: Start Work Item"
-      },
-      {
-        "command": "tacosontitan.toolbox.time.clockIn",
-        "title": "Hazel's Toolbox: Clock In",
-        "icon": "$(play)"
-      },
-      {
-        "command": "tacosontitan.toolbox.time.clockOut",
-        "title": "Hazel's Toolbox: Clock Out",
-        "icon": "$(stop)"
-      },
-      {
-        "command": "tacosontitan.toolbox.time.refresh",
-        "title": "Hazel's Toolbox: Refresh Time",
-        "icon": "$(refresh)"
-      },
-      {
-        "command": "tacosontitan.toolbox.time.loadMore",
-        "title": "Hazel's Toolbox: Load More Days"
-      },
-      {
-        "command": "tacosontitan.toolbox.time.clearAll",
-        "title": "Hazel's Toolbox: Clear All Time Entries"
-      },
-      {
-        "command": "tacosontitan.toolbox.time.cleanupOldEntries",
-        "title": "Hazel's Toolbox: Clean Up Old Time Entries"
-      }
-    ],
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "toolbox",
-          "title": "Toolbox",
-          "icon": "$(tools)"
-        }
-      ]
-    },
-    "views": {
-      "toolbox": [
-        {
-          "id": "overviewWebView",
-          "name": "Overview",
-          "type": "webview",
-          "when": "true"
-        },
-        {
-          "id": "tasksTreeView",
-          "name": "Active Work Items",
-          "when": "true"
-        },
-        {
-          "id": "meetingView",
-          "name": "Meeting Notes",
-          "when": "true",
-          "type": "webview"
-        },
-        {
-          "id": "timeTreeView",
-          "name": "Time Tracking",
-          "when": "true"
-        }
-      ]
-    },
-    "menus": {
-      "view/title": [
-        {
-          "command": "tacosontitan.toolbox.searchWorkItem",
-          "when": "view == tasksTreeView",
-          "group": "navigation"
-        },
-        {
-          "command": "tacosontitan.toolbox.refreshTasks",
-          "when": "view == tasksTreeView",
-          "group": "navigation"
-        },
-        {
-          "command": "tacosontitan.toolbox.addTask",
-          "when": "view == tasksTreeView",
-          "group": "navigation"
-        },
-        {
-          "command": "tacosontitan.toolbox.startWorkItem",
-          "when": "view == tasksTreeView",
-          "group": "navigation"
-        },
-        {
-          "command": "tacosontitan.toolbox.time.clockIn",
-          "when": "view == timeTreeView",
-          "group": "navigation@1"
-        },
-        {
-          "command": "tacosontitan.toolbox.time.clockOut",
-          "when": "view == timeTreeView",
-          "group": "navigation@2"
-        },
-        {
-          "command": "tacosontitan.toolbox.time.refresh",
-          "when": "view == timeTreeView",
-          "group": "navigation@3"
-        }
-      ],
-      "view/item/context": [
-        {
-          "command": "tacosontitan.toolbox.setTaskStateToNew",
-          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToNew/",
-          "group": "1_state"
-        },
-        {
-          "command": "tacosontitan.toolbox.setTaskStateToActive",
-          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToActive/",
-          "group": "1_state"
-        },
-        {
-          "command": "tacosontitan.toolbox.setTaskStateToResolved",
-          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToResolved/",
-          "group": "1_state"
-        },
-        {
-          "command": "tacosontitan.toolbox.setTaskStateToClosed",
-          "when": "view == tasksTreeView && viewItem =~ /taskCanSetToClosed/",
-          "group": "1_state"
-        },
-        {
-          "command": "tacosontitan.toolbox.time.loadMore",
-          "when": "view == timeTreeView && viewItem == loadMore",
-          "group": "inline"
-        }
-      ]
     }
   },
   "scripts": {
