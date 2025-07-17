@@ -1,8 +1,8 @@
 import * as azdev from 'azure-devops-node-api';
 import * as vscode from 'vscode';
+import { DevOpsService } from '../../infrastructure/azure/devops-service';
 import { getMeetingTemplate, getMeetingTypes } from '../../todo/meetings/meeting-templates';
 import { getConfiguredParticipants } from '../../todo/meetings/participant-config';
-import { DevOpsService } from '../todo/services/devops-service';
 
 export class MeetingViewProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'meetingView';

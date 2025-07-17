@@ -1,16 +1,16 @@
 import * as vscode from 'vscode';
 import { TasksTreeDataProvider } from '../../application/providers/tasks-tree-data-provider';
 import { Command } from '../../core/command';
-import { ConfigurationManager } from "../../core/configuration";
-import { IWorkItemService } from '../core/workflow';
+import { IConfigurationProvider } from "../../core/configuration";
+import { IWorkItemService } from '../../domain/workflow';
 
 /**
  * Command to add a new task to the current work item.
- * REFACTORED: Now uses ConfigurationManager for simplified dependencies!
+ * REFACTORED: Now uses IConfigurationProvider for simplified dependencies!
  */
 export class AddTaskCommand extends Command {
     constructor(
-        private readonly configurationManager: ConfigurationManager,
+        private readonly configurationProvider: IConfigurationProvider,
         private tasksTreeProvider: TasksTreeDataProvider,
         private workItemService: IWorkItemService
     ) {

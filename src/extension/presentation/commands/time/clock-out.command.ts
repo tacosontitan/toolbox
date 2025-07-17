@@ -1,5 +1,6 @@
+import { TimeTreeDataProvider } from "../../../application/providers/time-tree-data-provider";
+import { TimeEntryService } from "../../../application/time/time-entry-service";
 import { Command } from "../../../core";
-import { TimeEntryService, TimeTreeDataProvider } from "../../time";
 
 /**
  * Command to clock out

@@ -1,5 +1,5 @@
+import { TimeTreeDataProvider } from "../../../application/providers/time-tree-data-provider";
 import { Command } from "../../../core";
-import { TimeTreeDataProvider } from "../../time";
 
 /**
  * Command to refresh the time tree view

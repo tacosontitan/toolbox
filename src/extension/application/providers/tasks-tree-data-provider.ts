@@ -3,11 +3,11 @@ import { WebApi } from 'azure-devops-node-api/WebApi';
 import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 import { WorkItem } from 'azure-devops-node-api/interfaces/WorkItemTrackingInterfaces';
 import * as vscode from 'vscode';
-import { PlaceholderTreeItem } from '../../core/placeholder-tree-item';
+import { DevOpsService } from '../../infrastructure/azure/devops-service';
+import { PlaceholderTreeItem } from '../../presentation/placeholder-tree-item';
 import { StateGroupTreeItem } from '../../presentation/workflow/state-group-tree-item';
 import { TaskTreeItem } from '../../presentation/workflow/task-tree-item';
 import { WorkItemTreeItem } from '../../presentation/workflow/work-item-tree-item';
-import { DevOpsService } from '../services/devops-service';
 
 export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem | undefined | null | void> = new vscode.EventEmitter<WorkItemTreeItem | TaskTreeItem | PlaceholderTreeItem | StateGroupTreeItem | undefined | null | void>();
@@ -25,13 +25,13 @@ export class TasksTreeDataProvider implements vscode.TreeDataProvider<WorkItemTr
     refresh(): void {
         // Load all active work items when refreshing
         this.loadActiveWorkItems().then(() => {
-            this._onDidChangeTreeData.fire();
+            this._onDidChangeTreeData.fire(undefined);
         }).catch(() => {
             // Clear data if reload fails
             this.activeWorkItems = [];
             this.workItemTasks.clear();
             this.stateGroupToWorkItem.clear();
-            this._onDidChangeTreeData.fire();
+            this._onDidChangeTreeData.fire(undefined);
         });
     }
 

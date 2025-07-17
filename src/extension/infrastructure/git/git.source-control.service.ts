@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { ISourceControlService } from "./source-control.service";
+import { ISourceControlService } from "../../core/source-control/source-control.service";
 
 /**
  * Represents a service for managing git operations in a repository.
