@@ -1,10 +1,13 @@
 import * as vscode from 'vscode';
-import { CommandRegistry } from './core/command-registry';
+import * as toolbox from './setup';
 
 /**
  * Activates the extension when it is loaded by VS Code.
  * @param context The extension context provided by VS Code.
  */
 export function activate(context: vscode.ExtensionContext) {
-	CommandRegistry.registerCommands(context);
+	toolbox.initialize(context);
+	toolbox.registerServices(context);
+	toolbox.registerViews(context);
+	toolbox.registerCommands(context);
 }
