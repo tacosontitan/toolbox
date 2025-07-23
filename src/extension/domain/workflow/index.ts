@@ -6,5 +6,4 @@ export * from './work-item.service';
 
 export * from './configuration/workflow.configuration';
 export * from './configuration/workflow.options';
-export * from './pre-defined-tasks';
 
