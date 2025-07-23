@@ -17,7 +17,7 @@
     },
     "metadata": {
       "type": "object",
-      "required": ["name", "description", "author"],
+      "required": ["name", "description", "author", "category"],
       "properties": {
         "name": {
           "type": "string",
@@ -30,8 +30,19 @@
         "author": {
           "type": "string",
           "description": "Author of the templates"
+        },
+        "category": {
+          "type": "string",
+          "description": "Primary category for this template collection",
+          "enum": ["planning", "development", "review", "testing", "release", "general"]
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tags for categorizing and searching"
         }
-
       }
     },
     "templates": {
@@ -44,7 +55,7 @@
   "definitions": {
     "TaskTemplate": {
       "type": "object",
-      "required": ["title", "description", "remainingWork", "activity"],
+      "required": ["title", "description", "remainingWork", "activity", "assigneeRequired", "appliesTo"],
       "properties": {
         "title": {
           "type": "string",
@@ -67,7 +78,7 @@
           "description": "Activity type for the task",
           "enum": [
             "Planning",
-            "Development",
+            "Development", 
             "Testing",
             "Design",
             "Documentation",
@@ -77,6 +88,18 @@
             "Process Improvement",
             "Infrastructure"
           ]
+        },
+        "assigneeRequired": {
+          "type": "boolean",
+          "description": "Whether the task must have an assignee"
+        },
+        "appliesTo": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["Feature", "User Story", "Bug", "Task", "Epic"]
+          },
+          "description": "Work item types this template applies to"
         },
         "requiredFields": {
           "type": "array",
@@ -88,17 +111,15 @@
         "metadata": {
           "type": "object",
           "properties": {
-            "appliesTo": {
+            "category": {
+              "type": "string",
+              "enum": ["planning", "development", "review", "testing", "release", "general"]
+            },
+            "tags": {
               "type": "array",
               "items": {
-                "type": "string",
-                "enum": ["Feature", "User Story", "Bug", "Task", "Epic"]
-              },
-              "description": "Work item types this template applies to"
-            },
-            "assigneeRequired": {
-              "type": "boolean",
-              "description": "Whether the task must have an assignee"
+                "type": "string"
+              }
             }
           }
         }

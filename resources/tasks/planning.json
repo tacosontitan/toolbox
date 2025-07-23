@@ -4,14 +4,7 @@
   "metadata": {
     "name": "Planning Tasks",
     "description": "Pre-defined tasks for work item planning and analysis phase",
-    "author": "tacosontitan",
-    "category": "planning",
-    "tags": [
-      "agile",
-      "scrum",
-      "planning",
-      "analysis"
-    ]
+    "author": "tacosontitan"
   },
   "templates": [
     {
@@ -19,17 +12,11 @@
       "description": "Review the feature and its associated work items to ensure alignment with business objectives, coordination with team members, and add tasks if necessary.",
       "remainingWork": 0.5,
       "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "planning",
-        "tags": [
-          "review",
-          "requirements",
-          "alignment"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -38,17 +25,12 @@
       "description": "Review the work item and all pre-defined tasks to ensure that tasks are aligned with business objectives and add tasks if necessary.",
       "remainingWork": 0.5,
       "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story",
-        "Bug"
-      ],
       "metadata": {
-        "category": "planning",
-        "tags": [
-          "review",
-          "analysis"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story",
+          "Bug"
         ]
       }
     },
@@ -57,16 +39,10 @@
       "description": "Attempt to reproduce the issue locally to better understand the problem and identify potential solutions.",
       "remainingWork": 1,
       "activity": "Testing",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Bug"
-      ],
       "metadata": {
-        "category": "planning",
-        "tags": [
-          "debugging",
-          "testing",
-          "reproduction"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Bug"
         ]
       }
     },
@@ -75,17 +51,11 @@
       "description": "Review existing implementations to gather insights and derive potential solutions.",
       "remainingWork": 1,
       "activity": "Design",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "planning",
-        "tags": [
-          "research",
-          "analysis",
-          "design"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -94,17 +64,11 @@
       "description": "Meet with the feature leader to discuss the work item's scope within the grand scheme of the feature.",
       "remainingWork": 0.5,
       "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "planning",
-        "tags": [
-          "meeting",
-          "collaboration",
-          "scope"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -113,20 +77,14 @@
       "description": "Meet with the noted subject matter expert to discuss the work item's implementation.",
       "remainingWork": 0.5,
       "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "requiredFields": [
         "Subject Matter Expert"
       ],
       "metadata": {
-        "category": "planning",
-        "tags": [
-          "meeting",
-          "expertise",
-          "consultation"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -135,17 +93,11 @@
       "description": "Meet with product owners to clarify requirements and ensure alignment with business objectives.",
       "remainingWork": 0.5,
       "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "planning",
-        "tags": [
-          "meeting",
-          "product",
-          "requirements"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -154,20 +106,14 @@
       "description": "Meet with stakeholders to gather feedback and ensure the work item aligns with their expectations.",
       "remainingWork": 0.5,
       "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "requiredFields": [
         "Stakeholder"
       ],
       "metadata": {
-        "category": "planning",
-        "tags": [
-          "meeting",
-          "stakeholders",
-          "feedback"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -176,17 +122,11 @@
       "description": "Meet with QA to discuss test cases and ensure alignment on quality expectations.",
       "remainingWork": 0.5,
       "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "planning",
-        "tags": [
-          "meeting",
-          "qa",
-          "testing"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -195,17 +135,11 @@
       "description": "After conducting the necessary reviews and meetings, create tasks that represent the steps needed to execute the work item's acceptance criteria (be sure to account for non-functional requirements).",
       "remainingWork": 0.5,
       "activity": "Design",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "planning",
-        "tags": [
-          "tasks",
-          "implementation",
-          "breakdown"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     }

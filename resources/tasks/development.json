@@ -4,13 +4,7 @@
   "metadata": {
     "name": "Development Tasks",
     "description": "Pre-defined tasks for development and implementation work",
-    "author": "tacosontitan",
-    "category": "development",
-    "tags": [
-      "development",
-      "coding",
-      "implementation"
-    ]
+    "author": "tacosontitan"
   },
   "templates": [
     {
@@ -18,18 +12,12 @@
       "description": "Setup the development environment to execute the work item.\n- Download repository.\n- Run any tests against main.\n- Create topic branch.\n- Install dependencies.",
       "remainingWork": 0.15,
       "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story",
-        "Bug"
-      ],
       "metadata": {
-        "category": "development",
-        "tags": [
-          "setup",
-          "environment",
-          "prerequisites"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story",
+          "Bug"
         ]
       }
     }

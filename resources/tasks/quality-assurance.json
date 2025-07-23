@@ -4,13 +4,7 @@
   "metadata": {
     "name": "Quality Assurance Tasks",
     "description": "Pre-defined tasks for quality assurance and testing workflows",
-    "author": "tacosontitan",
-    "category": "testing",
-    "tags": [
-      "qa",
-      "testing",
-      "quality-assurance"
-    ]
+    "author": "tacosontitan"
   },
   "templates": [
     {
@@ -18,17 +12,11 @@
       "description": "Write test cases that are comprehensive and aligned with business objectives.",
       "remainingWork": 2,
       "activity": "Design",
-      "assigneeRequired": false,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "testing",
-        "tags": [
-          "test-cases",
-          "design",
-          "documentation"
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -37,17 +25,11 @@
       "description": "Review the test cases to ensure they are correct, comprehensive, and cover all scenarios.",
       "remainingWork": 0.5,
       "activity": "Requirements",
-      "assigneeRequired": false,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "testing",
-        "tags": [
-          "review",
-          "validation",
-          "coverage"
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -56,16 +38,11 @@
       "description": "Review the test cases to ensure they are correct, comprehensive, and cover all scenarios.",
       "remainingWork": 0.5,
       "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "testing",
-        "tags": [
-          "developer-review",
-          "validation"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -74,17 +51,11 @@
       "description": "Create a build for QA testing to validate the implementation.",
       "remainingWork": 0.01,
       "activity": "Deployment",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "testing",
-        "tags": [
-          "build",
-          "deployment",
-          "qa-environment"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -93,16 +64,11 @@
       "description": "Deploy the build to the test environment for QA validation.",
       "remainingWork": 2,
       "activity": "Deployment",
-      "assigneeRequired": false,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "testing",
-        "tags": [
-          "deployment",
-          "test-environment"
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -111,17 +77,11 @@
       "description": "Execute the test cases to validate the functionality of the work item.",
       "remainingWork": 1,
       "activity": "Testing",
-      "assigneeRequired": false,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "testing",
-        "tags": [
-          "execution",
-          "validation",
-          "functionality"
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -130,16 +90,11 @@
       "description": "Provide support to the QA team during the testing process.",
       "remainingWork": 1,
       "activity": "Testing",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "testing",
-        "tags": [
-          "support",
-          "collaboration"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -148,16 +103,11 @@
       "description": "Perform smoke testing to validate the stability of the build in the test environment.",
       "remainingWork": 0.5,
       "activity": "Testing",
-      "assigneeRequired": false,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "testing",
-        "tags": [
-          "smoke-testing",
-          "stability"
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     },
@@ -166,16 +116,11 @@
       "description": "Provide support during smoke testing to address any issues that arise.",
       "remainingWork": 0.25,
       "activity": "Testing",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story"
-      ],
       "metadata": {
-        "category": "testing",
-        "tags": [
-          "support",
-          "smoke-testing"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
         ]
       }
     }

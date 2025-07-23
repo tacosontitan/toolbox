@@ -4,13 +4,7 @@
   "metadata": {
     "name": "Code Review Tasks",
     "description": "Pre-defined tasks for code review and pull request workflows",
-    "author": "tacosontitan",
-    "category": "review",
-    "tags": [
-      "review",
-      "pull-request",
-      "code-quality"
-    ]
+    "author": "tacosontitan"
   },
   "templates": [
     {
@@ -18,18 +12,12 @@
       "description": "Create a draft pull request to initiate the code review process.",
       "remainingWork": 0.01,
       "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story",
-        "Bug"
-      ],
       "metadata": {
-        "category": "review",
-        "tags": [
-          "pr",
-          "draft",
-          "setup"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story",
+          "Bug"
         ]
       }
     },
@@ -38,18 +26,12 @@
       "description": "Perform a self-review of the pull request to ensure code quality and completeness.",
       "remainingWork": 0.5,
       "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story",
-        "Bug"
-      ],
       "metadata": {
-        "category": "review",
-        "tags": [
-          "self-review",
-          "quality",
-          "validation"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story",
+          "Bug"
         ]
       }
     },
@@ -58,17 +40,12 @@
       "description": "Publish the pull request for review by other team members.",
       "remainingWork": 0.01,
       "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story",
-        "Bug"
-      ],
       "metadata": {
-        "category": "review",
-        "tags": [
-          "publish",
-          "collaboration"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story",
+          "Bug"
         ]
       }
     },
@@ -77,18 +54,12 @@
       "description": "Run automated validations for the pull request to ensure compliance with standards.",
       "remainingWork": 0.01,
       "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story",
-        "Bug"
-      ],
       "metadata": {
-        "category": "review",
-        "tags": [
-          "validation",
-          "automation",
-          "standards"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story",
+          "Bug"
         ]
       }
     },
@@ -97,18 +68,12 @@
       "description": "Address feedback provided during the pull request review process.",
       "remainingWork": 1,
       "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story",
-        "Bug"
-      ],
       "metadata": {
-        "category": "review",
-        "tags": [
-          "feedback",
-          "iteration",
-          "improvement"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story",
+          "Bug"
         ]
       }
     },
@@ -117,17 +82,12 @@
       "description": "Complete the pull request after all validations and reviews are successful.",
       "remainingWork": 0.01,
       "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Feature",
-        "User Story",
-        "Bug"
-      ],
       "metadata": {
-        "category": "review",
-        "tags": [
-          "completion",
-          "merge"
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story",
+          "Bug"
         ]
       }
     }
