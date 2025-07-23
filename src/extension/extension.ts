@@ -8,9 +8,8 @@ import * as toolbox from './setup';
 export async function activate(context: vscode.ExtensionContext) {
 	toolbox.initialize(context);
 	toolbox.registerServices(context);
-	toolbox.registerViews(context);
 	toolbox.registerCommands(context);
-	
-	// Initialize templates after services are registered
+	toolbox.registerViews(context);
+
 	await toolbox.initializeTemplates();
 }
