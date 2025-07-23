@@ -310,6 +310,36 @@
           "type": "number",
           "default": 30,
           "description": "Number of days to look back for recent work item completions in the Overview"
+        },
+        "tacosontitan.toolbox.customTemplatesPath": {
+          "type": "string",
+          "default": ".vscode/task-templates",
+          "description": "Path relative to workspace root where custom task templates are stored"
+        },
+        "tacosontitan.toolbox.taskTemplateSources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "List of VS Code extension IDs that provide additional task templates"
+        },
+        "tacosontitan.toolbox.enabledTemplateCategories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["planning", "development", "review", "testing", "release", "general"]
+          },
+          "default": [],
+          "description": "Specific template categories to enable. If empty, all categories are enabled"
+        },
+        "tacosontitan.toolbox.disabledTaskTemplates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "List of task template titles to disable"
         }
       }
     }

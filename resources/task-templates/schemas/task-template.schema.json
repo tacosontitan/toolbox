@@ -55,13 +55,8 @@
   "definitions": {
     "TaskTemplate": {
       "type": "object",
-      "required": ["id", "title", "description", "remainingWork", "activity", "assigneeRequired", "appliesTo"],
+      "required": ["title", "description", "remainingWork", "activity", "assigneeRequired", "appliesTo"],
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the template",
-          "pattern": "^[a-zA-Z0-9._-]+$"
-        },
         "title": {
           "type": "string",
           "description": "Title of the task",
@@ -125,16 +120,6 @@
               "items": {
                 "type": "string"
               }
-            },
-            "configurable": {
-              "type": "boolean",
-              "description": "Whether users can modify this template"
-            },
-            "priority": {
-              "type": "integer",
-              "description": "Sort priority (lower numbers first)",
-              "minimum": 1,
-              "maximum": 100
             }
           }
         }

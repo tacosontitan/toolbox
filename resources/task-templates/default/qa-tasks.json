@@ -6,142 +6,177 @@
     "description": "Pre-defined tasks for quality assurance and testing workflows",
     "author": "tacosontitan",
     "category": "testing",
-    "tags": ["qa", "testing", "quality-assurance"]
+    "tags": [
+      "qa",
+      "testing",
+      "quality-assurance"
+    ]
   },
   "templates": [
     {
-      "id": "qa.write-test-cases",
       "title": "QA Write Test Cases",
       "description": "Write test cases that are comprehensive and aligned with business objectives.",
       "remainingWork": 2,
       "activity": "Design",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "testing",
-        "tags": ["test-cases", "design", "documentation"],
-        "priority": 1,
-        "configurable": true
+        "tags": [
+          "test-cases",
+          "design",
+          "documentation"
+        ]
       }
     },
     {
-      "id": "qa.review-test-cases",
       "title": "QA Review Test Cases",
       "description": "Review the test cases to ensure they are correct, comprehensive, and cover all scenarios.",
       "remainingWork": 0.5,
       "activity": "Requirements",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "testing",
-        "tags": ["review", "validation", "coverage"],
-        "priority": 2,
-        "configurable": true
+        "tags": [
+          "review",
+          "validation",
+          "coverage"
+        ]
       }
     },
     {
-      "id": "qa.dev-review-test-cases",
       "title": "Dev Review Test Cases",
       "description": "Review the test cases to ensure they are correct, comprehensive, and cover all scenarios.",
       "remainingWork": 0.5,
       "activity": "Requirements",
       "assigneeRequired": true,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "testing",
-        "tags": ["developer-review", "validation"],
-        "priority": 3,
-        "configurable": true
+        "tags": [
+          "developer-review",
+          "validation"
+        ]
       }
     },
     {
-      "id": "qa.create-qa-build",
       "title": "Create Quality Assurance Build",
       "description": "Create a build for QA testing to validate the implementation.",
       "remainingWork": 0.01,
       "activity": "Deployment",
       "assigneeRequired": true,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "testing",
-        "tags": ["build", "deployment", "qa-environment"],
-        "priority": 4,
-        "configurable": true
+        "tags": [
+          "build",
+          "deployment",
+          "qa-environment"
+        ]
       }
     },
     {
-      "id": "qa.deployment-to-test-env",
       "title": "QA Deployment to Test Environment",
       "description": "Deploy the build to the test environment for QA validation.",
       "remainingWork": 2,
       "activity": "Deployment",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "testing",
-        "tags": ["deployment", "test-environment"],
-        "priority": 5,
-        "configurable": true
+        "tags": [
+          "deployment",
+          "test-environment"
+        ]
       }
     },
     {
-      "id": "qa.test-case-execution",
       "title": "QA Test Case Execution",
       "description": "Execute the test cases to validate the functionality of the work item.",
       "remainingWork": 1,
       "activity": "Testing",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "testing",
-        "tags": ["execution", "validation", "functionality"],
-        "priority": 6,
-        "configurable": true
+        "tags": [
+          "execution",
+          "validation",
+          "functionality"
+        ]
       }
     },
     {
-      "id": "qa.support-qa-testing",
       "title": "Support QA Testing",
       "description": "Provide support to the QA team during the testing process.",
       "remainingWork": 1,
       "activity": "Testing",
       "assigneeRequired": true,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "testing",
-        "tags": ["support", "collaboration"],
-        "priority": 7,
-        "configurable": true
+        "tags": [
+          "support",
+          "collaboration"
+        ]
       }
     },
     {
-      "id": "qa.smoke-testing",
       "title": "QA Smoke Testing",
       "description": "Perform smoke testing to validate the stability of the build in the test environment.",
       "remainingWork": 0.5,
       "activity": "Testing",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "testing",
-        "tags": ["smoke-testing", "stability"],
-        "priority": 8,
-        "configurable": true
+        "tags": [
+          "smoke-testing",
+          "stability"
+        ]
       }
     },
     {
-      "id": "qa.support-smoke-testing",
       "title": "Support Smoke Testing",
       "description": "Provide support during smoke testing to address any issues that arise.",
       "remainingWork": 0.25,
       "activity": "Testing",
       "assigneeRequired": true,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "testing",
-        "tags": ["support", "smoke-testing"],
-        "priority": 9,
-        "configurable": true
+        "tags": [
+          "support",
+          "smoke-testing"
+        ]
       }
     }
   ]

@@ -8,7 +8,7 @@ import { TaskTemplate, TaskTemplateSchema } from './task-template.schema';
  * Service for loading task templates from JSON files.
  */
 export class JsonTemplateLoader {
-    private loadedTemplates = new Map<string, TaskTemplate>();
+    private loadedTemplates: TaskTemplate[] = [];
     private templateSchemas = new Map<string, TaskTemplateSchema>();
 
     constructor(private context: vscode.ExtensionContext) {}
@@ -138,7 +138,7 @@ export class JsonTemplateLoader {
                         sourceFile: path.basename(filePath)
                     }
                 };
-                this.loadedTemplates.set(template.id, enhancedTemplate);
+                this.loadedTemplates.push(enhancedTemplate);
             }
 
             console.log(`Loaded ${schema.templates.length} templates from ${path.basename(filePath)} (${source})`);
@@ -169,9 +169,6 @@ export class JsonTemplateLoader {
 
         // Validate each template
         for (const template of schema.templates) {
-            if (!template.id || typeof template.id !== 'string') {
-                return false;
-            }
             if (!template.title || typeof template.title !== 'string') {
                 return false;
             }
@@ -190,7 +187,7 @@ export class JsonTemplateLoader {
      * Get all loaded templates.
      */
     getAllTemplates(): TaskTemplate[] {
-        return Array.from(this.loadedTemplates.values());
+        return this.loadedTemplates;
     }
 
     /**
@@ -199,7 +196,7 @@ export class JsonTemplateLoader {
     getFilteredTemplates(): TaskTemplate[] {
         const config = vscode.workspace.getConfiguration('tacosontitan.toolbox');
         const enabledCategories = config.get<string[]>('enabledTemplateCategories', []);
-        const disabledTemplates = config.get<string[]>('disabledTaskTemplates', []);
+        const disabledTemplateTitles = config.get<string[]>('disabledTaskTemplates', []);
 
         return this.getAllTemplates().filter(template => {
             // Filter by enabled categories
@@ -210,8 +207,8 @@ export class JsonTemplateLoader {
                 }
             }
 
-            // Filter out disabled templates
-            if (disabledTemplates.includes(template.id)) {
+            // Filter out disabled templates (by title since we removed id)
+            if (disabledTemplateTitles.includes(template.title)) {
                 return false;
             }
 
@@ -229,10 +226,10 @@ export class JsonTemplateLoader {
     }
 
     /**
-     * Get template by ID.
+     * Get template by title (since we removed id).
      */
-    getTemplateById(id: string): TaskTemplate | undefined {
-        return this.loadedTemplates.get(id);
+    getTemplateByTitle(title: string): TaskTemplate | undefined {
+        return this.loadedTemplates.find(template => template.title === title);
     }
 
     /**

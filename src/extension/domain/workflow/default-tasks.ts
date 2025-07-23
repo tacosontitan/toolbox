@@ -1,40 +1,38 @@
-import * as PreDefinedTasks from './pre-defined-tasks';
+import { ServiceLocator } from "../../core";
+import { JsonTemplateLoader } from "./pre-defined-tasks/json-template-loader";
 import { PreDefinedTask } from "./pre-defined-tasks/pre-defined-task";
 
 /**
  * Defines the default tasks used to execute a work item in an Agile workflow.
+ * This provides a backward-compatible interface while loading from JSON templates.
  */
-export const DefaultTasks: PreDefinedTask[] = [
-    PreDefinedTasks.ReviewFeature,
-    PreDefinedTasks.ReviewWorkItem,
-    PreDefinedTasks.ReproduceLocally,
-    PreDefinedTasks.ReviewExistingImplementations,
-    PreDefinedTasks.MeetWithFeatureLeader,
-    PreDefinedTasks.MeetWithSme,
-    PreDefinedTasks.MeetWithProductOwners,
-    PreDefinedTasks.MeetWithStakeholders,
-    PreDefinedTasks.MeetWithQualityAssurance,
-    PreDefinedTasks.QAWriteTestCases,
-    PreDefinedTasks.QAReviewTestCases,
-    PreDefinedTasks.DevReviewTestCases,
-    PreDefinedTasks.CreateImplementationTasks,
-    PreDefinedTasks.SetupEnvironment,
-    PreDefinedTasks.CreateDraftPR,
-    PreDefinedTasks.SelfReviewPR,
-    PreDefinedTasks.PublishPR,
-    PreDefinedTasks.CreateQualityAssuranceBuild,
-    PreDefinedTasks.QADeploymentToTestEnvironment,
-    PreDefinedTasks.QATestCaseExecution,
-    PreDefinedTasks.SupportQATesting,
-    PreDefinedTasks.ResolvePRFeedback,
-    PreDefinedTasks.RunPRValidations,
-    PreDefinedTasks.CompletePR,
-    PreDefinedTasks.CreateReleaseBuild,
-    PreDefinedTasks.CreateReleaseNotes,
-    PreDefinedTasks.QAReviewReleaseNotes,
-    PreDefinedTasks.QASmokeTesting,
-    PreDefinedTasks.SupportSmokeTesting,
-    PreDefinedTasks.DeployToProduction,
-    PreDefinedTasks.NotifyStakeholdersOfDeployment,
-    PreDefinedTasks.ValidateInProduction
-];
+let _defaultTasks: PreDefinedTask[] | undefined;
+
+/**
+ * Get the default tasks. This loads templates from JSON on first access.
+ */
+export async function getDefaultTasks(): Promise<PreDefinedTask[]> {
+    if (!_defaultTasks) {
+        const templateLoader = ServiceLocator.getService(JsonTemplateLoader);
+        await templateLoader.loadAllTemplates();
+        _defaultTasks = templateLoader.createPreDefinedTasks();
+    }
+    return _defaultTasks;
+}
+
+/**
+ * Synchronous access to default tasks (for backward compatibility).
+ * Returns empty array if templates haven't been loaded yet.
+ */
+export const DefaultTasks: PreDefinedTask[] = [];
+
+/**
+ * Initialize the default tasks by loading templates.
+ * This should be called during extension activation.
+ */
+export async function initializeDefaultTasks(): Promise<void> {
+    _defaultTasks = await getDefaultTasks();
+    // Update the exported array for backward compatibility
+    DefaultTasks.length = 0;
+    DefaultTasks.push(..._defaultTasks);
+}

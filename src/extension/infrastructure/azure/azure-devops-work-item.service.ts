@@ -7,7 +7,7 @@ import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 import { ICommunicationService } from "../../core/communication";
 import { ILogger, LogLevel } from "../../core/telemetry";
 import { IWorkItemService, Task, WorkItem, WorkItemState, WorkItemType } from "../../domain/workflow";
-import { DefaultTasks } from "../../domain/workflow/default-tasks";
+import { getDefaultTasks } from "../../domain/workflow/default-tasks";
 import { PreDefinedTaskJsonPatchDocumentMapper } from "../../domain/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper";
 import { DevOpsService } from "./devops-service";
 
@@ -147,7 +147,11 @@ export class AzureDevOpsWorkItemService implements IWorkItemService {
         }
 
         const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItem.id || -1, workItem.areaPath || "", workItem.iterationPath || "");
-        for (const task of DefaultTasks) {
+        
+        // Load default tasks from JSON templates
+        const defaultTasks = await getDefaultTasks();
+        
+        for (const task of defaultTasks) {
             // if (task.requiredFields && !task.requiredFields.every(field => workItemFields[field] !== undefined && workItemFields[field] !== null && workItemFields[field] !== '')) {
             // 	this.logger.log(LogLevel.Warning, `Skipping task '${task.title}' as one or more required fields are missing or empty.`);
             // 	continue;

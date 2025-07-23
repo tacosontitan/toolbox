@@ -19,11 +19,6 @@ export interface TaskTemplateSchema {
  */
 export interface TaskTemplate {
     /**
-     * Unique identifier for the template.
-     */
-    id: string;
-
-    /**
      * The title of the task.
      */
     title: string;
@@ -64,8 +59,6 @@ export interface TaskTemplate {
     metadata?: {
         category?: string;
         tags?: string[];
-        configurable?: boolean;
-        priority?: number;
         [key: string]: any;
     };
 }

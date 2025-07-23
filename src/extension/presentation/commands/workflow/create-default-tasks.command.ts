@@ -7,7 +7,7 @@ import { Command } from '../../../core/command';
 import { ConfigurationError, IConfigurationProvider } from "../../../core/configuration";
 import { ILogger, LogLevel } from "../../../core/telemetry";
 import { IWorkItemService } from "../../../domain/workflow";
-import { DefaultTasks } from "../../../domain/workflow/default-tasks";
+import { JsonTemplateLoader } from "../../../domain/workflow/pre-defined-tasks/json-template-loader";
 import { PreDefinedTaskJsonPatchDocumentMapper } from '../../../domain/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper';
 
 /**
@@ -23,7 +23,8 @@ export class CreateDefaultTasksCommand extends Command {
 	constructor(
 		private readonly configurationProvider: IConfigurationProvider,
 		private readonly logger: ILogger,
-		private readonly workItemService: IWorkItemService
+		private readonly workItemService: IWorkItemService,
+		private readonly templateLoader: JsonTemplateLoader
 	) {
 		super('workflow.createDefaultTasks');
 	}
@@ -117,8 +118,12 @@ export class CreateDefaultTasksCommand extends Command {
 				);
 				let completed = 0;
 
-				for (const task of DefaultTasks) {
-					progress.report({ message: `Creating '${task.title}' (${++completed}/${DefaultTasks.length})` });
+				// Load templates and convert to PreDefinedTask objects
+				await this.templateLoader.loadAllTemplates();
+				const defaultTasks = this.templateLoader.createPreDefinedTasks();
+
+				for (const task of defaultTasks) {
+					progress.report({ message: `Creating '${task.title}' (${++completed}/${defaultTasks.length})` });
 					try {
 						const patchDocument = taskMapper.map(task);
 						const createdTask = await workItemTrackingClient.createWorkItem(

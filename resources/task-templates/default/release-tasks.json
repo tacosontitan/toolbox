@@ -6,157 +6,201 @@
     "description": "Pre-defined tasks for release management and deployment workflows",
     "author": "tacosontitan",
     "category": "release",
-    "tags": ["release", "deployment", "production"]
+    "tags": [
+      "release",
+      "deployment",
+      "production"
+    ]
   },
   "templates": [
     {
-      "id": "release.create-production-build",
       "title": "Create Production Build",
       "description": "Create a production-ready build for release deployment.",
       "remainingWork": 1,
       "activity": "Deployment",
       "assigneeRequired": true,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "release",
-        "tags": ["build", "production", "deployment"],
-        "priority": 1,
-        "configurable": true
+        "tags": [
+          "build",
+          "production",
+          "deployment"
+        ]
       }
     },
     {
-      "id": "release.deploy-to-staging",
       "title": "Deploy to Staging Environment",
       "description": "Deploy the production build to the staging environment for final validation.",
       "remainingWork": 2,
       "activity": "Deployment",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "release",
-        "tags": ["deployment", "staging", "validation"],
-        "priority": 2,
-        "configurable": true
+        "tags": [
+          "deployment",
+          "staging",
+          "validation"
+        ]
       }
     },
     {
-      "id": "release.final-qa-validation",
       "title": "Final QA Validation",
       "description": "Perform final QA validation in the staging environment before production release.",
       "remainingWork": 1,
       "activity": "Testing",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "release",
-        "tags": ["qa", "validation", "staging"],
-        "priority": 3,
-        "configurable": true
+        "tags": [
+          "qa",
+          "validation",
+          "staging"
+        ]
       }
     },
     {
-      "id": "release.security-review",
       "title": "Security Review",
       "description": "Conduct security review of the changes before production deployment.",
       "remainingWork": 2,
       "activity": "Requirements",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "release",
-        "tags": ["security", "review", "compliance"],
-        "priority": 4,
-        "configurable": true
+        "tags": [
+          "security",
+          "review",
+          "compliance"
+        ]
       }
     },
     {
-      "id": "release.performance-testing",
       "title": "Performance Testing",
       "description": "Conduct performance testing to ensure the changes meet performance requirements.",
       "remainingWork": 3,
       "activity": "Testing",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "release",
-        "tags": ["performance", "testing", "benchmarks"],
-        "priority": 5,
-        "configurable": true
+        "tags": [
+          "performance",
+          "testing",
+          "benchmarks"
+        ]
       }
     },
     {
-      "id": "release.rollback-plan",
       "title": "Create Rollback Plan",
       "description": "Create a detailed rollback plan in case the deployment needs to be reverted.",
       "remainingWork": 1,
       "activity": "Design",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "release",
-        "tags": ["rollback", "contingency", "planning"],
-        "priority": 6,
-        "configurable": true
+        "tags": [
+          "rollback",
+          "contingency",
+          "planning"
+        ]
       }
     },
     {
-      "id": "release.deploy-to-production",
       "title": "Deploy to Production",
       "description": "Deploy the validated build to the production environment.",
       "remainingWork": 3,
       "activity": "Deployment",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "release",
-        "tags": ["deployment", "production", "go-live"],
-        "priority": 7,
-        "configurable": true
+        "tags": [
+          "deployment",
+          "production",
+          "go-live"
+        ]
       }
     },
     {
-      "id": "release.post-deployment-monitoring",
       "title": "Post-Deployment Monitoring",
       "description": "Monitor the production environment after deployment to ensure stability.",
       "remainingWork": 4,
       "activity": "Testing",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "release",
-        "tags": ["monitoring", "stability", "production"],
-        "priority": 8,
-        "configurable": true
+        "tags": [
+          "monitoring",
+          "stability",
+          "production"
+        ]
       }
     },
     {
-      "id": "release.update-documentation",
       "title": "Update Release Documentation",
       "description": "Update documentation to reflect the changes included in this release.",
       "remainingWork": 2,
       "activity": "Documentation",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "release",
-        "tags": ["documentation", "changelog", "notes"],
-        "priority": 9,
-        "configurable": true
+        "tags": [
+          "documentation",
+          "changelog",
+          "notes"
+        ]
       }
     },
     {
-      "id": "release.user-notification",
       "title": "User Notification",
       "description": "Notify users about the new release and any important changes or features.",
       "remainingWork": 1,
       "activity": "Documentation",
       "assigneeRequired": false,
-      "appliesTo": ["Feature", "User Story"],
+      "appliesTo": [
+        "Feature",
+        "User Story"
+      ],
       "metadata": {
         "category": "release",
-        "tags": ["communication", "users", "announcement"],
-        "priority": 10,
-        "configurable": true
+        "tags": [
+          "communication",
+          "users",
+          "announcement"
+        ]
       }
     }
   ]

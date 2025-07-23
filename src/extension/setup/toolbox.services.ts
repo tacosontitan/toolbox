@@ -2,6 +2,7 @@ import { ExtensionContext } from "vscode";
 import { TimeEntryService } from "../application/time/time-entry-service";
 import { ICommunicationService, IConfigurationProvider, ILogger, ISecretProvider, OutputLogger, ServiceLocator } from "../core";
 import { ISourceControlService } from "../core/source-control/source-control.service";
+import { JsonTemplateLoader } from "../domain/workflow/pre-defined-tasks/json-template-loader";
 import { DevOpsService } from "../infrastructure/azure/devops-service";
 import { WorkItemService } from "../infrastructure/azure/work-item.service";
 import { GitService } from "../infrastructure/git/git.source-control.service";
@@ -13,6 +14,7 @@ export function registerServices(context: ExtensionContext) {
     registerInfrastructureServices(context);
     ServiceLocator.registerFactory(ILogger, () =>  new OutputLogger("Hazel's Toolbox"));
     ServiceLocator.registerFactory(TimeEntryService, () =>  new TimeEntryService(context));
+    ServiceLocator.registerFactory(JsonTemplateLoader, () => new JsonTemplateLoader(context));
 }
 
 function registerInfrastructureServices(context: ExtensionContext) {
