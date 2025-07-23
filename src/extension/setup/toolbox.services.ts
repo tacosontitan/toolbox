@@ -1,7 +1,9 @@
 import { ExtensionContext } from "vscode";
 import { TimeEntryService } from "../application/time/time-entry-service";
+import { WorkflowService } from "../application/workflow/workflow.service";
 import { ICommunicationService, IConfigurationProvider, ILogger, ISecretProvider, OutputLogger, ServiceLocator } from "../core";
 import { ISourceControlService } from "../core/source-control/source-control.service";
+import { DefaultTaskService } from "../domain/workflow";
 import { JsonTemplateLoader } from "../domain/workflow/pre-defined-tasks/json-template-loader";
 import { DevOpsService } from "../infrastructure/azure/devops-service";
 import { WorkItemService } from "../infrastructure/azure/work-item.service";
@@ -12,9 +14,26 @@ import { NativeSecretProvider } from "../infrastructure/vscode/secret-provider.n
 
 export function registerServices(context: ExtensionContext) {
     registerInfrastructureServices(context);
+    registerDomainServices();
+    registerApplicationServices();
     ServiceLocator.registerFactory(ILogger, () =>  new OutputLogger("Hazel's Toolbox"));
     ServiceLocator.registerFactory(TimeEntryService, () =>  new TimeEntryService(context));
     ServiceLocator.registerFactory(JsonTemplateLoader, () => new JsonTemplateLoader(context));
+}
+
+function registerApplicationServices() {
+    ServiceLocator.registerFactory(WorkflowService, () => new WorkflowService(
+        ServiceLocator.getService(ILogger),
+        ServiceLocator.getService('IConfiguration'),  // WorkflowOptions configuration
+        ServiceLocator.getService('IRepository'),     // WorkItem repository
+        ServiceLocator.getService('ITaskService')
+    ));
+    ServiceLocator.registerStringInterface('IWorkflowService', WorkflowService);
+}
+
+function registerDomainServices() {
+    ServiceLocator.registerFactory(DefaultTaskService, () => new DefaultTaskService());
+    ServiceLocator.registerStringInterface('ITaskService', DefaultTaskService);
 }
 
 function registerInfrastructureServices(context: ExtensionContext) {

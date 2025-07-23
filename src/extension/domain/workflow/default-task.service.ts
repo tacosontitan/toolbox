@@ -1,12 +1,54 @@
+import { Task } from './task';
 import { TaskTemplateLoader } from './task-template-loader';
 import { TaskTemplate } from './task-template.schema';
+import { ITaskService } from './task.service.interface';
+import { WorkItem } from './work-item';
 
 /**
  * Service providing synchronous access to default task templates.
  * This service assumes templates have already been loaded during extension initialization.
  */
-export class DefaultTaskService {
+export class DefaultTaskService implements ITaskService {
     
+    /**
+     * Gets the default tasks that should be created for a specific work item.
+     * @param workItem The work item to get default tasks for.
+     * @returns An array of task work items that should be added as children.
+     */
+    public getDefaultTasksForWorkItem(workItem: WorkItem): WorkItem[] {
+        const templates = this.getTaskTemplatesForWorkItem(workItem.type.name);
+        return templates.map(template => this.createTaskFromTemplate(template));
+    }
+
+    /**
+     * Gets task templates that apply to a specific work item type.
+     * @param workItemType The work item type to filter by.
+     * @returns An array of task templates.
+     */
+    private getTaskTemplatesForWorkItem(workItemType: string): TaskTemplate[] {
+        if (!TaskTemplateLoader.isTemplatesLoaded()) {
+            console.warn('Task templates not loaded yet. Returning empty array.');
+            return [];
+        }
+        
+        return TaskTemplateLoader.getTemplatesForWorkItemType(workItemType);
+    }
+
+    /**
+     * Creates a Task work item from a template.
+     * @param template The task template.
+     * @returns A new Task work item.
+     */
+    private createTaskFromTemplate(template: TaskTemplate): WorkItem {
+        return new Task(
+            template.title,
+            template.description,
+            template.remainingWork,
+            template.activity
+        );
+    }
+
+    // Static methods for backward compatibility and direct access
     /**
      * Gets default tasks for a specific work item type.
      * @param workItemType The work item type (e.g., "Feature", "User Story", "Bug")

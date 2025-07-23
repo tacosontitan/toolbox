@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { JsonFileReader } from '../../core/serialization/json-file-reader';
 import { TaskTemplate, TaskTemplateSchema } from './task-template.schema';
 
 /**
@@ -30,12 +31,7 @@ export class TaskTemplateLoader {
             for (const fileName of templateFiles) {
                 const filePath = path.join(templatesPath, fileName);
                 try {
-                    const fileUri = vscode.Uri.file(filePath);
-                    const fileContent = await vscode.workspace.fs.readFile(fileUri);
-                    const jsonContent = fileContent.toString();
-                    const templateSchema: TaskTemplateSchema = JSON.parse(jsonContent);
-
-                    // Add templates with category metadata
+                    const templateSchema = JsonFileReader.read<TaskTemplateSchema>(filePath);
                     const category = this.extractCategoryFromFileName(fileName);
                     for (const template of templateSchema.templates) {
                         templates.push({
@@ -76,8 +72,8 @@ export class TaskTemplateLoader {
      * @returns Array of applicable task templates
      */
     public static getTemplatesForWorkItemType(workItemType: string): TaskTemplate[] {
-        return TaskTemplateLoader.taskTemplates.filter(template =>
-            template.metadata?.appliesTo?.includes(workItemType) ||
+        return TaskTemplateLoader.taskTemplates.filter(template => 
+            template.metadata?.appliesTo?.includes(workItemType) || 
             template.appliesTo?.includes(workItemType)
         );
     }
@@ -88,7 +84,7 @@ export class TaskTemplateLoader {
      * @returns Array of task templates in the specified category
      */
     public static getTemplatesByCategory(category: string): TaskTemplate[] {
-        return TaskTemplateLoader.taskTemplates.filter(template =>
+        return TaskTemplateLoader.taskTemplates.filter(template => 
             template.metadata?.category === category
         );
     }
