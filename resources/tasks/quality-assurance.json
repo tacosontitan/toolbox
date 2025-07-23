@@ -1,5 +1,5 @@
 {
-  "$schema": "../schemas/task-template.schema.json",
+  "$schema": "../schemas/task.schema.json",
   "version": "1.0.0",
   "metadata": {
     "name": "Quality Assurance Tasks",
