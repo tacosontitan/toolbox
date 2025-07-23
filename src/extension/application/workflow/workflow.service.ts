@@ -23,31 +23,20 @@ export class WorkflowService implements IWorkflowService {
     /** @inheritdoc */
     public async start(workItemId: number): Promise<void> {
         this.logger.log(LogLevel.Trace, `Attempting to start work item ${workItemId}.`);
-
-        // Get the work item
         const workItem: WorkItem | undefined = await this.workItemRepository.getById(workItemId);
         if (!workItem) {
             throw new Error(`Unable to locate work item ${workItemId}.`);
         }
 
-        // Get workflow configuration
         const workflowOptions: WorkflowOptions = await this.workflowConfiguration.get();
-
-        // Start the work item (domain logic - just state change)
         workItem.start(workflowOptions.workItemStartedState);
 
-        // Get default tasks for this work item (application logic - business process)
         const defaultTasks: WorkItem[] = this.taskService.getDefaultTasksForWorkItem(workItem);
-
-        // Add default tasks as children
         for (const task of defaultTasks) {
             workItem.addChild(task);
         }
 
-        // Persist changes
         await this.workItemRepository.update(workItem);
-
-        // Create the child tasks in the repository
         for (const child of workItem.children) {
             await this.workItemRepository.create(child);
         }
