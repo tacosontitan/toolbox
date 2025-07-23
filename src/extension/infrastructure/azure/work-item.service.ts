@@ -7,7 +7,7 @@ import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 import { ICommunicationService } from "../../core/communication";
 import { ILogger, LogLevel } from "../../core/telemetry";
 import { IWorkItemService, Task, WorkItem, WorkItemState, WorkItemType } from "../../domain/workflow";
-import { getDefaultTasks } from "../../domain/workflow/default-tasks";
+import { DefaultTaskService } from "../../domain/workflow/default-task.service";
 import { PreDefinedTaskJsonPatchDocumentMapper } from "../../domain/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper";
 import { DevOpsService } from "./devops-service";
 
@@ -149,7 +149,7 @@ export class WorkItemService implements IWorkItemService {
         const taskMapper = new PreDefinedTaskJsonPatchDocumentMapper(userDisplayName, organizationUri, workItem.id || -1, workItem.areaPath || "", workItem.iterationPath || "");
         
         // Load default tasks from JSON templates
-        const defaultTasks = await getDefaultTasks();
+        const defaultTasks = DefaultTaskService.getDefaultTasksForWorkItem(workItem.type.name);
         
         for (const task of defaultTasks) {
             // if (task.requiredFields && !task.requiredFields.every(field => workItemFields[field] !== undefined && workItemFields[field] !== null && workItemFields[field] !== '')) {

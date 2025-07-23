@@ -1,4 +1,4 @@
-import { getDefaultTasks } from "./default-tasks";
+import { DefaultTaskService } from "./default-task.service";
 import { Task } from "./task";
 import { WorkItemState } from "./work-item-state";
 import { WorkItemType } from "./work-item-type";
@@ -116,19 +116,17 @@ export class WorkItem {
      * Starts the work item.
      * @param startingState The state to set when starting the work item.
      */
-    public async start(startingState: string): Promise<void> {
+    public start(startingState: string): void {
         if (this.previousState || this.linkedChildren?.length > 0) {
             throw new Error("Work item is already started.");
         }
 
         this.currentState = new WorkItemState(startingState);
         this.previousState = this.currentState;
-        
-        // Load default tasks from JSON templates
-        const defaultTasks = await getDefaultTasks();
-        
-        for (const taskTemplate of defaultTasks) {
-            const task = new Task(taskTemplate.title, taskTemplate.description, taskTemplate.remainingWork, taskTemplate.activity);
+
+        const defaultTasks = DefaultTaskService.getDefaultTasksForWorkItem(this.type.name);
+        for (const defaultTask of defaultTasks) {
+            const task = new Task(defaultTask.title, defaultTask.description, defaultTask.remainingWork, defaultTask.activity);
             this.addChild(task);
         }
     }

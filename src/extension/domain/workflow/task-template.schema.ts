@@ -8,7 +8,6 @@ export interface TaskTemplateSchema {
         name: string;
         description: string;
         author: string;
-        category: string;
     };
     templates: TaskTemplate[];
 }
@@ -38,25 +37,35 @@ export interface TaskTemplate {
     activity: string;
 
     /**
-     * Indicates whether the task should have an assignee by default.
-     */
-    assigneeRequired: boolean;
-
-    /**
-     * The WorkItemType names to which the task applies.
-     */
-    appliesTo: string[];
-
-    /**
      * The fields that must have values for the task to be created.
      */
     requiredFields?: string[];
 
     /**
+     * The WorkItemType names to which the task applies.
+     * This can be in either the root level or metadata for backward compatibility.
+     */
+    appliesTo?: string[];
+
+    /**
      * Additional metadata for the template.
      */
     metadata?: {
+        /**
+         * The WorkItemType names to which the task applies.
+         */
+        appliesTo?: string[];
+        
+        /**
+         * Indicates whether the task should have an assignee by default.
+         */
+        assigneeRequired?: boolean;
+        
+        /**
+         * The category of this template (e.g., "development", "planning").
+         */
         category?: string;
+        
         [key: string]: any;
     };
 }

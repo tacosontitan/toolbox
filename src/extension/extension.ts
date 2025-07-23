@@ -6,10 +6,8 @@ import * as toolbox from './setup';
  * @param context The extension context provided by VS Code.
  */
 export async function activate(context: vscode.ExtensionContext) {
-	toolbox.initialize(context);
+	await toolbox.initialize(context);
 	toolbox.registerServices(context);
 	toolbox.registerCommands(context);
 	toolbox.registerViews(context);
-
-	await toolbox.initializeTemplates();
 }
