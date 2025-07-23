@@ -1,0 +1,141 @@
+{
+  "$schema": "../schemas/task.schema.json",
+  "version": "1.0.0",
+  "metadata": {
+    "name": "Release Tasks",
+    "description": "Pre-defined tasks for release management and deployment workflows",
+    "author": "tacosontitan"
+  },
+  "templates": [
+    {
+      "title": "Create Production Build",
+      "description": "Create a production-ready build for release deployment.",
+      "remainingWork": 1,
+      "activity": "Deployment",
+      "metadata": {
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Feature",
+          "User Story"
+        ]
+      }
+    },
+    {
+      "title": "Deploy to Staging Environment",
+      "description": "Deploy the production build to the staging environment for final validation.",
+      "remainingWork": 2,
+      "activity": "Deployment",
+      "metadata": {
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
+        ]
+      }
+    },
+    {
+      "title": "Final QA Validation",
+      "description": "Perform final QA validation in the staging environment before production release.",
+      "remainingWork": 1,
+      "activity": "Testing",
+      "metadata": {
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
+        ]
+      }
+    },
+    {
+      "title": "Security Review",
+      "description": "Conduct security review of the changes before production deployment.",
+      "remainingWork": 2,
+      "activity": "Requirements",
+      "metadata": {
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
+        ]
+      }
+    },
+    {
+      "title": "Performance Testing",
+      "description": "Conduct performance testing to ensure the changes meet performance requirements.",
+      "remainingWork": 3,
+      "activity": "Testing",
+      "metadata": {
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
+        ]
+      }
+    },
+    {
+      "title": "Create Rollback Plan",
+      "description": "Create a detailed rollback plan in case the deployment needs to be reverted.",
+      "remainingWork": 1,
+      "activity": "Design",
+      "metadata": {
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
+        ]
+      }
+    },
+    {
+      "title": "Deploy to Production",
+      "description": "Deploy the validated build to the production environment.",
+      "remainingWork": 3,
+      "activity": "Deployment",
+      "metadata": {
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
+        ]
+      }
+    },
+    {
+      "title": "Post-Deployment Monitoring",
+      "description": "Monitor the production environment after deployment to ensure stability.",
+      "remainingWork": 4,
+      "activity": "Testing",
+      "metadata": {
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
+        ]
+      }
+    },
+    {
+      "title": "Update Release Documentation",
+      "description": "Update documentation to reflect the changes included in this release.",
+      "remainingWork": 2,
+      "activity": "Documentation",
+      "metadata": {
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
+        ]
+      }
+    },
+    {
+      "title": "User Notification",
+      "description": "Notify users about the new release and any important changes or features.",
+      "remainingWork": 1,
+      "activity": "Documentation",
+      "metadata": {
+        "assigneeRequired": false,
+        "appliesTo": [
+          "Feature",
+          "User Story"
+        ]
+      }
+    }
+  ]
+}
