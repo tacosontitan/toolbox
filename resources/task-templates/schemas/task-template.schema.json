@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tacosontitan.github.io/schemas/task-template.json",
+  "title": "Task Template Schema",
+  "description": "Schema for task template JSON files in Hazel's Toolbox",
+  "type": "object",
+  "required": ["version", "metadata", "templates"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "The JSON schema URL"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version of the template file format",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["name", "description", "author", "category"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Display name of the template collection"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the template collection"
+        },
+        "author": {
+          "type": "string",
+          "description": "Author of the templates"
+        },
+        "category": {
+          "type": "string",
+          "description": "Primary category for this template collection",
+          "enum": ["planning", "development", "review", "testing", "release", "general"]
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tags for categorizing and searching"
+        }
+      }
+    },
+    "templates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TaskTemplate"
+      }
+    }
+  },
+  "definitions": {
+    "TaskTemplate": {
+      "type": "object",
+      "required": ["id", "title", "description", "remainingWork", "activity", "assigneeRequired", "appliesTo"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the template",
+          "pattern": "^[a-zA-Z0-9._-]+$"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the task",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the task"
+        },
+        "remainingWork": {
+          "type": "number",
+          "description": "Estimated hours to complete the task",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "activity": {
+          "type": "string",
+          "description": "Activity type for the task",
+          "enum": [
+            "Planning",
+            "Development", 
+            "Testing",
+            "Design",
+            "Documentation",
+            "Deployment",
+            "Requirements",
+            "Communication",
+            "Process Improvement",
+            "Infrastructure"
+          ]
+        },
+        "assigneeRequired": {
+          "type": "boolean",
+          "description": "Whether the task must have an assignee"
+        },
+        "appliesTo": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["Feature", "User Story", "Bug", "Task", "Epic"]
+          },
+          "description": "Work item types this template applies to"
+        },
+        "requiredFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Azure DevOps fields that must have values"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "enum": ["planning", "development", "review", "testing", "release", "general"]
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "configurable": {
+              "type": "boolean",
+              "description": "Whether users can modify this template"
+            },
+            "priority": {
+              "type": "integer",
+              "description": "Sort priority (lower numbers first)",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        }
+      }
+    }
+  }
+}

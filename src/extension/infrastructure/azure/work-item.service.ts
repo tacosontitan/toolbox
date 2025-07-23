@@ -6,7 +6,7 @@ import { WorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
 
 import { ICommunicationService } from "../../core/communication";
 import { ILogger, LogLevel } from "../../core/telemetry";
-import { IWorkItemService, WorkItem, WorkItemState, WorkItemType } from "../../domain/workflow";
+import { IWorkItemService, Task, WorkItem, WorkItemState, WorkItemType } from "../../domain/workflow";
 import { DefaultTasks } from "../../domain/workflow/default-tasks";
 import { PreDefinedTaskJsonPatchDocumentMapper } from "../../domain/workflow/pre-defined-tasks/pre-defined-task-json-patch-document-mapper";
 import { DevOpsService } from "./devops-service";
@@ -48,18 +48,26 @@ export class WorkItemService implements IWorkItemService {
 
             const parentWorkItem = await workItemTrackingClient.getWorkItem(workItemId);
             const workItemTitle = parentWorkItem.fields?.['System.Title'] as string;
-            return {
-                id: workItemId,
-                title: workItemTitle,
-                type: new WorkItemType(parentWorkItem.fields?.['System.WorkItemType'] as string),
-                state: new WorkItemState(parentWorkItem.fields?.['System.State'] as string),
-                areaPath: parentWorkItem.fields?.['System.AreaPath'] as string,
-                iterationPath: parentWorkItem.fields?.['System.IterationPath'] as string,
-                description: parentWorkItem.fields?.['System.Description'] as string || "",
-                remainingWork: parentWorkItem.fields?.['Microsoft.VSTS.Scheduling.RemainingWork'] as number || 0,
-                activity: parentWorkItem.fields?.['Microsoft.VSTS.Common.Activity'] as string || "",
-                additionalFields: parentWorkItem.fields || {}
-            };
+            const workItemType = new WorkItemType(parentWorkItem.fields?.['System.WorkItemType'] as string);
+            const workItemState = new WorkItemState(parentWorkItem.fields?.['System.State'] as string);
+            const description = parentWorkItem.fields?.['System.Description'] as string || "";
+            const remainingWork = parentWorkItem.fields?.['Microsoft.VSTS.Scheduling.RemainingWork'] as number || 0;
+            const activity = parentWorkItem.fields?.['Microsoft.VSTS.Common.Activity'] as string || "";
+
+            // Create the appropriate WorkItem instance based on type
+            let workItem: WorkItem;
+            if (workItemType.name === 'Task') {
+                workItem = new Task(workItemTitle, description, remainingWork, activity);
+            } else {
+                workItem = new WorkItem(workItemTitle, description, remainingWork, activity, workItemType);
+            }
+
+            // Set additional properties
+            workItem.id = workItemId;
+            workItem.areaPath = parentWorkItem.fields?.['System.AreaPath'] as string;
+            workItem.iterationPath = parentWorkItem.fields?.['System.IterationPath'] as string;
+
+            return workItem;
         } catch (error) {
             window.showErrorMessage(`Failed to retrieve work item #${workItemId}: ${(error as Error).message}`);
             this.logger.log(LogLevel.Error, `Failed to retrieve work item #${workItemId}: ${(error as Error).message}`);
@@ -101,7 +109,7 @@ export class WorkItemService implements IWorkItemService {
                 workItem.id
             );
 
-            workItem.state = state;
+            workItem.changeState(state);
             this.logger.log(LogLevel.Information, `Successfully changed work item #${workItem.id} state to '${state.name}'.`);
         } catch (error) {
             const errorMessage = `Failed to change work item #${workItem.id} state to '${state.name}': ${(error as Error).message}`;
@@ -154,10 +162,10 @@ export class WorkItemService implements IWorkItemService {
                     'Task'
                 );
 
-                this.logger.log(LogLevel.Debug, `Created task '${task.name}' with ID ${createdTask.id} under work item #${workItem.id}.`);
+                this.logger.log(LogLevel.Debug, `Created task '${task.title}' with ID ${createdTask.id} under work item #${workItem.id}.`);
             } catch (error) {
                 const errorMessage = (error as Error).message;
-                this.logger.log(LogLevel.Error, `Failed to create task '${task.name}': ${errorMessage}`);
+                this.logger.log(LogLevel.Error, `Failed to create task '${task.title}': ${errorMessage}`);
             }
         }
     }

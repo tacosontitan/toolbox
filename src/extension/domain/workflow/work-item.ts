@@ -1,4 +1,5 @@
 import * as DefaultTasks from "./default-tasks";
+import { Task } from "./task";
 import { WorkItemState } from "./work-item-state";
 import { WorkItemType } from "./work-item-type";
 
@@ -122,7 +123,8 @@ export class WorkItem {
 
         this.currentState = new WorkItemState(startingState);
         this.previousState = this.currentState;
-        for (const task of DefaultTasks.DefaultTasks) {
+        for (const taskTemplate of DefaultTasks.DefaultTasks) {
+            const task = new Task(taskTemplate.title, taskTemplate.description, taskTemplate.remainingWork, taskTemplate.activity);
             this.addChild(task);
         }
     }

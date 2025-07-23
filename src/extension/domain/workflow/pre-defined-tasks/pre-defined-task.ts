@@ -1,19 +1,41 @@
-import { Task } from "../task";
 import { WorkItemType } from "../work-item-type";
 
 /**
- * Represents a {@link Task} that is predefined as part of a workflow.
+ * Represents a task template that is predefined as part of a workflow.
  */
-export class PreDefinedTask
-	extends Task {
-
+export interface PreDefinedTask {
 	/**
-	 * Indicates whether the task should be have an assignee by default.
+	 * The unique identifier of the task.
 	 */
-	assigneeRequired: boolean = true;
+	id: number | undefined;
 
 	/**
-	 * The {@link WorkItemType}(s) to which the {@link Task} applies.
+	 * The title of the task.
+	 */
+	title: string;
+
+	/**
+	 * The description of the task.
+	 */
+	description: string;
+
+	/**
+	 * The number of hours the task is estimated to take.
+	 */
+	remainingWork: number;
+
+	/**
+	 * The activity associated with the task.
+	 */
+	activity: string;
+
+	/**
+	 * Indicates whether the task should have an assignee by default.
+	 */
+	assigneeRequired: boolean;
+
+	/**
+	 * The {@link WorkItemType}(s) to which the task applies.
 	 */
 	appliesTo: WorkItemType[];
 
@@ -21,26 +43,4 @@ export class PreDefinedTask
 	 * The fields that must have values for the task to be created.
 	 */
 	requiredFields?: string[];
-
-	/**
-	 * Creates a new {@link Task} with the specified details.
-	 * @param name The name of the task.
-	 * @param remainingWork The number of hours the task is estimated to take.
-	 * @param activity The activity associated with the task.
-	 * @param appliesTo The work item type(s) to which the task applies.
-	 * @param description The description of the task.
-	 * @param requiredFields The fields that must have values for the task to be created.
-	 */
-	constructor(
-		name: string,
-		remainingWork: number,
-		activity: string,
-		appliesTo: WorkItemType[] = [],
-		description: string = '',
-		requiredFields?: string[]
-	) {
-		super(name, description, remainingWork, activity);
-		this.appliesTo = appliesTo;
-		this.requiredFields = requiredFields;
-	}
 }

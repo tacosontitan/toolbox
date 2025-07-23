@@ -118,7 +118,7 @@ export class CreateDefaultTasksCommand extends Command {
 				let completed = 0;
 
 				for (const task of DefaultTasks) {
-					progress.report({ message: `Creating '${task.name}' (${++completed}/${DefaultTasks.length})` });
+					progress.report({ message: `Creating '${task.title}' (${++completed}/${DefaultTasks.length})` });
 					try {
 						const patchDocument = taskMapper.map(task);
 						const createdTask = await workItemTrackingClient.createWorkItem(
@@ -128,10 +128,10 @@ export class CreateDefaultTasksCommand extends Command {
 							'Task'
 						);
 
-						this.logger.log(LogLevel.Debug, `Created task '${task.name}' with ID ${createdTask.id} under work item #${workItemNumber}.`);
+						this.logger.log(LogLevel.Debug, `Created task '${task.title}' with ID ${createdTask.id} under work item #${workItemNumber}.`);
 					} catch (error) {
 						const errorMessage = (error as Error).message;
-						this.logger.log(LogLevel.Error, `Failed to create task '${task.name}': ${errorMessage}`);
+						this.logger.log(LogLevel.Error, `Failed to create task '${task.title}': ${errorMessage}`);
 					}
 				}
 

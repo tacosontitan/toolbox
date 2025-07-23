@@ -1,0 +1,165 @@
+{
+  "$schema": "../schemas/task-template.schema.json",
+  "version": "1.0.0",
+  "metadata": {
+    "name": "Planning Tasks",
+    "description": "Pre-defined tasks for work item planning and analysis phase",
+    "author": "tacosontitan",
+    "category": "planning",
+    "tags": ["agile", "scrum", "planning", "analysis"]
+  },
+  "templates": [
+    {
+      "id": "planning.review-feature",
+      "title": "Review Feature",
+      "description": "Review the feature and its associated work items to ensure alignment with business objectives, coordination with team members, and add tasks if necessary.",
+      "remainingWork": 0.5,
+      "activity": "Requirements",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story"],
+      "metadata": {
+        "category": "planning",
+        "tags": ["review", "requirements", "alignment"],
+        "priority": 1,
+        "configurable": true
+      }
+    },
+    {
+      "id": "planning.review-work-item",
+      "title": "Review Work Item",
+      "description": "Review the work item and all pre-defined tasks to ensure that tasks are aligned with business objectives and add tasks if necessary.",
+      "remainingWork": 0.5,
+      "activity": "Requirements",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story", "Bug"],
+      "metadata": {
+        "category": "planning",
+        "tags": ["review", "analysis"],
+        "priority": 2,
+        "configurable": true
+      }
+    },
+    {
+      "id": "planning.reproduce-locally",
+      "title": "Reproduce Locally",
+      "description": "Attempt to reproduce the issue locally to better understand the problem and identify potential solutions.",
+      "remainingWork": 1,
+      "activity": "Testing",
+      "assigneeRequired": true,
+      "appliesTo": ["Bug"],
+      "metadata": {
+        "category": "planning",
+        "tags": ["debugging", "testing", "reproduction"],
+        "priority": 3,
+        "configurable": true
+      }
+    },
+    {
+      "id": "planning.review-existing-implementations",
+      "title": "Review Existing Implementation(s)",
+      "description": "Review existing implementations to gather insights and derive potential solutions.",
+      "remainingWork": 1,
+      "activity": "Design",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story"],
+      "metadata": {
+        "category": "planning",
+        "tags": ["research", "analysis", "design"],
+        "priority": 4,
+        "configurable": true
+      }
+    },
+    {
+      "id": "planning.meet-with-feature-leader",
+      "title": "Meet with Feature Leader",
+      "description": "Meet with the feature leader to discuss the work item's scope within the grand scheme of the feature.",
+      "remainingWork": 0.5,
+      "activity": "Requirements",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story"],
+      "metadata": {
+        "category": "planning",
+        "tags": ["meeting", "collaboration", "scope"],
+        "priority": 5,
+        "configurable": true
+      }
+    },
+    {
+      "id": "planning.meet-with-sme",
+      "title": "Meet with Subject Matter Expert",
+      "description": "Meet with the noted subject matter expert to discuss the work item's implementation.",
+      "remainingWork": 0.5,
+      "activity": "Requirements",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story"],
+      "requiredFields": ["Subject Matter Expert"],
+      "metadata": {
+        "category": "planning",
+        "tags": ["meeting", "expertise", "consultation"],
+        "priority": 6,
+        "configurable": true
+      }
+    },
+    {
+      "id": "planning.meet-with-product-owners",
+      "title": "Meet with Product Owners",
+      "description": "Meet with product owners to clarify requirements and ensure alignment with business objectives.",
+      "remainingWork": 0.5,
+      "activity": "Requirements",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story"],
+      "metadata": {
+        "category": "planning",
+        "tags": ["meeting", "product", "requirements"],
+        "priority": 7,
+        "configurable": true
+      }
+    },
+    {
+      "id": "planning.meet-with-stakeholders",
+      "title": "Meet with Stakeholders",
+      "description": "Meet with stakeholders to gather feedback and ensure the work item aligns with their expectations.",
+      "remainingWork": 0.5,
+      "activity": "Requirements",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story"],
+      "requiredFields": ["Stakeholder"],
+      "metadata": {
+        "category": "planning",
+        "tags": ["meeting", "stakeholders", "feedback"],
+        "priority": 8,
+        "configurable": true
+      }
+    },
+    {
+      "id": "planning.meet-with-qa",
+      "title": "Meet with Quality Assurance",
+      "description": "Meet with QA to discuss test cases and ensure alignment on quality expectations.",
+      "remainingWork": 0.5,
+      "activity": "Requirements",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story"],
+      "metadata": {
+        "category": "planning",
+        "tags": ["meeting", "qa", "testing"],
+        "priority": 9,
+        "configurable": true
+      }
+    },
+    {
+      "id": "planning.create-implementation-tasks",
+      "title": "Create Implementation Tasks",
+      "description": "After conducting the necessary reviews and meetings, create tasks that represent the steps needed to execute the work item's acceptance criteria (be sure to account for non-functional requirements).",
+      "remainingWork": 0.5,
+      "activity": "Design",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story"],
+      "metadata": {
+        "category": "planning",
+        "tags": ["tasks", "implementation", "breakdown"],
+        "priority": 10,
+        "configurable": true
+      }
+    }
+  ]
+}

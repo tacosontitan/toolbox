@@ -8,7 +8,7 @@ export const CreateDraftPR: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.01,
     assigneeRequired: true,
-    name: 'Create Draft PR',
+    title: 'Create Draft PR',
     activity: 'Development',
     description: 'Create a draft pull request to initiate the code review process.'
 };

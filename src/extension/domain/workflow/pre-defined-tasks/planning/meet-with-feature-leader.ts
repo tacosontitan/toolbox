@@ -8,7 +8,7 @@ export const MeetWithFeatureLeader: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.5,
     assigneeRequired: true,
-    name: 'Meet with Feature Leader',
+    title: 'Meet with Feature Leader',
     activity: 'Requirements',
     description: 'Meet with the feature leader to discuss the work item\'s scope within the grand scheme of the feature.'
 };

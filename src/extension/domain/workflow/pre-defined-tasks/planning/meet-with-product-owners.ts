@@ -8,7 +8,7 @@ export const MeetWithProductOwners: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.5,
     assigneeRequired: true,
-    name: 'Meet with Product Owners',
+    title: 'Meet with Product Owners',
     activity: 'Requirements',
     description: 'Meet with product owners to clarify requirements and ensure alignment with business objectives.'
 };

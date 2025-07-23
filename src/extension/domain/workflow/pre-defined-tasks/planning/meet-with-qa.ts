@@ -8,7 +8,7 @@ export const MeetWithQualityAssurance: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.5,
     assigneeRequired: true,
-    name: 'Meet with Quality Assurance',
+    title: 'Meet with Quality Assurance',
     activity: 'Requirements',
     description: 'Meet with QA to discuss test cases and ensure alignment on quality expectations.'
 };

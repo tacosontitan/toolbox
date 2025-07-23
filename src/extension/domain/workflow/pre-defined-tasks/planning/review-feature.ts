@@ -8,7 +8,7 @@ export const ReviewFeature: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.5,
     assigneeRequired: true,
-    name: 'Review Feature',
+    title: 'Review Feature',
     activity: 'Requirements',
     description: 'Review the feature and its associated work items to ensure alignment with business objectives, coordination with team members, and add tasks if necessary.'
 };

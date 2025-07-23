@@ -1,0 +1,28 @@
+{
+  "$schema": "../schemas/task-template.schema.json",
+  "version": "1.0.0",
+  "metadata": {
+    "name": "Development Tasks",
+    "description": "Pre-defined tasks for development and implementation work",
+    "author": "tacosontitan",
+    "category": "development",
+    "tags": ["development", "coding", "implementation"]
+  },
+  "templates": [
+    {
+      "id": "dev.setup-environment",
+      "title": "Setup Environment",
+      "description": "Setup the development environment to execute the work item.\n- Download repository.\n- Run any tests against main.\n- Create topic branch.\n- Install dependencies.",
+      "remainingWork": 0.15,
+      "activity": "Development",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story", "Bug"],
+      "metadata": {
+        "category": "development",
+        "tags": ["setup", "environment", "prerequisites"],
+        "priority": 1,
+        "configurable": true
+      }
+    }
+  ]
+}

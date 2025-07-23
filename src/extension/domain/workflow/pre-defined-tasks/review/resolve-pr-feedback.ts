@@ -8,7 +8,7 @@ export const ResolvePRFeedback: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 1,
     assigneeRequired: true,
-    name: 'Resolve PR Feedback',
+    title: 'Resolve PR Feedback',
     activity: 'Development',
     description: 'Address feedback provided during the pull request review process.'
 };

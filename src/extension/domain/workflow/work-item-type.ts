@@ -30,4 +30,9 @@ export class WorkItemType {
 	 * Represents the "user story" work item type.
 	 */
 	public static UserStory = new WorkItemType('User Story');
+
+	/**
+	 * Represents the "feature" work item type.
+	 */
+	public static Feature = new WorkItemType('Feature');
 }

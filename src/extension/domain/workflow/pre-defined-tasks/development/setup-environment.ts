@@ -8,7 +8,7 @@ export const SetupEnvironment: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.15,
     assigneeRequired: true,
-    name: 'Setup Environment',
+    title: 'Setup Environment',
     activity: 'Development',
     description: `Setup the development environment to execute the work item.
 - Download repository.

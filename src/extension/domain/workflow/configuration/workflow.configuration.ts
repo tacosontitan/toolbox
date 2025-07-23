@@ -30,12 +30,14 @@ export class WorkflowConfiguration implements IConfiguration<WorkflowOptions> {
             const taskReadyState = await this.configProvider.get<string>(WorkflowConfiguration.TASK_READY_STATE_KEY) ?? "Ready";
             const taskDoingState = await this.configProvider.get<string>(WorkflowConfiguration.TASK_DOING_STATE_KEY) ?? "In Progress";
             const taskDoneState = await this.configProvider.get<string>(WorkflowConfiguration.TASK_DONE_STATE_KEY) ?? "Done";
+            const workItemStartedState = await this.configProvider.get<string>('workflowOptions.workItemStartedState') ?? "Active";
             return {
                 showInactiveTasks,
                 inactiveStates,
                 taskReadyState,
                 taskDoingState,
-                taskDoneState
+                taskDoneState,
+                workItemStartedState
             };
         } catch (error) {
             this.logger.log(LogLevel.Error, `Unable to load configurations for workflow management. ${error}`);

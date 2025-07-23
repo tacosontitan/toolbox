@@ -27,7 +27,7 @@ export class PreDefinedTaskJsonPatchDocumentMapper
             {
                 op: Operation.Add,
                 path: PreDefinedTaskJsonPatchDocumentMapper.TitleFieldPath,
-                value: input.name,
+                value: input.title,
             },
             {
                 op: Operation.Add,

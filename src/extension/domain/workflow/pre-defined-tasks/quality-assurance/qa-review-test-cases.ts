@@ -8,7 +8,7 @@ export const QAReviewTestCases: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.5,
     assigneeRequired: false,
-    name: 'QA Review Test Cases',
+    title: 'QA Review Test Cases',
     activity: 'Requirements',
     description: 'Review the test cases to ensure they are correct, comprehensive, and cover all scenarios.'
 };

@@ -8,7 +8,7 @@ export const ReviewWorkItem: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.5,
     assigneeRequired: true,
-    name: 'Review Work Item',
+    title: 'Review Work Item',
     activity: 'Requirements',
     description: 'Review the work item and all pre-defined tasks to ensure that tasks are aligned with business objectives and add tasks if necessary.'
 };

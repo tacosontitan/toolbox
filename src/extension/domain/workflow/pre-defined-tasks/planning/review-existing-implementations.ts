@@ -8,7 +8,7 @@ export const ReviewExistingImplementations: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 1,
     assigneeRequired: true,
-    name: 'Review Existing Implementation(s)',
+    title: 'Review Existing Implementation(s)',
     activity: 'Design',
     description: 'Review existing implementations to gather insights and derive potential solutions.'
 };

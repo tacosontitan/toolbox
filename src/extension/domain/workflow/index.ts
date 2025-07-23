@@ -1,3 +1,4 @@
+export * from './task';
 export * from './work-item';
 export * from './work-item-state';
 export * from './work-item-type';

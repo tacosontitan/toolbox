@@ -1,0 +1,103 @@
+{
+  "$schema": "../schemas/task-template.schema.json",
+  "version": "1.0.0",
+  "metadata": {
+    "name": "Code Review Tasks",
+    "description": "Pre-defined tasks for code review and pull request workflows",
+    "author": "tacosontitan",
+    "category": "review",
+    "tags": ["review", "pull-request", "code-quality"]
+  },
+  "templates": [
+    {
+      "id": "review.create-draft-pr",
+      "title": "Create Draft PR",
+      "description": "Create a draft pull request to initiate the code review process.",
+      "remainingWork": 0.01,
+      "activity": "Development",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story", "Bug"],
+      "metadata": {
+        "category": "review",
+        "tags": ["pr", "draft", "setup"],
+        "priority": 1,
+        "configurable": true
+      }
+    },
+    {
+      "id": "review.self-review-pr",
+      "title": "Self-Review PR",
+      "description": "Perform a self-review of the pull request to ensure code quality and completeness.",
+      "remainingWork": 0.5,
+      "activity": "Development",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story", "Bug"],
+      "metadata": {
+        "category": "review",
+        "tags": ["self-review", "quality", "validation"],
+        "priority": 2,
+        "configurable": true
+      }
+    },
+    {
+      "id": "review.publish-pr",
+      "title": "Publish PR",
+      "description": "Publish the pull request for review by other team members.",
+      "remainingWork": 0.01,
+      "activity": "Development",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story", "Bug"],
+      "metadata": {
+        "category": "review",
+        "tags": ["publish", "collaboration"],
+        "priority": 3,
+        "configurable": true
+      }
+    },
+    {
+      "id": "review.run-pr-validations",
+      "title": "Run PR Validations",
+      "description": "Run automated validations for the pull request to ensure compliance with standards.",
+      "remainingWork": 0.01,
+      "activity": "Development",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story", "Bug"],
+      "metadata": {
+        "category": "review",
+        "tags": ["validation", "automation", "standards"],
+        "priority": 4,
+        "configurable": true
+      }
+    },
+    {
+      "id": "review.resolve-pr-feedback",
+      "title": "Resolve PR Feedback",
+      "description": "Address feedback provided during the pull request review process.",
+      "remainingWork": 1,
+      "activity": "Development",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story", "Bug"],
+      "metadata": {
+        "category": "review",
+        "tags": ["feedback", "iteration", "improvement"],
+        "priority": 5,
+        "configurable": true
+      }
+    },
+    {
+      "id": "review.complete-pr",
+      "title": "Complete PR",
+      "description": "Complete the pull request after all validations and reviews are successful.",
+      "remainingWork": 0.01,
+      "activity": "Development",
+      "assigneeRequired": true,
+      "appliesTo": ["Feature", "User Story", "Bug"],
+      "metadata": {
+        "category": "review",
+        "tags": ["completion", "merge"],
+        "priority": 6,
+        "configurable": true
+      }
+    }
+  ]
+}

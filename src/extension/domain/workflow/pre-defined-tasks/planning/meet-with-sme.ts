@@ -8,7 +8,7 @@ export const MeetWithSme: PreDefinedTask = {
     appliesTo: [],
     remainingWork: 0.5,
     assigneeRequired: true,
-    name: 'Meet with Subject Matter Expert',
+    title: 'Meet with Subject Matter Expert',
     activity: 'Requirements',
     description: 'Meet with the noted subject matter expert to discuss the work item\'s implementation.',
     requiredFields: [ 'Subject Matter Expert' ]
