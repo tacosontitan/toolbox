@@ -6,6 +6,7 @@ import { TimeEntryService } from "../application/time/time-entry-service";
 import { ICommunicationService, IConfigurationProvider, ILogger, ServiceLocator } from "../core";
 import { JsonTemplateLoader } from "../domain/workflow/pre-defined-tasks/json-template-loader";
 import { WorkItemService } from "../infrastructure/azure/work-item.service";
+import { SetTaskStateToActiveCommand, SetTaskStateToClosedCommand, SetTaskStateToNewCommand, SetTaskStateToResolvedCommand } from '../presentation/commands/tasks-tree-commands';
 import { CreateDefaultTasksCommand } from "../presentation/commands/workflow/create-default-tasks.command";
 import { StartWorkItemCommand } from "../presentation/commands/workflow/start-work-item.command";
 
@@ -56,6 +57,21 @@ function registerWorkItemCommands(context: ExtensionContext, tasksTreeProvider: 
             tasksTreeProvider.refresh();
         })
     );
+
+    const configurationProvider = ServiceLocator.getService(IConfigurationProvider);
+    const workItemService = ServiceLocator.getService(WorkItemService);
+    const taskStateCommands = [
+        new SetTaskStateToActiveCommand(configurationProvider, tasksTreeProvider, workItemService),
+        new SetTaskStateToClosedCommand(configurationProvider, tasksTreeProvider, workItemService),
+        new SetTaskStateToNewCommand(configurationProvider, tasksTreeProvider, workItemService),
+        new SetTaskStateToResolvedCommand(configurationProvider, tasksTreeProvider, workItemService)
+    ];
+
+    for (const command of taskStateCommands) {
+        context.subscriptions.push(
+            vscode.commands.registerCommand(command.id, (taskItem) => command.execute(taskItem))
+        );
+    }
 }
 
 function registerWorkflowCommands(context: ExtensionContext) {
