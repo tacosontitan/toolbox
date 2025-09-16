@@ -43,11 +43,6 @@ function registerApplicationServices() {
         ServiceLocator.getService(IConfigurationProvider)
     ));
 
-    ServiceLocator.registerFactory(IRepository<WorkItem>, () => new AzureDevOpsWorkItemRepository(
-        ServiceLocator.getService(ILogger),
-        ServiceLocator.getService(IConfiguration<DevOpsOptions>)
-    ));
-
     ServiceLocator.registerFactory(WorkflowService, () => new WorkflowService(
         ServiceLocator.getService(ILogger),
         ServiceLocator.getService(IConfiguration<WorkflowOptions>),
@@ -89,4 +84,9 @@ function registerAzureServices() {
             ServiceLocator.getService(DevOpsService)
         )
     );
+
+    ServiceLocator.registerFactory(IRepository<WorkItem>, () => new AzureDevOpsWorkItemRepository(
+        ServiceLocator.getService(ILogger),
+        ServiceLocator.getService(IConfiguration<DevOpsOptions>)
+    ));
 }
