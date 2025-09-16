@@ -31,7 +31,6 @@ export class ServiceLocator {
 	 */
 	public static initialize(context: vscode.ExtensionContext): void {
 		this.context = context;
-		// Services will be registered explicitly in toolbox.registerServices()
 	}
 
 	/**
@@ -40,24 +39,18 @@ export class ServiceLocator {
 	 * @returns The singleton instance of the requested service
 	 */
 	public static getService<T>(serviceToken: ServiceToken<T>): T {
-		// Check if we already have an instance cached
 		if (this.services.has(serviceToken)) {
 			return this.services.get(serviceToken);
 		}
 
-		// Check if we have a factory registered for this type
 		const factory = this.factories.get(serviceToken);
 		if (!factory) {
 			const tokenName = typeof serviceToken === 'string' ? serviceToken : serviceToken.name;
 			throw new Error(`No factory registered for service: ${tokenName}`);
 		}
 
-		// Create the instance using the factory
 		const instance = factory();
-
-		// Cache it for future use
 		this.services.set(serviceToken, instance);
-
 		return instance;
 	}
 
@@ -80,12 +73,11 @@ export class ServiceLocator {
 		interfaceToken: InterfaceToken<TInterface>,
 		implementationToken: Constructor<TImplementation>
 	): void {
-		// Register the interface token to use the same factory as the implementation
 		const implementationFactory = this.factories.get(implementationToken);
 		if (!implementationFactory) {
 			throw new Error(`Implementation factory must be registered before interface mapping: ${implementationToken.name}`);
 		}
-		
+
 		this.factories.set(interfaceToken, implementationFactory);
 	}
 
@@ -99,22 +91,12 @@ export class ServiceLocator {
 		interfaceToken: StringToken,
 		implementationToken: Constructor<TImplementation>
 	): void {
-		// Register the string token to use the same factory as the implementation
 		const implementationFactory = this.factories.get(implementationToken);
 		if (!implementationFactory) {
 			throw new Error(`Implementation factory must be registered before interface mapping: ${implementationToken.name}`);
 		}
-		
-		this.factories.set(interfaceToken, implementationFactory);
-	}
 
-	/**
-	 * Registers all the default service factories.
-	 * NOTE: This is now handled explicitly in toolbox.registerServices()
-	 */
-	private static registerFactories(): void {
-		// This method is kept for reference but not used
-		// All registration is now done explicitly in toolbox.registerServices()
+		this.factories.set(interfaceToken, implementationFactory);
 	}
 
 	/**

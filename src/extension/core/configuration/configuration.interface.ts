@@ -1,3 +1,3 @@
-export interface IConfiguration<T> {
-    get(): Promise<T>;
+export abstract class IConfiguration<T> {
+    abstract get(): Promise<T>;
 }

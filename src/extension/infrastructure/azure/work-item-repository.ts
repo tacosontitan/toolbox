@@ -10,6 +10,8 @@ import { WorkItemMapper } from "./mappings/work-item.mapper";
 /** @inheritdoc */
 export class AzureDevOpsWorkItemRepository implements IRepository<WorkItem> {
 
+    private readonly workItemMapper: WorkItemMapper = new WorkItemMapper();
+
     /**
      * @constructor
      * @param configuration The configuration for DevOps options.
@@ -17,8 +19,7 @@ export class AzureDevOpsWorkItemRepository implements IRepository<WorkItem> {
      */
     constructor(
         private readonly logger: ILogger,
-        private readonly configuration: IConfiguration<DevOpsOptions>,
-        private readonly workItemMapper: WorkItemMapper
+        private readonly configuration: IConfiguration<DevOpsOptions>
     ) { }
 
     /** @inheritdoc */

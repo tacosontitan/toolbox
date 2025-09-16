@@ -10,26 +10,17 @@ import { CreateDefaultTasksCommand } from "../presentation/commands/workflow/cre
 import { StartWorkItemCommand } from "../presentation/commands/workflow/start-work-item.command";
 
 export function registerCommands(context: ExtensionContext) {
-    // Get the tree providers from service locator
     const tasksTreeProvider = ServiceLocator.getService(TasksTreeDataProvider);
     const timeTreeProvider = ServiceLocator.getService(TimeTreeDataProvider);
     const timeEntryService = ServiceLocator.getService(TimeEntryService);
 
-    // Register time-related commands directly
     registerTimeCommands(context, timeTreeProvider, timeEntryService);
-
-    // Register task-related commands
     registerTaskCommands(context, tasksTreeProvider);
-
-    // Register work item commands
     registerWorkItemCommands(context, tasksTreeProvider);
-
-    // Register workflow commands
     registerWorkflowCommands(context);
 }
 
 function registerTimeCommands(context: ExtensionContext, timeTreeProvider: TimeTreeDataProvider, timeEntryService: TimeEntryService) {
-    // Clock In command
     context.subscriptions.push(
         vscode.commands.registerCommand('tacosontitan.toolbox.time.clockIn', async () => {
             await timeEntryService.clockIn();
@@ -37,7 +28,6 @@ function registerTimeCommands(context: ExtensionContext, timeTreeProvider: TimeT
         })
     );
 
-    // Clock Out command
     context.subscriptions.push(
         vscode.commands.registerCommand('tacosontitan.toolbox.time.clockOut', async () => {
             await timeEntryService.clockOut();
@@ -45,7 +35,6 @@ function registerTimeCommands(context: ExtensionContext, timeTreeProvider: TimeT
         })
     );
 
-    // Refresh Time command
     context.subscriptions.push(
         vscode.commands.registerCommand('tacosontitan.toolbox.time.refresh', () => {
             timeTreeProvider.refresh();
@@ -54,10 +43,6 @@ function registerTimeCommands(context: ExtensionContext, timeTreeProvider: TimeT
 }
 
 function registerTaskCommands(context: ExtensionContext, tasksTreeProvider: TasksTreeDataProvider) {
-    // TODO: Add task command registration when they're available
-    // const devOpsService = ServiceLocator.getService(DevOpsService);
-
-    // For now, just add a placeholder refresh command
     context.subscriptions.push(
         vscode.commands.registerCommand('tacosontitan.toolbox.tasks.refresh', () => {
             tasksTreeProvider.refresh();
@@ -66,26 +51,19 @@ function registerTaskCommands(context: ExtensionContext, tasksTreeProvider: Task
 }
 
 function registerWorkItemCommands(context: ExtensionContext, tasksTreeProvider: TasksTreeDataProvider) {
-    // TODO: Add work item command registration when they're available
-    // const devOpsService = ServiceLocator.getService(DevOpsService);
-
-    // For now, just add a placeholder
     context.subscriptions.push(
-        vscode.commands.registerCommand('tacosontitan.toolbox.workItems.refresh', () => {
+        vscode.commands.registerCommand('tacosontitan.toolbox.workflow.refreshTasks', () => {
             tasksTreeProvider.refresh();
         })
     );
 }
 
 function registerWorkflowCommands(context: ExtensionContext) {
-    // Get dependencies from service locator
     const configurationProvider = ServiceLocator.getService(IConfigurationProvider);
     const logger = ServiceLocator.getService(ILogger);
     const communicationService = ServiceLocator.getService(ICommunicationService);
     const workItemService = ServiceLocator.getService(WorkItemService);
     const templateLoader = ServiceLocator.getService(JsonTemplateLoader);
-
-    // Create and register the CreateDefaultTasksCommand
     const createDefaultTasksCommand = new CreateDefaultTasksCommand(
         configurationProvider,
         logger,
@@ -99,7 +77,6 @@ function registerWorkflowCommands(context: ExtensionContext) {
         )
     );
 
-    // Create and register the StartWorkItemCommand
     const startWorkItemCommand = new StartWorkItemCommand(
         logger,
         communicationService,

@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { Colors } from '../styles/colors';
 
 export class StateGroupTreeItem extends vscode.TreeItem {
     constructor(
@@ -6,20 +7,19 @@ export class StateGroupTreeItem extends vscode.TreeItem {
         public readonly taskCount: number
     ) {
         super(`${stateName} (${taskCount})`, vscode.TreeItemCollapsibleState.Expanded);
-        this.tooltip = `${taskCount} task(s) in ${stateName} state`;
+
         this.contextValue = 'stateGroup';
-        
-        // Set icon based on state
-        if (stateName === 'In Progress') {
-            this.iconPath = new vscode.ThemeIcon('debug-start', new vscode.ThemeColor('charts.blue'));
-        } else if (stateName === 'Ready') {
-            this.iconPath = new vscode.ThemeIcon('circle-outline', new vscode.ThemeColor('charts.gray'));
-        } else if (stateName === 'Closed') {
-            this.iconPath = new vscode.ThemeIcon('check', new vscode.ThemeColor('charts.green'));
-        } else if (stateName === 'Removed') {
-            this.iconPath = new vscode.ThemeIcon('trash', new vscode.ThemeColor('charts.red'));
-        } else {
-            this.iconPath = new vscode.ThemeIcon('folder');
+        this.tooltip = `${taskCount} task(s) in ${stateName} state`;
+        this.iconPath = StateGroupTreeItem.getIconForState(stateName);
+    }
+
+    private static getIconForState(stateName: string): vscode.ThemeIcon {
+        switch (stateName) {
+            case 'In Progress': return new vscode.ThemeIcon('debug-start', Colors.blue);
+            case 'Ready': return new vscode.ThemeIcon('circle-outline', Colors.gray);
+            case 'Closed': return new vscode.ThemeIcon('check', Colors.green);
+            case 'Removed': return new vscode.ThemeIcon('trash', Colors.red);
+            default: return new vscode.ThemeIcon('folder');
         }
     }
 }

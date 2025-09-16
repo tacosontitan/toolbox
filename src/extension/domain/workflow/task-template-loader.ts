@@ -25,13 +25,16 @@ export class TaskTemplateLoader {
         try {
             const templatesPath = path.join(this.context.extensionPath, 'resources', 'tasks');
             const templateFiles = ['development.json', 'planning.json', 'quality-assurance.json', 'release.json', 'review.json'];
-
             const templates: TaskTemplate[] = [];
-
             for (const fileName of templateFiles) {
                 const filePath = path.join(templatesPath, fileName);
                 try {
-                    const templateSchema = JsonFileReader.read<TaskTemplateSchema>(filePath);
+                    const templateSchema = await JsonFileReader.read<TaskTemplateSchema>(filePath);
+                    if (!templateSchema || !templateSchema.templates) {
+                        console.warn(`No templates found in file: ${fileName}`);
+                        continue;
+                    }
+
                     const category = this.extractCategoryFromFileName(fileName);
                     for (const template of templateSchema.templates) {
                         templates.push({
@@ -54,7 +57,7 @@ export class TaskTemplateLoader {
         } catch (error) {
             console.error('Failed to load task templates:', error);
             TaskTemplateLoader.taskTemplates = [];
-            TaskTemplateLoader.isLoaded = true; // Mark as loaded even if failed to prevent retry loops
+            TaskTemplateLoader.isLoaded = true;
         }
     }
 
@@ -72,8 +75,8 @@ export class TaskTemplateLoader {
      * @returns Array of applicable task templates
      */
     public static getTemplatesForWorkItemType(workItemType: string): TaskTemplate[] {
-        return TaskTemplateLoader.taskTemplates.filter(template => 
-            template.metadata?.appliesTo?.includes(workItemType) || 
+        return TaskTemplateLoader.taskTemplates.filter(template =>
+            template.metadata?.appliesTo?.includes(workItemType) ||
             template.appliesTo?.includes(workItemType)
         );
     }
@@ -84,7 +87,7 @@ export class TaskTemplateLoader {
      * @returns Array of task templates in the specified category
      */
     public static getTemplatesByCategory(category: string): TaskTemplate[] {
-        return TaskTemplateLoader.taskTemplates.filter(template => 
+        return TaskTemplateLoader.taskTemplates.filter(template =>
             template.metadata?.category === category
         );
     }
