@@ -7,29 +7,25 @@ on:
         required: true
 
 jobs:
+  build:
+    name: 🔨 Build Extension
+    uses: ./.github/workflows/build.extension.yml
+
   deploy-extension:
     name: 🚀 Deploy Extension
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: 🧩 Setup Node.js
-        uses: actions/setup-node@v2
+      - name: 📥 Download Extension Package
+        uses: actions/download-artifact@v4
         with:
-          node-version: '18'
-          registry-url: 'https://registry.npmjs.org/'
+          name: extension-package
 
-      - name: 📦 Install Dependencies
+      - name: 📦 Install VSCE
         run: |
-          npm install
           npm install -g @vscode/vsce
-
-      - name: 🎁 Create Package
-        run: |
-          npx tsc
-          vsce package
 
       - name: 🚀 Publish Extension
         run: |
-          vsce publish --pat ${{ secrets.marketplace-token }}
+          VSIX_FILE=$(ls *.vsix)
+          vsce publish --packagePath "${VSIX_FILE}" --pat ${{ secrets.marketplace-token }}

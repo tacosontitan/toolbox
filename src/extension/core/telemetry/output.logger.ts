@@ -29,6 +29,14 @@ export class OutputLogger implements ILogger {
     }
 
     /** @inheritdoc */
+    public logError(message: string, error: any): void {
+        const timestamp = new Date().toISOString();
+        const errorMessage = error instanceof Error ? `${message} ${error.message}` : message;
+        const formattedMessage = `${timestamp} (error): ${errorMessage}\n${error.stack}`;
+        this.outputChannel.appendLine(formattedMessage);
+    }
+
+    /** @inheritdoc */
     public open(): void {
         this.outputChannel.show();
     }

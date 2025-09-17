@@ -1,0 +1,41 @@
+name: ✅ Validate Extension
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/extension/**'
+      - 'package.json'
+      - 'tsconfig.json'
+      - 'eslint.config.mjs'
+      - 'esbuild.js'
+
+jobs:
+  validate:
+    name: ✅ Validate Extension
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🧩 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org/'
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: 🔨 Compile Extension
+        run: npm run compile
+
+      - name: 🔍 Check Types
+        run: npm run check-types
+
+      - name: 🧹 Lint Code
+        run: npm run lint
+
+      - name: 🧪 Run Tests
+        run: npm run test

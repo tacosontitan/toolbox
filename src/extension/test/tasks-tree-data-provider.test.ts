@@ -1,6 +1,6 @@
 import * as assert from 'assert';
-import { TasksTreeDataProvider } from '../providers/tasks-tree-data-provider';
-import { DevOpsService } from '../services/devops-service';
+import { TasksTreeDataProvider } from '../application/providers/tasks-tree-data-provider';
+import { DevOpsService } from '../infrastructure/azure/devops-service';
 
 // Mock the DevOpsService
 class MockDevOpsService extends DevOpsService {
