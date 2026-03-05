@@ -110,6 +110,7 @@ export class CommandRegistry {
 		configurationProvider: IConfigurationProvider,
 		workItemService: IWorkItemService
 	) {
+		// test
 		const commands = [
 			new SetTaskStateToNewCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService),
 			new SetTaskStateToActiveCommand(secretProvider, configurationProvider, tasksTreeProvider, workItemService),
