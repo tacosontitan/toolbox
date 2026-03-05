@@ -29,22 +29,17 @@ export class CommandRegistry {
 	 * @param context The extension context provided by Visual Studio Code.
 	 */
 	public static registerCommands(context: vscode.ExtensionContext) {
-		// Create and register the tasks tree view first
 		const tasksTreeProvider = this.createTasksTreeView(context);
-
-		// Get regular commands
 		const commands = this.getCommandsToRegister(context);
 		for (const command of commands) {
 			this.registerCommand(command, context);
 		}
 
-		// Get and register tasks tree view commands
 		const treeCommands = this.getTasksTreeCommands(context, tasksTreeProvider);
 		for (const command of treeCommands) {
 			this.registerCommand(command, context);
 		}
 
-		// Special handling for the change task state command which takes a parameter
 		this.registerChangeTaskStateCommand(context, tasksTreeProvider);
 	}
 
@@ -78,10 +73,7 @@ export class CommandRegistry {
 		const configurationProvider = new NativeConfigurationProvider();
 		const devOpsService = new DevOpsService(secretProvider, configurationProvider);
 
-		// Create the tasks tree provider
 		const tasksTreeProvider = new TasksTreeDataProvider(devOpsService);
-
-		// Register the tree view
 		vscode.window.createTreeView('tasksTreeView', {
 			treeDataProvider: tasksTreeProvider,
 			showCollapseAll: true
