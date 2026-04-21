@@ -1,226 +1,238 @@
-{
-  "Planning": [
-    {
-      "name": "Review Feature",
-      "description": "Review the feature and its associated work items to ensure alignment with business objectives, coordination with team members, and add tasks if necessary.",
-      "remainingWork": 0.5,
-      "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Review Work Item",
-      "description": "Review the work item and all pre-defined tasks to ensure that tasks are aligned with business objectives and add tasks if necessary.",
-      "remainingWork": 0.5,
-      "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Reproduce Locally",
-      "description": "Attempt to reproduce the issue locally to better understand the problem and identify potential solutions.",
-      "remainingWork": 1,
-      "activity": "Testing",
-      "assigneeRequired": true,
-      "appliesTo": [
-        "Bug"
-      ]
-    },
-    {
-      "name": "Review Existing Implementation(s)",
-      "description": "Review existing implementations to gather insights and derive potential solutions.",
-      "remainingWork": 1,
-      "activity": "Design",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Meet with Feature Leader",
-      "description": "Meet with the feature leader to discuss the work item's scope within the grand scheme of the feature.",
-      "remainingWork": 0.5,
-      "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Meet with Subject Matter Expert",
-      "description": "Meet with the noted subject matter expert to discuss the work item's implementation.",
-      "remainingWork": 0.5,
-      "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": [],
-      "requiredFields": [
-        "Subject Matter Expert"
-      ]
-    },
-    {
-      "name": "Meet with Product Owners",
-      "description": "Meet with product owners to clarify requirements and ensure alignment with business objectives.",
-      "remainingWork": 0.5,
-      "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Meet with Stakeholders",
-      "description": "Meet with stakeholders to gather feedback and ensure the work item aligns with their expectations.",
-      "remainingWork": 0.5,
-      "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": [],
-      "requiredFields": [
-        "Stakeholder"
-      ]
-    },
-    {
-      "name": "Meet with Quality Assurance",
-      "description": "Meet with QA to discuss test cases and ensure alignment on quality expectations.",
-      "remainingWork": 0.5,
-      "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Create Implementation Tasks",
-      "description": "After conducting the necessary reviews and meetings, create tasks that represent the steps needed to execute the work item's acceptance criteria (be sure to account for non-functional requirements).",
-      "remainingWork": 0.5,
-      "activity": "Design",
-      "assigneeRequired": true,
-      "appliesTo": []
-    }
-  ],
-  "Development": [
-    {
-      "name": "Setup Environment",
-      "description": "Setup the development environment to execute the work item.\n- Download repository.\n- Run any tests against main.\n- Create topic branch.\n- Install dependencies.",
-      "remainingWork": 0.15,
-      "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": []
-    }
-  ],
-  "Quality Assurance": [
-    {
-      "name": "QA Write Test Cases",
-      "description": "Write test cases that are comprehensive and aligned with business objectives.",
-      "remainingWork": 2,
-      "activity": "Design",
-      "assigneeRequired": false,
-      "appliesTo": []
-    },
-    {
-      "name": "QA Review Test Cases",
-      "description": "Review the test cases to ensure they are correct, comprehensive, and cover all scenarios.",
-      "remainingWork": 0.5,
-      "activity": "Requirements",
-      "assigneeRequired": false,
-      "appliesTo": []
-    },
-    {
-      "name": "Dev Review Test Cases",
-      "description": "Review the test cases to ensure they are correct, comprehensive, and cover all scenarios.",
-      "remainingWork": 0.5,
-      "activity": "Requirements",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Create Quality Assurance Build",
-      "description": "Create a build for QA testing to validate the implementation.",
-      "remainingWork": 0.01,
-      "activity": "Deployment",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "QA Deployment to Test Environment",
-      "description": "Deploy the build to the test environment for QA validation.",
-      "remainingWork": 2,
-      "activity": "Deployment",
-      "assigneeRequired": false,
-      "appliesTo": []
-    },
-    {
-      "name": "QA Test Case Execution",
-      "description": "Execute the test cases to validate the functionality of the work item.",
-      "remainingWork": 1,
-      "activity": "Testing",
-      "assigneeRequired": false,
-      "appliesTo": []
-    },
-    {
-      "name": "Support QA Testing",
-      "description": "Provide support to the QA team during the testing process.",
-      "remainingWork": 1,
-      "activity": "Testing",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "QA Smoke Testing",
-      "description": "Perform smoke testing to validate the stability of the build in the test environment.",
-      "remainingWork": 0.5,
-      "activity": "Testing",
-      "assigneeRequired": false,
-      "appliesTo": []
-    },
-    {
-      "name": "Support Smoke Testing",
-      "description": "Provide support during smoke testing to address any issues that arise.",
-      "remainingWork": 0.25,
-      "activity": "Testing",
-      "assigneeRequired": true,
-      "appliesTo": []
-    }
-  ],
-  "Review": [
-    {
-      "name": "Create Draft PR",
-      "description": "Create a draft pull request to initiate the code review process.",
-      "remainingWork": 0.01,
-      "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Self-Review PR",
-      "description": "Perform a self-review of the pull request to ensure code quality and completeness.",
-      "remainingWork": 0.5,
-      "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Publish PR",
-      "description": "Publish the pull request for review by other team members.",
-      "remainingWork": 0.01,
-      "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Resolve PR Feedback",
-      "description": "Address feedback provided during the pull request review process.",
-      "remainingWork": 1,
-      "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Run PR Validations",
-      "description": "Run automated validations for the pull request to ensure compliance with standards.",
-      "remainingWork": 0.01,
-      "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": []
-    },
-    {
-      "name": "Complete PR",
-      "description": "Complete the pull request after all validations and reviews are successful.",
-      "remainingWork": 0.01,
-      "activity": "Development",
-      "assigneeRequired": true,
-      "appliesTo": []
-    }
-  ]
-}
+[
+  {
+    "category": "Planning",
+    "tasks": [
+      {
+        "name": "Review Feature",
+        "description": "Review the feature and its associated work items to ensure alignment with business objectives, coordination with team members, and add tasks if necessary.",
+        "remainingWork": 0.5,
+        "activity": "Requirements",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Review Work Item",
+        "description": "Review the work item and all pre-defined tasks to ensure that tasks are aligned with business objectives and add tasks if necessary.",
+        "remainingWork": 0.5,
+        "activity": "Requirements",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Reproduce Locally",
+        "description": "Attempt to reproduce the issue locally to better understand the problem and identify potential solutions.",
+        "remainingWork": 1,
+        "activity": "Testing",
+        "assigneeRequired": true,
+        "appliesTo": [
+          "Bug"
+        ]
+      },
+      {
+        "name": "Review Existing Implementation(s)",
+        "description": "Review existing implementations to gather insights and derive potential solutions.",
+        "remainingWork": 1,
+        "activity": "Design",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Meet with Feature Leader",
+        "description": "Meet with the feature leader to discuss the work item's scope within the grand scheme of the feature.",
+        "remainingWork": 0.5,
+        "activity": "Requirements",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Meet with Subject Matter Expert",
+        "description": "Meet with the noted subject matter expert to discuss the work item's implementation.",
+        "remainingWork": 0.5,
+        "activity": "Requirements",
+        "assigneeRequired": true,
+        "appliesTo": [],
+        "requiredFields": [
+          "Subject Matter Expert"
+        ]
+      },
+      {
+        "name": "Meet with Product Owners",
+        "description": "Meet with product owners to clarify requirements and ensure alignment with business objectives.",
+        "remainingWork": 0.5,
+        "activity": "Requirements",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Meet with Stakeholders",
+        "description": "Meet with stakeholders to gather feedback and ensure the work item aligns with their expectations.",
+        "remainingWork": 0.5,
+        "activity": "Requirements",
+        "assigneeRequired": true,
+        "appliesTo": [],
+        "requiredFields": [
+          "Stakeholder"
+        ]
+      },
+      {
+        "name": "Meet with Quality Assurance",
+        "description": "Meet with QA to discuss test cases and ensure alignment on quality expectations.",
+        "remainingWork": 0.5,
+        "activity": "Requirements",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Create Implementation Tasks",
+        "description": "After conducting the necessary reviews and meetings, create tasks that represent the steps needed to execute the work item's acceptance criteria (be sure to account for non-functional requirements).",
+        "remainingWork": 0.5,
+        "activity": "Design",
+        "assigneeRequired": true,
+        "appliesTo": []
+      }
+    ]
+  },
+  {
+    "category": "Development",
+    "tasks": [
+      {
+        "name": "Setup Environment",
+        "description": "Setup the development environment to execute the work item.\n- Download repository.\n- Run any tests against main.\n- Create topic branch.\n- Install dependencies.",
+        "remainingWork": 0.15,
+        "activity": "Development",
+        "assigneeRequired": true,
+        "appliesTo": []
+      }
+    ]
+  },
+  {
+    "category": "Quality Assurance",
+    "tasks": [
+      {
+        "name": "QA Write Test Cases",
+        "description": "Write test cases that are comprehensive and aligned with business objectives.",
+        "remainingWork": 2,
+        "activity": "Design",
+        "assigneeRequired": false,
+        "appliesTo": []
+      },
+      {
+        "name": "QA Review Test Cases",
+        "description": "Review the test cases to ensure they are correct, comprehensive, and cover all scenarios.",
+        "remainingWork": 0.5,
+        "activity": "Requirements",
+        "assigneeRequired": false,
+        "appliesTo": []
+      },
+      {
+        "name": "Dev Review Test Cases",
+        "description": "Review the test cases to ensure they are correct, comprehensive, and cover all scenarios.",
+        "remainingWork": 0.5,
+        "activity": "Requirements",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Create Quality Assurance Build",
+        "description": "Create a build for QA testing to validate the implementation.",
+        "remainingWork": 0.01,
+        "activity": "Deployment",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "QA Deployment to Test Environment",
+        "description": "Deploy the build to the test environment for QA validation.",
+        "remainingWork": 2,
+        "activity": "Deployment",
+        "assigneeRequired": false,
+        "appliesTo": []
+      },
+      {
+        "name": "QA Test Case Execution",
+        "description": "Execute the test cases to validate the functionality of the work item.",
+        "remainingWork": 1,
+        "activity": "Testing",
+        "assigneeRequired": false,
+        "appliesTo": []
+      },
+      {
+        "name": "Support QA Testing",
+        "description": "Provide support to the QA team during the testing process.",
+        "remainingWork": 1,
+        "activity": "Testing",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "QA Smoke Testing",
+        "description": "Perform smoke testing to validate the stability of the build in the test environment.",
+        "remainingWork": 0.5,
+        "activity": "Testing",
+        "assigneeRequired": false,
+        "appliesTo": []
+      },
+      {
+        "name": "Support Smoke Testing",
+        "description": "Provide support during smoke testing to address any issues that arise.",
+        "remainingWork": 0.25,
+        "activity": "Testing",
+        "assigneeRequired": true,
+        "appliesTo": []
+      }
+    ]
+  },
+  {
+    "category": "Review",
+    "tasks": [
+      {
+        "name": "Create Draft PR",
+        "description": "Create a draft pull request to initiate the code review process.",
+        "remainingWork": 0.01,
+        "activity": "Development",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Self-Review PR",
+        "description": "Perform a self-review of the pull request to ensure code quality and completeness.",
+        "remainingWork": 0.5,
+        "activity": "Development",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Publish PR",
+        "description": "Publish the pull request for review by other team members.",
+        "remainingWork": 0.01,
+        "activity": "Development",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Resolve PR Feedback",
+        "description": "Address feedback provided during the pull request review process.",
+        "remainingWork": 1,
+        "activity": "Development",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Run PR Validations",
+        "description": "Run automated validations for the pull request to ensure compliance with standards.",
+        "remainingWork": 0.01,
+        "activity": "Development",
+        "assigneeRequired": true,
+        "appliesTo": []
+      },
+      {
+        "name": "Complete PR",
+        "description": "Complete the pull request after all validations and reviews are successful.",
+        "remainingWork": 0.01,
+        "activity": "Development",
+        "assigneeRequired": true,
+        "appliesTo": []
+      }
+    ]
+  }
+]
